@@ -70,8 +70,8 @@ public class Parser{
 		}
 	}
 	
-	public String getArguments(String userCommand){
-		return "";
+	public String getArguments(String userCommand) {
+		return userCommand.replace(getCommandType(userCommand), "").trim();
 	}
 	
 	public COMMAND_TYPE determineCommandType(String commandTypeString){
