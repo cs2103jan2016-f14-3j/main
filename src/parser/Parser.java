@@ -8,7 +8,8 @@ public class Parser{
 	
 	private static final String MESSAGE_INVALID_FORMAT = "invalid command format : %1$s";
 	private static final String MESSAGE_ARGUMENTS_NEEDED = "Arguments needed!";
-
+	private static final String MESSAGE_PROGRAM_ERROR = "Program has encountered an error";
+	
 	
 	enum COMMAND_TYPE {
 		ADD_TASK, DELETE_TASK, EDIT_TASK, SEARCH_TASK, DISPLAY_TASK, 
@@ -57,7 +58,7 @@ public class Parser{
 			case EXIT:
 				//exitPomPom();
 	}
-		return "";
+		return MESSAGE_PROGRAM_ERROR;
 	}
 	
 	public String getCommandType(String userCommand){
