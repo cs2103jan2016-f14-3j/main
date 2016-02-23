@@ -21,6 +21,12 @@ public class ParserTest {
 	}
 	
 	@Test
+	public void testGetCommandType(){
+		String actual = parser.getCommandType("add 1");
+		assertEquals(actual, "add");
+	}
+	
+	//@Test
 	public void testExecuteCommandEmptyArgument(){
 		String result = parser.executeCommand("add 1");
 		assertEquals(result, "Arguments needed!");
