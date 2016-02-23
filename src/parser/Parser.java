@@ -7,6 +7,7 @@ public class Parser{
 	private static final String MESSAGE_ARGUMENTS_NEEDED = "Arguments needed!";
 	private static final String MESSAGE_PROGRAM_ERROR = "Program has encountered an error";
 	
+	private static final int NEGATIVE_INDEX = -1;
 	
 	enum COMMAND_TYPE {
 		ADD_TASK, DELETE_TASK, EDIT_TASK, SEARCH_TASK, DISPLAY_TASK, 
@@ -103,5 +104,9 @@ public class Parser{
 	
 	public boolean hasEmptyCommand(String userCommand){
 		return userCommand.trim().equals("");
+	}
+	
+	public boolean hasNoSpaceInCommand(int firstSpaceIndex) {
+		return firstSpaceIndex == NEGATIVE_INDEX;
 	}
 }
