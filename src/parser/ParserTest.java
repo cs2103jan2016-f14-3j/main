@@ -19,5 +19,11 @@ public class ParserTest {
 		COMMAND_TYPE actual = parser.determineCommandType("add");
 		assertEquals(actual,COMMAND_TYPE.ADD_TASK);
 	}
+	
+	@Test
+	public void testExecuteCommandEmptyArgument(){
+		String result = parser.executeCommand("add");
+		assertEquals(result, "Arguments needed!");
+	}
 
 }
