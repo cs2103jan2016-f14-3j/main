@@ -9,6 +9,19 @@ public class parserMain {
 		INVALID, EXIT
 	};
 	
-	public String executeCommand(String userCommand){		
+	/**
+	 * This operation takes in the command specified by the
+	 * user, executes it and returns a message about
+	 * the execution information to the user.
+	 * 
+	 * @param userCommand
+	 * 			is the command the user has given to the
+	 * 			program
+	 * @return
+	 * 		the message containing information about the
+	 * 		execution of the command. 
+	 */
+	public String executeCommand(String userCommand){	
+		return "";
 	}
 }
