@@ -13,5 +13,12 @@ public class ParserTest {
 		String result = parser.executeCommand("");
 		assertEquals(result,"invalid command format : ");
 	}
+	
+	@Test
+	public void testExecuteCommandEmptyArgument() {
+		String result = parser.executeCommand("add");
+		assertEquals(result,"invalid command format : ");
+	}
+
 
 }

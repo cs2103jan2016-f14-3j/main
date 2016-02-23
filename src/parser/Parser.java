@@ -70,7 +70,22 @@ public class Parser{
 	}
 	
 	public COMMAND_TYPE determineCommandType(String commandTypeString){
-		return COMMAND_TYPE.ADD_TASK;
+		
+		if (commandTypeString.equalsIgnoreCase("add")) {
+			return COMMAND_TYPE.ADD_TASK;
+		} else if (commandTypeString.equalsIgnoreCase("delete")) {
+		 	return COMMAND_TYPE.DELETE_TASK;
+		} else if (commandTypeString.equalsIgnoreCase("edit")) {
+		 	return COMMAND_TYPE.EDIT_TASK;
+		} else if (commandTypeString.equalsIgnoreCase("search")) {
+		 	return COMMAND_TYPE.SEARCH_TASK;
+		} else if (commandTypeString.equalsIgnoreCase("display")) {
+			return COMMAND_TYPE.DISPLAY_TASK;
+		} else if (commandTypeString.equalsIgnoreCase("exit")) {
+		 	return COMMAND_TYPE.EXIT;
+		} else {
+			return COMMAND_TYPE.INVALID;
+		}
 	}
 	
 	private boolean hasEmptyArgument(String commandArguments, COMMAND_TYPE commandType) {
