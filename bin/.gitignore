@@ -1,6 +1,5 @@
-/command/
 /gui/
-/logic/
-/parser/
 /storage/
 /utils/
+/Parser/
+/parser/
