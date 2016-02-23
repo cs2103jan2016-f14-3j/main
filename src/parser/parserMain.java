@@ -8,5 +8,7 @@ public class parserMain {
 		ADD_TASK, DELETE_TASK, EDIT_TASK, SEARCH_TASK, DISPLAY_TASK, 
 		INVALID, EXIT
 	};
-
+	
+	public String executeCommand(String userCommand){		
+	}
 }
