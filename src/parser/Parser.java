@@ -1,9 +1,6 @@
 package parser;
 
 import java.io.IOException;
-
-import TextBuddy.COMMAND_TYPE;
-
 public class Parser{
 	
 	private static final String MESSAGE_INVALID_FORMAT = "invalid command format : %1$s";

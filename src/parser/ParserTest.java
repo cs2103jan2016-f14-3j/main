@@ -1,8 +1,8 @@
 package parser;
 
 import static org.junit.Assert.*;
-
 import org.junit.Test;
+import parser.Parser.COMMAND_TYPE;
 
 public class ParserTest {
 
@@ -15,10 +15,9 @@ public class ParserTest {
 	}
 	
 	@Test
-	public void testExecuteCommandEmptyArgument() {
-		String result = parser.executeCommand("add");
-		assertEquals(result,"invalid command format : ");
+	public void testDetermineCommandType(){
+		COMMAND_TYPE actual = parser.determineCommandType("add");
+		assertEquals(actual,COMMAND_TYPE.ADD_TASK);
 	}
-
 
 }
