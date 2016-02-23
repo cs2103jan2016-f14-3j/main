@@ -26,6 +26,12 @@ public class ParserTest {
 		assertEquals(actual, "add");
 	}
 	
+	@Test
+	public void testGetArguments(){
+		String actual = parser.getArguments("add 1");
+		assertEquals(actual, "1");
+	}
+	
 	//@Test
 	public void testExecuteCommandEmptyArgument(){
 		String result = parser.executeCommand("add 1");
