@@ -22,7 +22,7 @@ public class ParserTest {
 	
 	@Test
 	public void testExecuteCommandEmptyArgument(){
-		String result = parser.executeCommand("add");
+		String result = parser.executeCommand("add 1");
 		assertEquals(result, "Arguments needed!");
 	}
 

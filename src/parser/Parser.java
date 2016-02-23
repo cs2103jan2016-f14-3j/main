@@ -59,7 +59,14 @@ public class Parser{
 	}
 	
 	public String getCommandType(String userCommand){
-		return "";
+		int firstSpaceIndex = userCommand.indexOf(" ");
+		
+		if (hasNoSpaceInCommand(firstSpaceIndex)){
+			return userCommand;
+		}
+		else{
+			return userCommand.substring(0,firstSpaceIndex);
+		}
 	}
 	
 	public String getArguments(String userCommand){
