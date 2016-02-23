@@ -6,6 +6,8 @@ public class Parser{
 	private static final String MESSAGE_INVALID_FORMAT = "invalid command format : %1$s";
 	private static final String MESSAGE_ARGUMENTS_NEEDED = "Arguments needed!";
 	private static final String MESSAGE_PROGRAM_ERROR = "Program has encountered an error";
+	private static final String MESSAGE_ADDED_TEXT = "Added '%1$s' to task list!";
+	
 	
 	private static final int NEGATIVE_INDEX = -1;
 	
@@ -43,6 +45,7 @@ public class Parser{
 		switch (commandType){
 			case ADD_TASK:
 				//addTask();
+				return String.format(MESSAGE_ADDED_TEXT, commandArguments); 
 			case DELETE_TASK:
 				//deleteTask();
 			case EDIT_TASK:

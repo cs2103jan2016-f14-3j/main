@@ -32,10 +32,16 @@ public class ParserTest {
 		assertEquals(actual, "1");
 	}
 	
-	//@Test
+	@Test
 	public void testExecuteCommandEmptyArgument(){
-		String result = parser.executeCommand("add 1");
-		assertEquals(result, "Arguments needed!");
+		String actual = parser.executeCommand("add");
+		assertEquals(actual, "Arguments needed!");
+	}
+	
+	@Test
+	public void testExecuteCommand(){
+		String actual = parser.executeCommand("add watch deadpool");
+		assertEquals(actual,"Added 'watch deadpool' to task list!");
 	}
 
 }
