@@ -8,7 +8,8 @@ public class Task {
 	private String priority;
 	private CustomDate Startdate;
 	private CustomDate endDate;
-	public void Task(String title, String priority, CustomDate Startdate, CustomDate endDate) {
+	
+	public Task(String title, String priority, String description,CustomDate Startdate, CustomDate endDate) {
 		
 	}
 	public String getTitle() {
@@ -35,5 +36,10 @@ public class Task {
 	public void setEndDate(CustomDate endDate) {
 		this.endDate = endDate;
 	}
-	
+	//Debugging Method
+	public void printInfo(){
+		System.out.println("Title: " + getTitle());
+		System.out.println("Priority: " + getPriority());
+		System.out.println("Description");
+	}
 }
