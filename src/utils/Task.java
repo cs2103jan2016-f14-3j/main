@@ -4,7 +4,7 @@ package utils;
 import java.text.DateFormat;
 import java.util.Date;
 
-public class Task {
+public class Task implements Comparable<Task>{
 	private String title;
 	private String priority;
 	private String decription;
@@ -65,5 +65,10 @@ public class Task {
 		System.out.println("Description: " + getDecription());
 		System.out.println("StartDate: " + getStartDate());
 		System.out.println("EndDate: " + getEndDate());
+	}
+	@Override
+	public int compareTo(Task o) {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 }

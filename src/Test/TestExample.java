@@ -1,5 +1,6 @@
 package Test;
 
+import java.util.Collections;
 import java.util.Date;
 
 import com.google.gson.Gson;
@@ -31,10 +32,12 @@ public class TestExample {
 	    final String json = gson.toJson(taskList);
 	    System.out.println("Serialised");
 	    System.out.println(json);
-
+	    
 	    final UserTaskList parsedBook = gson.fromJson(json, UserTaskList.class);
 	    System.out.println("\nDeserialised");
 	    parsedBook.getTaskArray()[0].printInfo();
 	    parsedBook.getTaskArray()[1].printInfo();
+	    
+	   // Collections.sort(parsedBook.getTaskArrayList());
 	}
 }
