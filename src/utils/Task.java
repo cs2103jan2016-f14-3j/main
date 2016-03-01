@@ -1,14 +1,16 @@
 package utils;
 
-import java.sql.Date;
+
 import java.text.DateFormat;
+import java.util.Date;
 
 public class Task {
 	private String title;
 	private String priority;
-	private CustomDate startDate;
-	private CustomDate endDate;
 	private String decription;
+	private Date startDate;
+	private Date endDate;
+	
 	
 	public String getDecription() {
 		return decription;
@@ -16,7 +18,19 @@ public class Task {
 	public void setDecription(String decription) {
 		this.decription = decription;
 	}
-	public Task(String title, String priority, String description,CustomDate Startdate, CustomDate endDate) {
+		
+	
+	public Task(String title, String priority, String decription,
+			Date startDate, Date endDate) {
+		super();
+		this.title = title;
+		this.priority = priority;
+		this.decription = decription;
+		this.startDate = startDate;
+		this.endDate = endDate;
+	}
+
+	public Task() {
 		
 	}
 	public String getTitle() {
@@ -32,16 +46,16 @@ public class Task {
 	public void setPriority(String priority) {
 		this.priority = priority;
 	}
-	public CustomDate getStartDate() {
+	public Date getStartDate() {
 		return startDate;
 	}
-	public void setStartdate(CustomDate startdate) {
-		startDate = startdate;
+	public void setStartdate(Date startDate) {
+		this.startDate = startDate;
 	}
-	public CustomDate getEndDate() {
+	public Date getEndDate() {
 		return endDate;
 	}
-	public void setEndDate(CustomDate endDate) {
+	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
 	}
 	//Debugging Method

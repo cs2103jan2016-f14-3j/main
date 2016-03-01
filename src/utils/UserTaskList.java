@@ -10,6 +10,9 @@ public class UserTaskList {
 		this.userName = userName;
 		this.taskArray = taskArray;
 	}
+	public UserTaskList(){
+		
+	}
 	public String getUserName() {
 		return userName;
 	}
