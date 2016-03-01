@@ -6,9 +6,16 @@ import java.text.DateFormat;
 public class Task {
 	private String title;
 	private String priority;
-	private CustomDate Startdate;
+	private CustomDate startDate;
 	private CustomDate endDate;
+	private String decription;
 	
+	public String getDecription() {
+		return decription;
+	}
+	public void setDecription(String decription) {
+		this.decription = decription;
+	}
 	public Task(String title, String priority, String description,CustomDate Startdate, CustomDate endDate) {
 		
 	}
@@ -18,17 +25,18 @@ public class Task {
 	public void setTitle(String title) {
 		this.title = title;
 	}
+	
 	public String getPriority() {
 		return priority;
 	}
 	public void setPriority(String priority) {
 		this.priority = priority;
 	}
-	public CustomDate getStartdate() {
-		return Startdate;
+	public CustomDate getStartDate() {
+		return startDate;
 	}
 	public void setStartdate(CustomDate startdate) {
-		Startdate = startdate;
+		startDate = startdate;
 	}
 	public CustomDate getEndDate() {
 		return endDate;
@@ -40,6 +48,8 @@ public class Task {
 	public void printInfo(){
 		System.out.println("Title: " + getTitle());
 		System.out.println("Priority: " + getPriority());
-		System.out.println("Description");
+		System.out.println("Description: " + getDecription());
+		System.out.println("StartDate: " + getStartDate());
+		System.out.println("EndDate: " + getEndDate());
 	}
 }
