@@ -10,23 +10,26 @@
     -fx-background-color: black;
 }
 
+
+.container {
+    -fx-padding: 0 0 0 0;
+    -fx-border-width: 0;
+    -fx-background-color: black;
+}
+
+.split-pane:horizontal > * > .split-pane-divider {
+-fx-border-color: transparent -fx-base transparent -fx-base;
+-fx-background-color: transparent, derive(-fx-base,20%);
+-fx-background-insets: 0, 0 1 0 1;
+}
+
+
 .button {
-    -fx-background-color:
-        linear-gradient(
-            derive(master-color, 120%), 
-            derive(master-color, 90%)
-        ),
-        radial-gradient(
-            center 50% -40%, 
-            radius 180%, 
-            derive(master-color, 95%) 55%, 
-            derive(master-color, 75%) 55%
-        );
-    -fx-background-radius: 4, 3;
-    -fx-background-insets: 0, 1;
-    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.55) , 5, 0.0 , 0 , 1 );
-    -fx-text-fill: derive(master-color, -60%);
-    -fx-padding: 3 11 3 11;
+    
+}
+
+.label {
+	-fx-font-family:"Microsoft Yi Baiti";
 }
 
 .darkList {
