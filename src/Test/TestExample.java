@@ -11,6 +11,7 @@ import utils.TaskAdapter;
 import utils.UserTaskList;
 
 public class TestExample {
+	//Basic example to show my teammates how the gson library works. 
 	public static void main(String[] args) {
 	    final GsonBuilder gsonBuilder = new GsonBuilder();
 	    gsonBuilder.registerTypeAdapter(UserTaskList.class, new TaskAdapter());
@@ -24,8 +25,7 @@ public class TestExample {
 	    
 	    final Task task2 = new Task("It is a rainny day", "Medium", "I want to study",
 	    		new Date(), new Date());
-	    taskList.setUserName("Wei Lip");
-	    
+	    taskList.setUserName("Wei Lip");	    
 	    taskList.setTaskArray(new Task[]{task1,task2});
 	    
 
@@ -33,10 +33,10 @@ public class TestExample {
 	    System.out.println("Serialised");
 	    System.out.println(json);
 	    
-	    final UserTaskList parsedBook = gson.fromJson(json, UserTaskList.class);
+	    final UserTaskList userTaskList = gson.fromJson(json, UserTaskList.class);
 	    System.out.println("\nDeserialised");
-	    parsedBook.getTaskArray()[0].printInfo();
-	    parsedBook.getTaskArray()[1].printInfo();
+	    userTaskList.getTaskArray()[0].printInfo();
+	    userTaskList.getTaskArray()[1].printInfo();
 	    
 	   // Collections.sort(parsedBook.getTaskArrayList());
 	}

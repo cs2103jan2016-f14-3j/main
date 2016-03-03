@@ -2,6 +2,7 @@ package utils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.charset.Charset;
@@ -9,9 +10,9 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 public class FileHandler {
-	public static void writeStringToFile(String fileName,String text) throws FileNotFoundException{
-		PrintWriter out = new PrintWriter(fileName);
-		out.println(text);
+	public static void writeStringToFile(File file,String text) throws IOException{
+		FileWriter out = new FileWriter(file);
+		out.write(text);
 		out.close();
 	}
 	
