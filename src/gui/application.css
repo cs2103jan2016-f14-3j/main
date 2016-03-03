@@ -1,22 +1,10 @@
-.theme {
-    master-color: grey;
-    -fx-background-color: derive(master-color, 70%);
-    -fx-font-size: 14px;
-}
-
-.split-pane {
-    -fx-padding: 0 0 0 0;
-    -fx-border-width: 0;
-    -fx-background-color: black;
-}
-
 .menupane {
 	-fx-background-color: #1f1f1f;
 }
 
 .button-dashboad{
 	-fx-background-color: #1f1f1f;
-	-fx-graphic:url(images/dashboard.png) no-repeat;
+	image:url('images/dashboard.png');
 }
 
 .button-dashboard:active {
@@ -31,11 +19,6 @@
     -fx-background-color: black;
 }
 
-.split-pane:horizontal > * > .split-pane-divider {
--fx-border-color: transparent -fx-base transparent -fx-base;
--fx-background-color: transparent, derive(-fx-base,20%);
--fx-background-insets: 0, 0 1 0 1;
-}
 
 .label {
 	-fx-font-family:"Microsoft Yi Baiti";

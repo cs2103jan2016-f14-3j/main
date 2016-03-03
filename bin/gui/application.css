@@ -1,1 +1,26 @@
-/* JavaFX CSS - Leave this comment until you have at least create one rule which uses -fx-Property */
+.menupane {
+	-fx-background-color: #1f1f1f;
+}
+
+.button-dashboad{
+	-fx-background-color: #1f1f1f;
+	image:url('images/dashboard.png');
+}
+
+.button-dashboard:active {
+    -fx-graphic:url(images/dashboardClicked.png) no-repeat;
+	-fx-color:#000 !important;background-color:#e7ffff !important
+}
+
+.container {
+    -fx-padding: 0 0 0 0;
+    -fx-border-width: 0;
+    -fx-background-color: black;
+}
+
+
+.label {
+	-fx-font-family:"Microsoft Yi Baiti";
+	-fx-font-size:16px;
+	-fx-font-text-fill: #d9d9d9;
+}
