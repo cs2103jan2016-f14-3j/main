@@ -50,15 +50,13 @@ public class Storage {
 		//Initialization of gson class with Adapter
 	    gsonBuilder.registerTypeAdapter(UserTaskList.class, new TaskAdapter());
 	    gsonBuilder.setPrettyPrinting();
-	    gson = gsonBuilder.create();
-	    
-	    
+	    gson = gsonBuilder.create();	    
 	    
 		createNewDirectoryFolder();
 		createNewStorageTxt();
-
 		String storageJsonString = FileHandler.getStringFromFile(DEFAULT_STORAGE_FILE_PATH,
 				StandardCharsets.UTF_8);
+		
 		userTaskList = deserializeJsonString(storageJsonString);
 		
 	}
@@ -117,7 +115,7 @@ public class Storage {
 	
 	
 	private UserTaskList deserializeJsonString(String jsonString){		
-		
+		if(jsonString.equals("")) return null;
 	    final UserTaskList userTaskList = gson.fromJson(jsonString, UserTaskList.class);
 		taskList = new ArrayList<Task>(Arrays.asList(userTaskList.getTaskArray()));
 		return userTaskList;

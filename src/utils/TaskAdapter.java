@@ -19,7 +19,6 @@ public class TaskAdapter extends TypeAdapter<UserTaskList> {
 				"EEE MMM d HH:mm:ss z yyyy");
 		Date startDate = null;
 		Date endDate = null;
-
 		in.beginObject();
 		while (in.hasNext()) {
 			switch (in.nextName()) {
@@ -42,6 +41,12 @@ public class TaskAdapter extends TypeAdapter<UserTaskList> {
 							break;
 						case "Decription":
 							task.setDecription(in.nextString());
+							break;
+						case "Label":
+							task.setLabel(in.nextString());
+							break;
+						case "Status":
+							task.setStatus(in.nextString());
 							break;
 						case "StartDate":
 							try {
@@ -73,7 +78,7 @@ public class TaskAdapter extends TypeAdapter<UserTaskList> {
 
 		return userTaskList;
 	}
-
+	
 	@Override
 	public void write(JsonWriter out, UserTaskList userTaskList)
 			throws IOException {
@@ -86,6 +91,8 @@ public class TaskAdapter extends TypeAdapter<UserTaskList> {
 			out.name("Title").value(task.getTitle());
 			out.name("Priority").value(task.getPriority());
 			out.name("Decription").value(task.getDecription());
+			out.name("Label").value(task.getLabel());
+			out.name("Status").value(task.getStatus());
 			out.name("StartDate").value(task.getStartDate().toString());
 			out.name("EndDate").value(task.getEndDate().toString());
 			out.endObject();

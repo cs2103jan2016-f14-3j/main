@@ -20,11 +20,11 @@ public class TestExample {
 	    final Gson gson = gsonBuilder.create();
 	    
 	    UserTaskList taskList = new UserTaskList();
-	    final Task task1 = new Task("It is a sunny day", "High", "I want to swim",
+	    final Task task1 = new Task("It is a sunny day", "High", "I want to swim","Done","red label",
 	    		new Date(), new Date());
 	    
-	    final Task task2 = new Task("It is a rainny day", "Medium", "I want to study",
-	    		new Date(), new Date());
+	    final Task task2 = new Task("It is a rainny day", "Medium", "I want to study","Undone"
+	    		,"blue label", new Date(), new Date());
 	    taskList.setUserName("Wei Lip");	    
 	    taskList.setTaskArray(new Task[]{task1,task2});
 	    

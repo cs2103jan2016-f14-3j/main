@@ -27,15 +27,15 @@ public class Task implements Comparable<Task>{
 		this.endDate = endDate;
 	}	
 	
-	public Task(String title, String priority, String decription,
-			Date startDate, Date endDate) {
-		super();
-		this.title = title;
-		this.priority = priority;
-		this.decription = decription;
-		this.startDate = startDate;
-		this.endDate = endDate;
-	}
+//	public Task(String title, String priority, String decription,
+//			Date startDate, Date endDate) {
+//		super();
+//		this.title = title;
+//		this.priority = priority;
+//		this.decription = decription;
+//		this.startDate = startDate;
+//		this.endDate = endDate;
+//	}
 
 	public Task() {
 		
