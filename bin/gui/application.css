@@ -4,11 +4,12 @@
 
 .button-dashboad{
 	-fx-background-color: #1f1f1f;
-	image:url('images/dashboard.png');
+	-fx-graphic:url('images/dashboard.png');
 }
 
 .button-dashboard:active {
     -fx-graphic:url(images/dashboardClicked.png) no-repeat;
+	-fx-border-left:6px solid #ccc !important;
 	-fx-color:#000 !important;background-color:#e7ffff !important
 }
 
@@ -24,3 +25,36 @@
 	-fx-font-size:16px;
 	-fx-font-text-fill: #d9d9d9;
 }
+
+.darkList {
+    -fx-background-color: derive(master-color, -60%);
+}
+
+.darkList .list-cell {
+    -fx-padding: 6 0 0 13;
+    -fx-background-color: derive(master-color, -60%);
+    -fx-text-fill: lightgrey;
+}
+
+.darkList .list-cell:focused {
+    -fx-text-fill: white;
+}
+
+.table-view {
+    -fx-border-width: 0;
+    -fx-border-color: red;
+}
+
+.text-area, .text-field {
+    -fx-background-radius: 4;
+    -fx-border-radius: 4;
+}
+
+.text-area {
+    -fx-padding: 2;
+}
+
+.text-field {
+    -fx-padding: 3 6 3 6;
+}
+

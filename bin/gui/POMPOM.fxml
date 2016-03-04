@@ -9,11 +9,11 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" stylesheets="@application.css" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Pane prefHeight="600.0" prefWidth="200.0" styleClass="split-pane">
+      <Pane prefHeight="600.0" prefWidth="200.0" styleClass="menupane">
          <children>
             <Pane layoutY="60.0" prefHeight="200.0" prefWidth="200.0" styleClass="menupane">
                <children>
-                  <Button layoutY="21.0" mnemonicParsing="false" prefHeight="36.0" prefWidth="200.0" styleClass="button-dashboad" />
+                  <Button layoutX="14.0" layoutY="29.0" mnemonicParsing="false" styleClass="button-dashboad" text="Button" />
                </children>
             </Pane>
             <Label layoutX="14.0" layoutY="60.0" text="Main" textFill="WHITE" />
