@@ -114,7 +114,8 @@ public class Storage {
 	}
 	
 	
-	private UserTaskList deserializeJsonString(String jsonString){		
+	private UserTaskList deserializeJsonString(String jsonString){	
+		
 		if(jsonString.equals("")) return null;
 	    final UserTaskList userTaskList = gson.fromJson(jsonString, UserTaskList.class);
 		taskList = new ArrayList<Task>(Arrays.asList(userTaskList.getTaskArray()));
