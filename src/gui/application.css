@@ -4,13 +4,7 @@
 
 .button-dashboad{
 	-fx-background-color: #1f1f1f;
-	image:url('images/dashboard.png');
-}
-
-.button-dashboard:active {
-    -fx-graphic:url(images/dashboardClicked.png) no-repeat;
-	-fx-border-left:6px solid #ccc !important;
-	-fx-color:#000 !important;background-color:#e7ffff !important
+	-fx-graphic:url(images/dashboardClicked.png);
 }
 
 .container {
