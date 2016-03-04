@@ -28,13 +28,14 @@ public class Storage {
 	private static final String SETTINGS_FILE_NAME = "settings.properties";
 	private static final String SETTINGS_FILE_PATH = DEFAULT_FILE_DIRECTORY
 			+ "/" + SETTINGS_FILE_NAME;
-
+	
+	
 	private static SimpleDateFormat dateFormat = new SimpleDateFormat(
 			"EEE MMM d HH:mm:ss z yyyy");
 	private static File newDirectoryFile = new File(DEFAULT_FILE_DIRECTORY);
 	private static File storageFile = new File(DEFAULT_STORAGE_FILE_PATH);
-	// private static Logger logger = Logger.getLogger("Storage");
-
+	
+	
 	private String storedFilePath;
 	private String folderPath;
 	private UserTaskList userTaskList;
@@ -113,10 +114,12 @@ public class Storage {
 	    FileHandler.writeStringToFile(storageFile, json);
 	    
 	}
+	
+	
 	private UserTaskList deserializeJsonString(String jsonString){		
 		
 	    final UserTaskList userTaskList = gson.fromJson(jsonString, UserTaskList.class);
-		taskList = new ArrayList(Arrays.asList(userTaskList.getTaskArray()));
+		taskList = new ArrayList<Task>(Arrays.asList(userTaskList.getTaskArray()));
 		return userTaskList;
 		
 	}
