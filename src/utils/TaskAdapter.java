@@ -39,8 +39,8 @@ public class TaskAdapter extends TypeAdapter<UserTaskList> {
 						case "Priority":
 							task.setPriority(in.nextString());
 							break;
-						case "Decription":
-							task.setDecription(in.nextString());
+						case "Description":
+							task.setDescription(in.nextString());
 							break;
 						case "Label":
 							task.setLabel(in.nextString());
@@ -90,7 +90,7 @@ public class TaskAdapter extends TypeAdapter<UserTaskList> {
 			out.beginObject();
 			out.name("Title").value(task.getTitle());
 			out.name("Priority").value(task.getPriority());
-			out.name("Decription").value(task.getDecription());
+			out.name("Description").value(task.getDescription());
 			out.name("Label").value(task.getLabel());
 			out.name("Status").value(task.getStatus());
 			out.name("StartDate").value(task.getStartDate().toString());
