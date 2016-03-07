@@ -11,14 +11,14 @@ import javafx.scene.control.Button;
 
 
 public class Main extends Application {
-
-	@FXML
-	Button fuckyou;
-	
-	@FXML
-	protected void hello(ActionEvent event){
-		System.out.println("bitch");
-	}
+//
+//	@FXML
+//	Button fuckyou;
+//	
+//	@FXML
+//	protected void hello(ActionEvent event){
+//		System.out.println("bitch");
+//	}
 	
     public static void main(String[] args) {
         Application.launch(Main.class, args);
