@@ -88,6 +88,7 @@ public class Task implements Comparable<Task>{
 	}
 	//Debugging Method
 	public void printInfo(){
+		System.out.println("");
 		System.out.println("Title: " + getTitle());
 		System.out.println("Priority: " + getPriority());
 		System.out.println("Description: " + getDecription());
@@ -95,6 +96,7 @@ public class Task implements Comparable<Task>{
 		System.out.println("Label: " + getLabel());
 		System.out.println("StartDate: " + getStartDate());
 		System.out.println("EndDate: " + getEndDate());
+		System.out.println("");
 	}
 	@Override
 	public int compareTo(Task o) {
