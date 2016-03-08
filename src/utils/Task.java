@@ -5,6 +5,7 @@ import java.text.DateFormat;
 import java.util.Date;
 
 public class Task implements Comparable<Task>{
+	private int id;
 	private String title;
 	private String priority;
 	private String description;
@@ -15,9 +16,10 @@ public class Task implements Comparable<Task>{
 	
 	
 
-	public Task(String title, String priority, String description,
+	public Task(int id, String title, String priority, String description,
 			String status, String label, Date startDate, Date endDate) {
 		super();
+		this.id = id;
 		this.title = title;
 		this.priority = priority;
 		this.description = description;
@@ -37,8 +39,16 @@ public class Task implements Comparable<Task>{
 //		this.endDate = endDate;
 //	}
 
+
 	public Task() {
 		
+	}
+	
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
 	}
 	public String getTitle() {
 		return title;
@@ -88,6 +98,7 @@ public class Task implements Comparable<Task>{
 	}
 	//Debugging Method
 	public void printInfo(){
+		System.out.println("Task ID: " + getId());
 		System.out.println("Title: " + getTitle());
 		System.out.println("Priority: " + getPriority());
 		System.out.println("Description: " + getDescription());

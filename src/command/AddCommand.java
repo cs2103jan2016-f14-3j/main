@@ -14,6 +14,7 @@ public class AddCommand extends Command {
 	public AddCommand(String title, String description, String priority, 
 			String status, String label, Date startDate, Date endDate) {
 		task = new Task();
+		task.setId(getTaskList().size()+1);
 		task.setTitle(title);
 		task.setDescription(description);
 		task.setStatus(status);
