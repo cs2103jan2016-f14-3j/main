@@ -39,8 +39,8 @@ public class TaskAdapter extends TypeAdapter<UserTaskList> {
 						case "Priority":
 							task.setPriority(in.nextString());
 							break;
-						case "Decription":
-							task.setDecription(in.nextString());
+						case "Description":
+							task.setDescription(in.nextString());
 							break;
 						case "Label":
 							task.setLabel(in.nextString());
@@ -86,6 +86,7 @@ public class TaskAdapter extends TypeAdapter<UserTaskList> {
 
 		out.name("Username").value(userTaskList.getUserName());
 		out.name("TaskList").beginArray();
+<<<<<<< HEAD
 		if (userTaskList.getTaskArrayList() != null) {
 			ArrayList<Task> taskList = userTaskList.getTaskArrayList();
 
@@ -101,6 +102,18 @@ public class TaskAdapter extends TypeAdapter<UserTaskList> {
 				out.endObject();
 			}
 			
+=======
+		for (final Task task : taskList) {
+			out.beginObject();
+			out.name("Title").value(task.getTitle());
+			out.name("Priority").value(task.getPriority());
+			out.name("Description").value(task.getDescription());
+			out.name("Label").value(task.getLabel());
+			out.name("Status").value(task.getStatus());
+			out.name("StartDate").value(task.getStartDate().toString());
+			out.name("EndDate").value(task.getEndDate().toString());
+			out.endObject();
+>>>>>>> origin/command
 		}
 		out.endArray();
 		out.endObject();
