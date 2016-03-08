@@ -33,6 +33,9 @@ public class TaskAdapter extends TypeAdapter<UserTaskList> {
 					final Task task = new Task();
 					while (in.hasNext()) {
 						switch (in.nextName()) {
+						case "Id":
+							task.setId(in.nextInt());
+							break;
 						case "Title":
 							task.setTitle(in.nextString());
 							break;
@@ -86,25 +89,13 @@ public class TaskAdapter extends TypeAdapter<UserTaskList> {
 
 		out.name("Username").value(userTaskList.getUserName());
 		out.name("TaskList").beginArray();
-<<<<<<< HEAD
-		if (userTaskList.getTaskArrayList() != null) {
-			ArrayList<Task> taskList = userTaskList.getTaskArrayList();
 
-			for (final Task task : taskList) {
-				out.beginObject();
-				out.name("Title").value(task.getTitle());
-				out.name("Priority").value(task.getPriority());
-				out.name("Decription").value(task.getDecription());
-				out.name("Label").value(task.getLabel());
-				out.name("Status").value(task.getStatus());
-				out.name("StartDate").value(task.getStartDate().toString());
-				out.name("EndDate").value(task.getEndDate().toString());
-				out.endObject();
-			}
-			
-=======
+		if (userTaskList.getTaskArrayList() != null) {
+			ArrayList<Task> taskList = userTaskList.getTaskArrayList();			
+
 		for (final Task task : taskList) {
 			out.beginObject();
+			out.name("Id").value(task.getId());
 			out.name("Title").value(task.getTitle());
 			out.name("Priority").value(task.getPriority());
 			out.name("Description").value(task.getDescription());
@@ -113,10 +104,11 @@ public class TaskAdapter extends TypeAdapter<UserTaskList> {
 			out.name("StartDate").value(task.getStartDate().toString());
 			out.name("EndDate").value(task.getEndDate().toString());
 			out.endObject();
->>>>>>> origin/command
+
 		}
 		out.endArray();
 		out.endObject();
 
 	}
+}
 }

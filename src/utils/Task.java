@@ -98,11 +98,11 @@ public class Task implements Comparable<Task>{
 	}
 	//Debugging Method
 	public void printInfo(){
-<<<<<<< HEAD
+
 		System.out.println("");
-=======
+
 		System.out.println("Task ID: " + getId());
->>>>>>> origin/command
+
 		System.out.println("Title: " + getTitle());
 		System.out.println("Priority: " + getPriority());
 		System.out.println("Description: " + getDescription());

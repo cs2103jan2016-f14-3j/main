@@ -13,8 +13,8 @@ public class TestStorage {
 		Storage storageTest = new Storage();
 		
 		storageTest.getUserTaskList().printInfo();
-		Task t1 = new Task("Title 1", "High", "Tryin to test","Done","red label", new Date(), new Date());
-		Task t2 = new Task("Title 2111", "Medium", "Tryin to test 2","Done","red label",  new Date(), new Date());
+		Task t1 = new Task(0, "Title 1", "High", "Tryin to test","Done","red label", new Date(), new Date());
+		Task t2 = new Task(0, "Title 2111", "Medium", "Tryin to test 2","Done","red label",  new Date(), new Date());
 		
 		UserTaskList userTaskList = new UserTaskList();
 		userTaskList.setUserName("Wei Lip");

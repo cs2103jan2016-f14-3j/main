@@ -19,6 +19,7 @@ public class POMPOM {
 	}
 	
 	public static Storage getStorage() {
+		
 		return storage;
 	}
 	
