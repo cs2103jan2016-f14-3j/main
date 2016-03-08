@@ -1,5 +1,7 @@
 package parser;
 
+import command.Command;
+
 public class Parser{
 	
 	/** List of Command types */
@@ -34,11 +36,15 @@ public class Parser{
 		String[] parsedCommandArray = splitCommand(userCommand);
 		String commandType = parsedCommandArray[COMMAND_TYPE_INDEX];
 		String commandArgument = parsedCommandArray[COMMAND_ARGUMENT_INDEX];
+
 		
 		switch (commandType){
 			case CMD_ADD:
-				return new AddParser(commandArgument);
+				AddParser addArgumentParser = new AddParser(commandArgument);
+				return addArgumentParser.executeCommand();
 			case CMD_DELETE:
+				DeleteParser deleteArgumentParser = new DeleteParser(commandArgument);
+				return deleteArgumentParser.executeCommand();
 				return new DeleteParser(commandArgument);
 			case CMD_EDIT:
 				return new EditParser(commandArgument);

@@ -37,7 +37,6 @@ public class AddParser extends ArgsParser{
 		itemLabel = getLabel();
 		itemStartDate = getStartDate();
 		itemEndDate = getEndDate();
-		executeCommand();
 	}
 	
 	public Command executeCommand(){
