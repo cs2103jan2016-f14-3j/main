@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="566.0" prefWidth="800.0" stylesheets="@application.css" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.Main">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="566.0" prefWidth="800.0" stylesheets="@application.css" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.Main">
    <children>
       <Pane prefHeight="566.0" prefWidth="200.0" styleClass="container">
          <children>
@@ -65,7 +65,7 @@
                         <TableColumn prefWidth="93.0" text="Status" />
                     </columns>
                   </TableView>
-                  <TextField layoutX="57.0" layoutY="442.0" prefHeight="22.0" prefWidth="501.0" promptText="Enter Command:">
+                  <TextField layoutX="14.0" layoutY="442.0" prefHeight="22.0" prefWidth="501.0" promptText="Command:">
                      <font>
                         <Font name="Tw Cen MT" size="14.0" />
                      </font>
@@ -78,6 +78,7 @@
                         <Button id="button1" fx:id="deleteIssue" text="Delete" />
                      </children>
                   </HBox>
+                  <Button layoutX="526.0" layoutY="441.0" mnemonicParsing="false" text="Enter" />
                </children>
             </AnchorPane>
          </children>
