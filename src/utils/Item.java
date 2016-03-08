@@ -4,7 +4,7 @@ package utils;
 import java.text.DateFormat;
 import java.util.Date;
 
-public class Task implements Comparable<Task>{
+public class Item implements Comparable<Item>{
 	private String title;
 	private String priority;
 	private String decription;
@@ -15,7 +15,7 @@ public class Task implements Comparable<Task>{
 	
 	
 
-	public Task(String title, String priority, String decription,
+	public Item(String title, String priority, String decription,
 			String status, String label, Date startDate, Date endDate) {
 		super();
 		this.title = title;
@@ -37,7 +37,7 @@ public class Task implements Comparable<Task>{
 //		this.endDate = endDate;
 //	}
 
-	public Task() {
+	public Item() {
 		
 	}
 	public String getTitle() {
@@ -99,7 +99,7 @@ public class Task implements Comparable<Task>{
 		System.out.println("");
 	}
 	@Override
-	public int compareTo(Task o) {
+	public int compareTo(Item o) {
 		// TODO Auto-generated method stub
 		return 0;
 	}

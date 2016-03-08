@@ -27,10 +27,10 @@ public class TaskAdapter extends TypeAdapter<UserTaskList> {
 				break;
 			case "TaskList":
 				in.beginArray();
-				ArrayList<Task> taskArrayList = new ArrayList<Task>();
+				ArrayList<Item> taskArrayList = new ArrayList<Item>();
 				while (in.hasNext()) {
 					in.beginObject();
-					final Task task = new Task();
+					final Item task = new Item();
 					while (in.hasNext()) {
 						switch (in.nextName()) {
 						case "Title":
@@ -69,7 +69,7 @@ public class TaskAdapter extends TypeAdapter<UserTaskList> {
 					in.endObject();
 				}
 				userTaskList.setTaskArray(taskArrayList
-						.toArray(new Task[taskArrayList.size()]));
+						.toArray(new Item[taskArrayList.size()]));
 				in.endArray();
 				break;
 			}
@@ -87,9 +87,9 @@ public class TaskAdapter extends TypeAdapter<UserTaskList> {
 		out.name("Username").value(userTaskList.getUserName());
 		out.name("TaskList").beginArray();
 		if (userTaskList.getTaskArrayList() != null) {
-			ArrayList<Task> taskList = userTaskList.getTaskArrayList();
+			ArrayList<Item> taskList = userTaskList.getTaskArrayList();
 
-			for (final Task task : taskList) {
+			for (final Item task : taskList) {
 				out.beginObject();
 				out.name("Title").value(task.getTitle());
 				out.name("Priority").value(task.getPriority());

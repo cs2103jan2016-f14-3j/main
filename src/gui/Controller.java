@@ -4,8 +4,10 @@ import java.net.URL;
 import java.util.Date;
 import java.util.ResourceBundle;
 
+import issuetrackinglite.model.ObservableIssue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -14,7 +16,8 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
-import utils.Task;
+import utils.Item;
+
 
 public class Controller implements Initializable{
 
@@ -29,25 +32,25 @@ public class Controller implements Initializable{
     @FXML
     Button enterCommand;
     @FXML
-    TableView<Task> table;
+    TableView<Item> table;
     @FXML
-    TableColumn<Task, String> taskID;
+    TableColumn<Item, String> taskID;
     @FXML
-    TableColumn<Task, String> taskName;
+    TableColumn<Item, String> taskName;
     @FXML
-    TableColumn<Task, Date> taskDateTime;
+    TableColumn<Item, Date> taskDateTime;
     @FXML
-    TableColumn<Task, String> taskLabel;
+    TableColumn<Item, String> taskLabel;
     @FXML
-    TableColumn<Task, String> taskPriority;
+    TableColumn<Item, String> taskPriority;
     @FXML
-    TableColumn<Task, String> taskStatus;
+    TableColumn<Item, String> taskStatus;
     @FXML
     ListView<String> list;
     @FXML
     TextField inputCommand;
     ObservableList<String> taskView = FXCollections.observableArrayList();
-    final ObservableList<Task> tableContent = FXCollections.observableArrayList();
+    final ObservableList<Item> tableContent = FXCollections.observableArrayList(new Item("Jacob", null, "wfewfw", "wfwefwfW","fwfwfe",null,null));
 
 
 	@Override
@@ -90,15 +93,16 @@ public class Controller implements Initializable{
     }
 	
     private void configureTable() {
-    	taskName.setCellValueFactory(new PropertyValueFactory<Task, String>("taskName"));
-        taskDateTime.setCellValueFactory(new PropertyValueFactory<Task, Date>("taskDate"));
-        taskLabel.setCellValueFactory(new PropertyValueFactory<Task, String>("taskLabel"));
-        taskPriority.setCellValueFactory(new PropertyValueFactory<Task, String>("taskPriority"));
-        taskStatus.setCellValueFactory(new PropertyValueFactory<Task, String>("taskStatus"));
+    	taskName.setCellValueFactory(new PropertyValueFactory<Item, String>("title"));
+        taskDateTime.setCellValueFactory(new PropertyValueFactory<Item, Date>("startDate"));
+        taskLabel.setCellValueFactory(new PropertyValueFactory<Item, String>("label"));
+        taskPriority.setCellValueFactory(new PropertyValueFactory<Item, String>("priority"));
+        taskStatus.setCellValueFactory(new PropertyValueFactory<Item, String>("status"));
         
-        
-        
+        table.setItems(tableContent);        
     }
     
-    
+    public void enterCommandInput(ActionEvent event) {
+        
+    }    
     }

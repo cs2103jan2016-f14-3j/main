@@ -14,7 +14,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import utils.FileHandler;
-import utils.Task;
+import utils.Item;
 import utils.TaskAdapter;
 import utils.UserTaskList;
 
@@ -39,9 +39,9 @@ public class Storage {
 	private String storedFilePath;
 	private String folderPath;
 	private UserTaskList userTaskList;
-	private ArrayList<Task> taskList;
-	private ArrayList<Task> doneTaskList;
-	private ArrayList<Task> undoneTaskList;
+	private ArrayList<Item> taskList;
+	private ArrayList<Item> doneTaskList;
+	private ArrayList<Item> undoneTaskList;
 	
 	final GsonBuilder gsonBuilder = new GsonBuilder();
     final Gson gson;
@@ -69,27 +69,27 @@ public class Storage {
 		this.userTaskList = userTaskList;
 	}
 
-	public ArrayList<Task> getTaskList() {
+	public ArrayList<Item> getTaskList() {
 		return taskList;
 	}
 
-	public void setTaskList(ArrayList<Task> taskList) {
+	public void setTaskList(ArrayList<Item> taskList) {
 		this.taskList = taskList;
 	}
 
-	public ArrayList<Task> getDoneTaskList() {
+	public ArrayList<Item> getDoneTaskList() {
 		return doneTaskList;
 	}
 
-	public void setDoneTaskList(ArrayList<Task> doneTaskList) {
+	public void setDoneTaskList(ArrayList<Item> doneTaskList) {
 		this.doneTaskList = doneTaskList;
 	}
 
-	public ArrayList<Task> getUndoneTaskList() {
+	public ArrayList<Item> getUndoneTaskList() {
 		return undoneTaskList;
 	}
 
-	public void setUndoneTaskList(ArrayList<Task> undoneTaskList) {
+	public void setUndoneTaskList(ArrayList<Item> undoneTaskList) {
 		this.undoneTaskList = undoneTaskList;
 	}
 
@@ -118,7 +118,7 @@ public class Storage {
 		
 		if(jsonString.equals("")) return null;
 	    final UserTaskList userTaskList = gson.fromJson(jsonString, UserTaskList.class);
-		taskList = new ArrayList<Task>(Arrays.asList(userTaskList.getTaskArray()));
+		taskList = new ArrayList<Item>(Arrays.asList(userTaskList.getTaskArray()));
 		return userTaskList;
 		
 	}
