@@ -5,9 +5,10 @@ import java.text.DateFormat;
 import java.util.Date;
 
 public class Task implements Comparable<Task>{
+	private int id;
 	private String title;
 	private String priority;
-	private String decription;
+	private String description;
 	private String status;
 	private String label;
 	private Date startDate;
@@ -15,30 +16,39 @@ public class Task implements Comparable<Task>{
 	
 	
 
-	public Task(String title, String priority, String decription,
+	public Task(int id, String title, String priority, String description,
 			String status, String label, Date startDate, Date endDate) {
 		super();
+		this.id = id;
 		this.title = title;
 		this.priority = priority;
-		this.decription = decription;
+		this.description = description;
 		this.status = status;
 		this.label = label;
 		this.startDate = startDate;
 		this.endDate = endDate;
 	}	
 	
-//	public Task(String title, String priority, String decription,
+//	public Task(String title, String priority, String description,
 //			Date startDate, Date endDate) {
 //		super();
 //		this.title = title;
 //		this.priority = priority;
-//		this.decription = decription;
+//		this.description = description;
 //		this.startDate = startDate;
 //		this.endDate = endDate;
 //	}
 
+
 	public Task() {
 		
+	}
+	
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
 	}
 	public String getTitle() {
 		return title;
@@ -53,11 +63,11 @@ public class Task implements Comparable<Task>{
 	public void setPriority(String priority) {
 		this.priority = priority;
 	}
-	public String getDecription() {
-		return decription;
+	public String getDescription() {
+		return description;
 	}
-	public void setDecription(String decription) {
-		this.decription = decription;
+	public void setDescription(String description) {
+		this.description = description;
 	}
 	public String getStatus() {
 		return status;
@@ -88,13 +98,19 @@ public class Task implements Comparable<Task>{
 	}
 	//Debugging Method
 	public void printInfo(){
+
+		System.out.println("");
+
+		System.out.println("Task ID: " + getId());
+
 		System.out.println("Title: " + getTitle());
 		System.out.println("Priority: " + getPriority());
-		System.out.println("Description: " + getDecription());
+		System.out.println("Description: " + getDescription());
 		System.out.println("Status: " + getStatus());
 		System.out.println("Label: " + getLabel());
 		System.out.println("StartDate: " + getStartDate());
 		System.out.println("EndDate: " + getEndDate());
+		System.out.println("");
 	}
 	@Override
 	public int compareTo(Task o) {

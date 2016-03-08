@@ -35,7 +35,7 @@ public class UserTaskList {
 	public ArrayList<Task> getTaskArrayList() {
 		if (taskArray == null)
 			return null;
-		return new ArrayList<>(Arrays.asList(taskArray));
+		return new ArrayList<Task>(Arrays.asList(taskArray));
 	}
 
 	public void printInfo() {
