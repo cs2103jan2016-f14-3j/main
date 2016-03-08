@@ -45,17 +45,19 @@ public class Parser{
 			case CMD_DELETE:
 				DeleteParser deleteArgumentParser = new DeleteParser(commandArgument);
 				return deleteArgumentParser.executeCommand();
-				return new DeleteParser(commandArgument);
 			case CMD_EDIT:
-				return new EditParser(commandArgument);
+				EditParser EditArgumentParser = new EditParser(commandArgument);
+				return EditArgumentParser.executeCommand();
 			case CMD_SEARCH:
-				return new SearchParser(commandArgument);
+				//return new SearchParser(commandArgument);
 			case CMD_SHOW:
-				return new ShowParser(commandArgument);
+				//return new ShowParser(commandArgument);
 			case CMD_EXIT:
-				return new ExitParser();
+				//return new ExitParser();
 	}
-		return InvalidParser(userCommand);
+		InvalidParser InvalidArgumentParser = new InvalidParser(userCommand);
+		//return InvalidArgumentParser.executeCommand();
+		return null;
 	}
 	
 	public String[] splitCommand(String userCommand){
