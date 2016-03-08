@@ -3,7 +3,7 @@ package command;
 import java.util.ArrayList;
 
 import main.POMPOM;
-import utils.Task;
+import utils.Item;
 
 public class DelCommand extends Command {
 	
@@ -20,7 +20,7 @@ public class DelCommand extends Command {
 	
 	
 	public void removeTask() {
-		ArrayList<Task> taskList = getTaskList();
+		ArrayList<Item> taskList = getTaskList();
 		taskList.remove(taskID);
 		POMPOM.getStorage().setTaskList(taskList);
 	}

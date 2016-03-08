@@ -14,8 +14,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import utils.FileHandler;
-import utils.Task;
-import utils.TaskAdapter;
+import utils.Item;
+import utils.ItemAdapter;
 import utils.UserTaskList;
 
 public class Storage {
@@ -39,7 +39,7 @@ public class Storage {
 	private String storedFilePath;
 	private String folderPath;
 	private UserTaskList userTaskList;
-	private ArrayList<Task> taskList;
+	private ArrayList<Item> taskList;
 
 	
 	final GsonBuilder gsonBuilder = new GsonBuilder();
@@ -49,7 +49,7 @@ public class Storage {
 
 	public Storage() throws IOException {
 		//Initialization of gson class with Adapter
-	    gsonBuilder.registerTypeAdapter(UserTaskList.class, new TaskAdapter());
+	    gsonBuilder.registerTypeAdapter(UserTaskList.class, new ItemAdapter());
 	    gsonBuilder.setPrettyPrinting();
 	    gson = gsonBuilder.create();	    
 	    
@@ -68,11 +68,11 @@ public class Storage {
 		this.userTaskList = userTaskList;
 	}
 
-	public ArrayList<Task> getTaskList() {
+	public ArrayList<Item> getTaskList() {
 		return taskList;
 	}
 
-	public void setTaskList(ArrayList<Task> taskList) {
+	public void setTaskList(ArrayList<Item> taskList) {
 		this.taskList = taskList;
 	}
 
@@ -101,7 +101,7 @@ public class Storage {
 		
 		if(jsonString.equals("")) return null;
 	    final UserTaskList userTaskList = gson.fromJson(jsonString, UserTaskList.class);
-		taskList = new ArrayList<Task>(Arrays.asList(userTaskList.getTaskArray()));
+		taskList = new ArrayList<Item>(Arrays.asList(userTaskList.getTaskArray()));
 		return userTaskList;
 		
 	}

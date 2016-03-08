@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import main.POMPOM;
-import utils.Task;
+import utils.Item;
 
 public class EditCommand extends Command {
 	
@@ -23,7 +23,7 @@ public class EditCommand extends Command {
 	private String field;
 	private String newData;
 	private Date newDate;
-	private Task task;
+	private Item task;
 	private boolean canEdit;
 	
 	public EditCommand(int taskID, String field, String newData) {
@@ -39,7 +39,7 @@ public class EditCommand extends Command {
 	}
 	
 	public void updateChanges() {
-		ArrayList<Task> taskList = getTaskList();
+		ArrayList<Item> taskList = getTaskList();
 		
 		switch (field.toLowerCase()) {
 		case FIELD_TITLE:

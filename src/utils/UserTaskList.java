@@ -5,9 +5,9 @@ import java.util.Arrays;
 
 public class UserTaskList {
 	private String userName;
-	private Task[] taskArray;
+	private Item[] taskArray;
 
-	public UserTaskList(String userName, Task[] taskArray) {
+	public UserTaskList(String userName, Item[] taskArray) {
 		this.userName = userName;
 		this.taskArray = taskArray;
 	}
@@ -24,18 +24,18 @@ public class UserTaskList {
 		this.userName = userName;
 	}
 
-	public Task[] getTaskArray() {
+	public Item[] getTaskArray() {
 		return taskArray;
 	}
 
-	public void setTaskArray(Task[] taskArray) {
+	public void setTaskArray(Item[] taskArray) {
 		this.taskArray = taskArray;
 	}
 
-	public ArrayList<Task> getTaskArrayList() {
+	public ArrayList<Item> getTaskArrayList() {
 		if (taskArray == null)
 			return null;
-		return new ArrayList<Task>(Arrays.asList(taskArray));
+		return new ArrayList<Item>(Arrays.asList(taskArray));
 	}
 
 	public void printInfo() {

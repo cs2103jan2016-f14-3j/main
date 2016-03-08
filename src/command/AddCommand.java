@@ -4,16 +4,16 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import main.POMPOM;
-import utils.Task;
+import utils.Item;
 
 public class AddCommand extends Command {
 	
 	private static final String MESSAGE_TASK_ADDED = "Task added";	
-	private Task task;
+	private Item task;
 	
 	public AddCommand(String title, String description, String priority, 
 			String status, String label, Date startDate, Date endDate) {
-		task = new Task();
+		task = new Item();
 		task.setId(getTaskList().size()+1);
 		task.setTitle(title);
 		task.setDescription(description);
@@ -24,7 +24,7 @@ public class AddCommand extends Command {
 	}
 	
 	public void storeTask() {
-		ArrayList<Task> taskList = getTaskList();
+		ArrayList<Item> taskList = getTaskList();
 		taskList.add(task);
 		POMPOM.getStorage().setTaskList(taskList);
 	}
