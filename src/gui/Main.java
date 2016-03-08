@@ -15,6 +15,7 @@ public class Main extends Application {
     
     @Override
     public void start(Stage stage) throws Exception {
+    	getClass();
     	Parent root = FXMLLoader.load(getClass().getResource("POMPOM.fxml"));
         stage.setTitle("POMPOM");
         stage.setScene(new Scene(root, 800, 556));
