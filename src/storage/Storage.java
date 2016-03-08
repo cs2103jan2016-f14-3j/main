@@ -40,11 +40,12 @@ public class Storage {
 	private String folderPath;
 	private UserTaskList userTaskList;
 	private ArrayList<Task> taskList;
-	private ArrayList<Task> doneTaskList;
-	private ArrayList<Task> undoneTaskList;
+
 	
 	final GsonBuilder gsonBuilder = new GsonBuilder();
     final Gson gson;
+    
+
 
 	public Storage() throws IOException {
 		//Initialization of gson class with Adapter
@@ -55,10 +56,8 @@ public class Storage {
 		createNewDirectoryFolder();
 		createNewStorageTxt();
 		String storageJsonString = FileHandler.getStringFromFile(DEFAULT_STORAGE_FILE_PATH,
-				StandardCharsets.UTF_8);
-		
-		userTaskList = deserializeJsonString(storageJsonString);
-		
+				StandardCharsets.UTF_8);		
+		userTaskList = deserializeJsonString(storageJsonString);		
 	}
 
 	public UserTaskList getUserTaskList() {
@@ -75,22 +74,6 @@ public class Storage {
 
 	public void setTaskList(ArrayList<Task> taskList) {
 		this.taskList = taskList;
-	}
-
-	public ArrayList<Task> getDoneTaskList() {
-		return doneTaskList;
-	}
-
-	public void setDoneTaskList(ArrayList<Task> doneTaskList) {
-		this.doneTaskList = doneTaskList;
-	}
-
-	public ArrayList<Task> getUndoneTaskList() {
-		return undoneTaskList;
-	}
-
-	public void setUndoneTaskList(ArrayList<Task> undoneTaskList) {
-		this.undoneTaskList = undoneTaskList;
 	}
 
 	private boolean createNewDirectoryFolder() {
