@@ -25,6 +25,7 @@ public class POMPOM {
 	public String execute(String input) {
 		Parser parser = new Parser();
 		Command command = parser.executeCommand(input);
+		System.out.println(command);
 		String returnMsg = command.execute();
 		return returnMsg;
 	}

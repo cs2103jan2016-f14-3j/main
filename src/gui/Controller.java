@@ -4,6 +4,7 @@ import java.net.URL;
 import java.util.Date;
 import java.util.ResourceBundle;
 
+import main.POMPOM;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -50,8 +51,14 @@ public class Controller implements Initializable{
     ListView<String> list;
     @FXML
     TextField inputCommand;
+    
+    
+    
+    
     ObservableList<String> taskView = FXCollections.observableArrayList();
-    final ObservableList<Item> tableContent = FXCollections.observableArrayList(new Item(0,"Jacob", null, "wfewfw", "wfwefwfW","fwfwfe",null,null));
+    ObservableList<Item> tableContent = FXCollections.observableArrayList(new Item(0,"Jacob", null, "wfewfw", "wfwefwfW","fwfwfe",null,null));
+    POMPOM pompom = new POMPOM();
+    
 
 
 	@Override
@@ -70,6 +77,8 @@ public class Controller implements Initializable{
         assert taskStatus != null : "fx:id=\"taskStatus\" was not injected: check your FXML file 'POMPOM.fxml'.";
         assert inputCommand != null : "fx:id=\"inputCommand\" was not injected: check your FXML file 'POMPOM.fxml'.";
         System.out.println(this.getClass().getSimpleName() + ".initialize");
+        
+        tableContent = FXCollections.observableArrayList(pompom.getStorage().getTaskList());
         configureButtons();
         configureTable();
         
@@ -106,12 +115,14 @@ public class Controller implements Initializable{
     public void enterCommandFired(ActionEvent event) {
         String input = inputCommand.getText();
         inputCommand.clear();
+        pompom.execute(input);
         inputCommand.setPromptText("Command:");
     }  
     
     public void enterCommandKey(KeyEvent event) {
         if (event.getCode().equals(KeyCode.ENTER)){
             String input = inputCommand.getText();
+            pompom.execute(input);
             inputCommand.clear();
             inputCommand.setPromptText("Command:");
     }
