@@ -1,6 +1,7 @@
 package gui;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.ResourceBundle;
 
@@ -54,13 +55,16 @@ public class Controller implements Initializable{
     TextField inputCommand;
     
     
-    
+    ArrayList<Item> temp;
+
     
     ObservableList<String> taskView = FXCollections.observableArrayList();
-    ObservableList<Item> tableContent = FXCollections.observableArrayList(new Item(0,"Jacob", null, "wfewfw", "wfwefwfW","fwfwfe",null,null));
+    static ObservableList<Item> tableContent;
     POMPOM pompom = new POMPOM();
     
-
+    public static ObservableList<Item> getTableContent() {
+		return tableContent;
+	}
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -104,13 +108,21 @@ public class Controller implements Initializable{
     }
 	
     private void configureTable() {
+    	table.setEditable(true);
     	taskName.setCellValueFactory(new PropertyValueFactory<Item, String>("title"));
         taskDateTime.setCellValueFactory(new PropertyValueFactory<Item, Date>("startDate"));
         taskLabel.setCellValueFactory(new PropertyValueFactory<Item, String>("label"));
         taskPriority.setCellValueFactory(new PropertyValueFactory<Item, String>("priority"));
         taskStatus.setCellValueFactory(new PropertyValueFactory<Item, String>("status"));
-        tableContent = FXCollections.observableArrayList(POMPOM.getStorage().getTaskList());
+        
+        
+        temp = POMPOM.getStorage().getTaskList();
+        
+        tableContent = FXCollections.observableArrayList(temp);    
+        
         table.setItems(tableContent);        
+        
+       
     }
     public void onSaveClicked(ActionEvent event){
 //    	new UserTaskList();
@@ -121,6 +133,7 @@ public class Controller implements Initializable{
         String input = inputCommand.getText();
         inputCommand.clear();
         pompom.execute(input);
+        
         configureTable();
         
         inputCommand.setPromptText("Command:");
@@ -128,12 +141,16 @@ public class Controller implements Initializable{
     
     public void enterCommandKey(KeyEvent event) {
         if (event.getCode().equals(KeyCode.ENTER)){
+        	
             String input = inputCommand.getText();
             pompom.execute(input);
+            
+           // System.out.println(POMPOM.getStorage().getTaskList().get(0).getStatus());
             configureTable();
             
             inputCommand.clear();
             inputCommand.setPromptText("Command:");
+            
     }
         
     }  

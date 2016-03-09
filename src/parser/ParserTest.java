@@ -15,8 +15,10 @@ public class ParserTest{
 
 	@Test
 	public void testAddParser() {
+		//edit 1 status asd
+		//add rewrq vss afd rae vavd 01-01-1999/00:00 01/02/1999/00:00
 		//add lol lol lol lol lol 01-01-1999/00:00 01/02/1999/00:00
-		//edit 1 Label "asd"
+		//edit 1 title asd
 		//delete 1
 		String userCommand = "lol lol lol lol lol 01-01-1999/00:00 01/02/1999/00:00";
 		Date parsedStartDate =null;

@@ -4,6 +4,9 @@ package utils;
 import java.text.DateFormat;
 import java.util.Date;
 
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.adapter.JavaBeanStringProperty;
+
 public class Item implements Comparable<Item>{
 	private int id;
 	private String title;
@@ -42,7 +45,7 @@ public class Item implements Comparable<Item>{
 
 	public Item() {
 		
-	}
+	}	
 	
 	public int getId() {
 		return id;
