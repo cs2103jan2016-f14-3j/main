@@ -121,6 +121,7 @@ public class Controller implements Initializable{
         tableContent = FXCollections.observableArrayList(temp);    
         
         table.setItems(tableContent);        
+        table.refresh();
         
        
     }

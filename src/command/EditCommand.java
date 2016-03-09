@@ -45,7 +45,7 @@ public class EditCommand extends Command {
 		switch (field.toLowerCase()) {
 		case FIELD_TITLE:
 			task.setTitle(newData);
-			POMPOM.getStorage().getTaskList().add(new Item());
+//			POMPOM.getStorage().getTaskList().add(new Item());
 			
 			break;
 		case FIELD_DESCRIPTION:
@@ -56,7 +56,7 @@ public class EditCommand extends Command {
 			break;
 		case FIELD_STATUS:
 			task.setStatus(newData);
-			POMPOM.getStorage().getTaskList().add(new Item());
+//			POMPOM.getStorage().getTaskList().add(new Item());
 			break;
 		case FIELD_LABEL:
 			task.setLabel(newData);

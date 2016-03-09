@@ -27,11 +27,13 @@ public class ParserTest{
 		SimpleDateFormat dateFormatter = new SimpleDateFormat("dd-MM-yyyy/HH:mm");
 		String startDate = "01-01-1999/00:00";
 		String endDate = "01-02-1999/00:00";
-		try{
+		try{			
 			parsedStartDate = dateFormatter.parse(startDate);
 		    parsedEndDate = dateFormatter.parse(endDate);
 		} catch (ParseException e){
+			
 			System.out.println("err!");
+			
 		}
 	
 		AddCommand ac = new AddCommand("lol","lol","lol","lol","lol",parsedStartDate,parsedEndDate);

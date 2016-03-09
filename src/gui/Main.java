@@ -20,5 +20,7 @@ public class Main extends Application {
         stage.setTitle("POMPOM");
         stage.setScene(new Scene(root, 800, 556));
         stage.show();
+        
     }
+    
 }
