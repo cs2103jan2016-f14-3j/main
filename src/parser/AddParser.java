@@ -29,7 +29,7 @@ public class AddParser extends ArgsParser{
 	
 	public AddParser(String userCommand){
 		super(userCommand);
-		SimpleDateFormat dateFormatter = new SimpleDateFormat("dd MM yyyy HH:mm");
+		SimpleDateFormat dateFormatter = new SimpleDateFormat("dd-MM-yyyy/HH:mm");
 		itemTitle = getTitle();
 		itemDescription = getDescription();
 		itemPriority = getPriority();

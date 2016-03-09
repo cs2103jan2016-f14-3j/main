@@ -1,47 +1,42 @@
 package parser;
 
+import command.AddCommand;
 import static org.junit.Assert.*;
+import java.util.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import org.junit.Test;
-import parser.Parser.COMMAND_TYPE;
 
-public class ParserTest {
+public class ParserTest{
 
 	Parser parser = new Parser();
 	
 	@Test
-	public void testExecuteCommandEmptyCommand() {
-		String result = parser.executeCommand("");
-		assertEquals(result,"invalid command format : ");
+	public void testAddParser() {
+		String userCommand = "lol lol lol lol lol 01-01-1999/00:00 01/02/1999/00:00";
+		Date parsedStartDate =null;
+		Date parsedEndDate = null;
+		AddParser ap = new AddParser(userCommand);
+		SimpleDateFormat dateFormatter = new SimpleDateFormat("dd-MM-yyyy/HH:mm");
+		String startDate = "01-01-1999/00:00";
+		String endDate = "01-02-1999/00:00";
+		try{
+			parsedStartDate = dateFormatter.parse(startDate);
+		    parsedEndDate = dateFormatter.parse(endDate);
+		} catch (ParseException e){
+			System.out.println("err!");
+		}
+	
+		AddCommand ac = new AddCommand("lol","lol","lol","lol","lol",parsedStartDate,parsedEndDate);
+		assertEquals(ap.executeCommand(), ac);
 	}
 	
-	@Test
-	public void testDetermineCommandType(){
-		COMMAND_TYPE actual = parser.determineCommandType("add");
-		assertEquals(actual,COMMAND_TYPE.ADD_TASK);
+	//@Test
+	public void testAddCommand(){
+		String userCommand = "lol lol lol lol lol 01 01 1999 01 02 1999";
+		AddCommand ac1 = (AddCommand)parser.executeCommand(userCommand);
+		assertEquals(ac1,"lol");
 	}
 	
-	@Test
-	public void testGetCommandType(){
-		String actual = parser.getCommandType("add 1");
-		assertEquals(actual, "add");
-	}
-	
-	@Test
-	public void testGetArguments(){
-		String actual = parser.getArguments("add 1");
-		assertEquals(actual, "1");
-	}
-	
-	@Test
-	public void testExecuteCommandEmptyArgument(){
-		String actual = parser.executeCommand("add");
-		assertEquals(actual, "Arguments needed!");
-	}
-	
-	@Test
-	public void testExecuteCommand(){
-		String actual = parser.executeCommand("add watch deadpool");
-		assertEquals(actual,"Added 'watch deadpool' to task list!");
-	}
 
 }
