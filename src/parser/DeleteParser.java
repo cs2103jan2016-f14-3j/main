@@ -26,8 +26,8 @@ public class DeleteParser extends ArgsParser{
 	}
 	
 	public Command executeCommand(){
-		int itemIDInt = Integer.parseInt(itemID);
-		return new DelCommand(itemIDInt); 
+		return new DelCommand(Integer.parseInt(itemID)); 
+		
 	}
 	
 	public String getItemID(){

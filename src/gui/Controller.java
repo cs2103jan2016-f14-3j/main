@@ -19,6 +19,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import utils.Item;
+import utils.UserTaskList;
 
 
 public class Controller implements Initializable{
@@ -78,7 +79,7 @@ public class Controller implements Initializable{
         assert inputCommand != null : "fx:id=\"inputCommand\" was not injected: check your FXML file 'POMPOM.fxml'.";
         System.out.println(this.getClass().getSimpleName() + ".initialize");
         
-        tableContent = FXCollections.observableArrayList(pompom.getStorage().getTaskList());
+        
         configureButtons();
         configureTable();
         
@@ -108,14 +109,20 @@ public class Controller implements Initializable{
         taskLabel.setCellValueFactory(new PropertyValueFactory<Item, String>("label"));
         taskPriority.setCellValueFactory(new PropertyValueFactory<Item, String>("priority"));
         taskStatus.setCellValueFactory(new PropertyValueFactory<Item, String>("status"));
-        
+        tableContent = FXCollections.observableArrayList(POMPOM.getStorage().getTaskList());
         table.setItems(tableContent);        
     }
-    
+    public void onSaveClicked(ActionEvent event){
+//    	new UserTaskList();
+//    	
+    	
+    }
     public void enterCommandFired(ActionEvent event) {
         String input = inputCommand.getText();
         inputCommand.clear();
         pompom.execute(input);
+        configureTable();
+        
         inputCommand.setPromptText("Command:");
     }  
     
@@ -123,6 +130,8 @@ public class Controller implements Initializable{
         if (event.getCode().equals(KeyCode.ENTER)){
             String input = inputCommand.getText();
             pompom.execute(input);
+            configureTable();
+            
             inputCommand.clear();
             inputCommand.setPromptText("Command:");
     }

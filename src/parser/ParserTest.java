@@ -11,8 +11,13 @@ public class ParserTest{
 
 	Parser parser = new Parser();
 	
+	//@Test
+
 	@Test
 	public void testAddParser() {
+		//add lol lol lol lol lol 01-01-1999/00:00 01/02/1999/00:00
+		//edit 1 Label "asd"
+		//delete 1
 		String userCommand = "lol lol lol lol lol 01-01-1999/00:00 01/02/1999/00:00";
 		Date parsedStartDate =null;
 	 	Date parsedEndDate = null;
@@ -31,9 +36,9 @@ public class ParserTest{
 		assertEquals(ap.executeCommand(), ac);
 	}
 	
-	//@Test
+	@Test
 	public void testAddCommand(){
-		String userCommand = "lol lol lol lol lol 01 01 1999 01 02 1999";
+		String userCommand = "add lol lol lol lol lol 01-01-1999/00:00 01-02-1999/00:00";
 		AddCommand ac1 = (AddCommand)parser.executeCommand(userCommand);
 		assertEquals(ac1,"lol");
 	}

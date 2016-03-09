@@ -55,9 +55,8 @@ public class Parser{
 			case CMD_EXIT:
 				//return new ExitParser();
 	}
-
+		//InvalidParser InvalidParser = new InvalidParser(userCommand);
 		InvalidParser InvalidArgumentParser = new InvalidParser(userCommand);
-
 		//return InvalidArgumentParser.executeCommand();
 		return null;
 	}

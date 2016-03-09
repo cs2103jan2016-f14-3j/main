@@ -38,8 +38,7 @@ public class EditCommand extends Command {
 		this.newDate = newDate;
 	}
 	
-	private void updateChanges() {
-		ArrayList<Item> taskList = getTaskList();
+	private void updateChanges() {		
 		
 		switch (field.toLowerCase()) {
 		case FIELD_TITLE:
@@ -65,12 +64,12 @@ public class EditCommand extends Command {
 			break;
 		}
 		
-		POMPOM.getStorage().setTaskList(taskList);
 	}
 
 	
 	public String execute() {
 		canEdit = checkExists(taskId);
+		this.task = getTask(taskId);
 		if (canEdit) {
 			updateChanges();
 			returnMsg = String.format(MESSAGE_TASK_EDITED, "Task"+taskId);

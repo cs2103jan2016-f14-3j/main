@@ -29,9 +29,7 @@ public class AddParser extends ArgsParser{
 	
 	public AddParser(String userCommand){
 		super(userCommand);
-
 		SimpleDateFormat dateFormatter = new SimpleDateFormat("dd-MM-yyyy/HH:mm");
-
 
 		itemTitle = getTitle();
 		itemDescription = getDescription();
@@ -67,12 +65,16 @@ public class AddParser extends ArgsParser{
 	}
 	
 	public Date getStartDate(){ 
+		SimpleDateFormat dateFormatter = new SimpleDateFormat("dd MM yyyy HH:mm");
 		String dateString = this.argsArray[INDEX_STARTDATE];
+		dateString = dateString.replace("-", " ");
+		dateString = dateString.replace("/", " ");
 		Date parsedDate = null;
 		if (dateString==null){
 			parsedDate = new Date();
 		} else{
 			try{
+				//System.out.println(dateString);
 				parsedDate = dateFormatter.parse(dateString);
 			} catch (ParseException e){
 				//do something
@@ -82,7 +84,10 @@ public class AddParser extends ArgsParser{
 	}
 	
 	public Date getEndDate(){ 
+		SimpleDateFormat dateFormatter = new SimpleDateFormat("dd MM yyyy HH:mm");
 		String dateString = this.argsArray[INDEX_ENDDATE];
+		dateString = dateString.replace("-", " ");
+		dateString = dateString.replace("/", " ");
 		Date parsedDate = null;
 		try{
 			parsedDate = dateFormatter.parse(dateString);
