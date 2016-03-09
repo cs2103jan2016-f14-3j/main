@@ -23,7 +23,7 @@ public class AddCommand extends Command {
 		task.setEndDate(endDate);
 	}
 	
-	public void storeTask() {
+	private void storeTask() {
 		ArrayList<Item> taskList = getTaskList();
 		taskList.add(task);
 		POMPOM.getStorage().setTaskList(taskList);

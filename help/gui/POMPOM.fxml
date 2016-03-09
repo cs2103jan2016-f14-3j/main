@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="566.0" prefWidth="800.0" stylesheets="@application.css" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.Main">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="566.0" prefWidth="800.0" stylesheets="@application.css" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.Controller">
    <children>
       <Pane prefHeight="566.0" prefWidth="200.0" styleClass="container">
          <children>
@@ -54,31 +54,31 @@
                </font></Label>
             <AnchorPane layoutY="46.0" prefHeight="515.0" prefWidth="598.0">
                <children>
-                  <TableView layoutX="14.0" layoutY="32.0" prefHeight="397.0" prefWidth="564.0">
+                  <TableView fx:id="table" layoutX="14.0" layoutY="32.0" prefHeight="397.0" prefWidth="564.0">
                     <columns>
                         <TableColumn prefWidth="32.0" />
-                      <TableColumn prefWidth="52.0" text="ID" />
-                      <TableColumn prefWidth="92.0" text="Task" />
-                        <TableColumn prefWidth="92.0" text="Date/Time" />
-                        <TableColumn prefWidth="91.0" text="Label" />
-                        <TableColumn prefWidth="111.0" text="Priority" />
-                        <TableColumn prefWidth="93.0" text="Status" />
+                      <TableColumn fx:id="taskID" prefWidth="52.0" text="ID" />
+                      <TableColumn fx:id="taskName" prefWidth="92.0" text="Task" />
+                        <TableColumn fx:id="taskDateTime" prefWidth="92.0" text="Date/Time" />
+                        <TableColumn fx:id="taskLabel" prefWidth="91.0" text="Label" />
+                        <TableColumn fx:id="taskPriority" prefWidth="111.0" text="Priority" />
+                        <TableColumn fx:id="taskStatus" prefWidth="93.0" text="Status" />
                     </columns>
                   </TableView>
-                  <TextField layoutX="14.0" layoutY="442.0" prefHeight="22.0" prefWidth="501.0" promptText="Command:">
+                  <TextField fx:id="inputCommand" layoutX="14.0" layoutY="442.0" onKeyPressed="#enterCommandKey" prefHeight="22.0" prefWidth="501.0" promptText="Command:">
                      <font>
                         <Font name="Tw Cen MT" size="14.0" />
                      </font>
                   </TextField>
                   <HBox id="HBox" alignment="CENTER" layoutX="299.0" layoutY="-13.0" prefHeight="26.0" prefWidth="285.0" spacing="15.0">
                      <children>
-                        <Button id="button1" fx:id="newIssue" text="New" />
-                        <Button id="button1" fx:id="saveIssue" text="Edit" />
-                        <Button mnemonicParsing="false" text="Save" />
-                        <Button id="button1" fx:id="deleteIssue" text="Delete" />
+                        <Button id="button1" fx:id="newTask" text="New" />
+                        <Button id="button1" fx:id="editTask" text="Edit" />
+                        <Button fx:id="saveTask" mnemonicParsing="false" text="Save" />
+                        <Button id="button1" fx:id="deleteTask" text="Delete" />
                      </children>
                   </HBox>
-                  <Button layoutX="526.0" layoutY="441.0" mnemonicParsing="false" text="Enter" />
+                  <Button fx:id="enterCommand" layoutX="526.0" layoutY="441.0" mnemonicParsing="false" onAction="#enterCommandFired" text="Enter" />
                </children>
             </AnchorPane>
          </children>

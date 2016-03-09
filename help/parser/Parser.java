@@ -1,5 +1,7 @@
 package parser;
 
+import command.Command;
+
 public class Parser{
 	
 	/** List of Command types */
@@ -11,10 +13,6 @@ public class Parser{
 	private static final String CMD_SEARCH = "search";
 	private static final String CMD_SHOW = "show";
 	
-	private static final String MESSAGE_INVALID_FORMAT = "invalid command format : %1$s";
-	private static final String MESSAGE_ARGUMENTS_NEEDED = "Arguments needed!";
-	private static final String MESSAGE_PROGRAM_ERROR = "Program has encountered an error";
-	private static final String MESSAGE_ADDED_TEXT = "Added '%1$s' to task list!";
 	
 	private static final int COMMAND_ARRAY_SIZE = 2; 
 	private static final int COMMAND_TYPE_INDEX = 0;
@@ -38,22 +36,28 @@ public class Parser{
 		String[] parsedCommandArray = splitCommand(userCommand);
 		String commandType = parsedCommandArray[COMMAND_TYPE_INDEX];
 		String commandArgument = parsedCommandArray[COMMAND_ARGUMENT_INDEX];
+
 		
 		switch (commandType){
 			case CMD_ADD:
-				return AddParser(commandArgument);
+				AddParser addArgumentParser = new AddParser(commandArgument);
+				return addArgumentParser.executeCommand();
 			case CMD_DELETE:
-				return deleteParser(commandArgument);
+				DeleteParser deleteArgumentParser = new DeleteParser(commandArgument);
+				return deleteArgumentParser.executeCommand();
 			case CMD_EDIT:
-				return editParser(commandArgument);
+				EditParser EditArgumentParser = new EditParser(commandArgument);
+				return EditArgumentParser.executeCommand();
 			case CMD_SEARCH:
-				return searchParser(commandArgument);
+				//return new SearchParser(commandArgument);
 			case CMD_SHOW:
-				return showParser(commandArgument);
+				//return new ShowParser(commandArgument);
 			case CMD_EXIT:
-				//return exitParser();
+				//return new ExitParser();
 	}
-		return InvalidParser(userCommand);
+		InvalidParser InvalidArgumentParser = new InvalidParser(userCommand);
+		//return InvalidArgumentParser.executeCommand();
+		return null;
 	}
 	
 	public String[] splitCommand(String userCommand){

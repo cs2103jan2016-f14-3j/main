@@ -19,26 +19,26 @@ public class EditCommand extends Command {
 	private static final String FIELD_START_DATE = "start date";
 	private static final String FIELD_END_DATE = "end date";
 	
-	private int taskID;
+	private int taskId;
 	private String field;
 	private String newData;
 	private Date newDate;
 	private Item task;
 	private boolean canEdit;
 	
-	public EditCommand(int taskID, String field, String newData) {
-		this.taskID = taskID;
+	public EditCommand(int taskId, String field, String newData) {
+		this.taskId = taskId;
 		this.field = field;
 		this.newData = newData;
 	}
 	
-	public EditCommand(int taskID, String field, Date newDate) {
-		this.taskID = taskID;
+	public EditCommand(int taskId, String field, Date newDate) {
+		this.taskId = taskId;
 		this.field = field;
 		this.newDate = newDate;
 	}
 	
-	public void updateChanges() {
+	private void updateChanges() {
 		ArrayList<Item> taskList = getTaskList();
 		
 		switch (field.toLowerCase()) {
@@ -70,10 +70,10 @@ public class EditCommand extends Command {
 
 	
 	public String execute() {
-		canEdit = checkExists(taskID);
+		canEdit = checkExists(taskId);
 		if (canEdit) {
 			updateChanges();
-			returnMsg = String.format(MESSAGE_TASK_EDITED, "Task"+taskID);
+			returnMsg = String.format(MESSAGE_TASK_EDITED, "Task"+taskId);
 		} else {
 			returnMsg = MESSAGE_TASK_ERROR;
 		}

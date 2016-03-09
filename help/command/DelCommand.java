@@ -9,29 +9,27 @@ public class DelCommand extends Command {
 	
 	private static final String MESSAGE_TASK_DELTED = "%s has been deleted";	
 	private static final String MESSAGE_TASK_ERROR = "Unable to delete task %s";
-	private int taskID;
+	private int taskId;
 	private String taskTitle;
 	private boolean canDelete;
 	
-	public DelCommand(int taskID, String taskTitle) {
-		this.taskID = taskID;
-		this.taskTitle = taskTitle;
+	public DelCommand(int taskId) {
+		this.taskId = taskId;
 	}
 	
-	
-	public void removeTask() {
+	private void removeTask() {
 		ArrayList<Item> taskList = getTaskList();
-		taskList.remove(taskID);
+		taskList.remove(taskId);
 		POMPOM.getStorage().setTaskList(taskList);
 	}
 	
 	public String execute() {
-		canDelete = checkExists(taskID);
+		canDelete = checkExists(taskId);
 		if (canDelete) {
 			removeTask();
-			returnMsg = String.format(MESSAGE_TASK_DELTED, (taskID+". "+taskTitle));
+			returnMsg = String.format(MESSAGE_TASK_DELTED, (taskId+". "+taskTitle));
 		} else {
-			returnMsg = String.format(MESSAGE_TASK_ERROR, taskID);
+			returnMsg = String.format(MESSAGE_TASK_ERROR, taskId);
 		}
 		return returnMsg;
 	}

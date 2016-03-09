@@ -1,7 +1,7 @@
 package parser;
 
 public class ArgsParser {
-	private String[] argsArray;
+	protected String[] argsArray;
 	public ArgsParser(String commandArguments){
 		argsArray = commandArguments.split(" ");		
 	}
