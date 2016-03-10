@@ -6,7 +6,7 @@ import java.util.Arrays;
 public class UserTaskList {
 	private String userName;
 	private Item[] taskArray;
-
+	
 	public UserTaskList(String userName, Item[] taskArray) {
 		this.userName = userName;
 		this.taskArray = taskArray;

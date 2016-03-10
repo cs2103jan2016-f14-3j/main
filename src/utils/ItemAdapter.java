@@ -10,7 +10,7 @@ import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 
-public class TaskAdapter extends TypeAdapter<UserTaskList> {
+public class ItemAdapter extends TypeAdapter<UserTaskList> {
 
 	@Override
 	public UserTaskList read(JsonReader in) throws IOException {
@@ -33,14 +33,17 @@ public class TaskAdapter extends TypeAdapter<UserTaskList> {
 					final Item task = new Item();
 					while (in.hasNext()) {
 						switch (in.nextName()) {
+						case "Id":
+							task.setId(in.nextInt());
+							break;
 						case "Title":
 							task.setTitle(in.nextString());
 							break;
 						case "Priority":
 							task.setPriority(in.nextString());
 							break;
-						case "Decription":
-							task.setDecription(in.nextString());
+						case "Description":
+							task.setDescription(in.nextString());
 							break;
 						case "Label":
 							task.setLabel(in.nextString());
@@ -86,24 +89,26 @@ public class TaskAdapter extends TypeAdapter<UserTaskList> {
 
 		out.name("Username").value(userTaskList.getUserName());
 		out.name("TaskList").beginArray();
-		if (userTaskList.getTaskArrayList() != null) {
-			ArrayList<Item> taskList = userTaskList.getTaskArrayList();
 
-			for (final Item task : taskList) {
-				out.beginObject();
-				out.name("Title").value(task.getTitle());
-				out.name("Priority").value(task.getPriority());
-				out.name("Decription").value(task.getDecription());
-				out.name("Label").value(task.getLabel());
-				out.name("Status").value(task.getStatus());
-				out.name("StartDate").value(task.getStartDate().toString());
-				out.name("EndDate").value(task.getEndDate().toString());
-				out.endObject();
-			}
-			
+		if (userTaskList.getTaskArrayList() != null) {
+			ArrayList<Item> taskList = userTaskList.getTaskArrayList();			
+
+		for (final Item task : taskList) {
+			out.beginObject();
+			out.name("Id").value(task.getId());
+			out.name("Title").value(task.getTitle());
+			out.name("Priority").value(task.getPriority());
+			out.name("Description").value(task.getDescription());
+			out.name("Label").value(task.getLabel());
+			out.name("Status").value(task.getStatus());
+			out.name("StartDate").value(task.getStartDate().toString());
+			out.name("EndDate").value(task.getEndDate().toString());
+			out.endObject();
+
 		}
 		out.endArray();
 		out.endObject();
 
 	}
+}
 }

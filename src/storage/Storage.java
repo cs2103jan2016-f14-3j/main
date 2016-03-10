@@ -15,7 +15,7 @@ import com.google.gson.GsonBuilder;
 
 import utils.FileHandler;
 import utils.Item;
-import utils.TaskAdapter;
+import utils.ItemAdapter;
 import utils.UserTaskList;
 
 public class Storage {
@@ -40,25 +40,24 @@ public class Storage {
 	private String folderPath;
 	private UserTaskList userTaskList;
 	private ArrayList<Item> taskList;
-	private ArrayList<Item> doneTaskList;
-	private ArrayList<Item> undoneTaskList;
+
 	
 	final GsonBuilder gsonBuilder = new GsonBuilder();
     final Gson gson;
+    
+
 
 	public Storage() throws IOException {
 		//Initialization of gson class with Adapter
-	    gsonBuilder.registerTypeAdapter(UserTaskList.class, new TaskAdapter());
+	    gsonBuilder.registerTypeAdapter(UserTaskList.class, new ItemAdapter());
 	    gsonBuilder.setPrettyPrinting();
 	    gson = gsonBuilder.create();	    
 	    
 		createNewDirectoryFolder();
 		createNewStorageTxt();
 		String storageJsonString = FileHandler.getStringFromFile(DEFAULT_STORAGE_FILE_PATH,
-				StandardCharsets.UTF_8);
-		
-		userTaskList = deserializeJsonString(storageJsonString);
-		
+				StandardCharsets.UTF_8);		
+		userTaskList = deserializeJsonString(storageJsonString);		
 	}
 
 	public UserTaskList getUserTaskList() {
@@ -75,22 +74,6 @@ public class Storage {
 
 	public void setTaskList(ArrayList<Item> taskList) {
 		this.taskList = taskList;
-	}
-
-	public ArrayList<Item> getDoneTaskList() {
-		return doneTaskList;
-	}
-
-	public void setDoneTaskList(ArrayList<Item> doneTaskList) {
-		this.doneTaskList = doneTaskList;
-	}
-
-	public ArrayList<Item> getUndoneTaskList() {
-		return undoneTaskList;
-	}
-
-	public void setUndoneTaskList(ArrayList<Item> undoneTaskList) {
-		this.undoneTaskList = undoneTaskList;
 	}
 
 	private boolean createNewDirectoryFolder() {

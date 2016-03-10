@@ -1,10 +1,14 @@
 package gui;
 	
+import java.io.IOException;
+
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.layout.Pane;
 
 
 public class Main extends Application {
@@ -21,4 +25,31 @@ public class Main extends Application {
         stage.setScene(new Scene(root, 800, 556));
         stage.show();
     }
+    
+    
+	public boolean newTaskDialog() {
+		try {
+			FXMLLoader loader = new FXMLLoader(Main.class.getResource("NewTask.fxml"));
+			Pane page = (Pane) loader.load();
+			
+			Stage dialogStage = new Stage();
+			dialogStage.setTitle("New Task");
+			dialogStage.initModality(Modality.WINDOW_MODAL);
+			Scene scene = new Scene(page);
+			dialogStage.setScene(scene);
+			
+			NewTaskController newTaskController = loader.getController();
+			newTaskController.setDialogStage(dialogStage);
+			
+			dialogStage.showAndWait();
+			
+			return newTaskController.isOkClicked();
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+    
 }

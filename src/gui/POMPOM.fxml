@@ -65,20 +65,20 @@
                         <TableColumn fx:id="taskStatus" prefWidth="93.0" text="Status" />
                     </columns>
                   </TableView>
-                  <TextField fx:id="inputCommand" layoutX="14.0" layoutY="442.0" prefHeight="22.0" prefWidth="501.0" promptText="Command:">
+                  <TextField fx:id="inputCommand" layoutX="14.0" layoutY="442.0" onKeyPressed="#enterCommandKey" prefHeight="22.0" prefWidth="501.0" promptText="Command:">
                      <font>
                         <Font name="Tw Cen MT" size="14.0" />
                      </font>
                   </TextField>
                   <HBox id="HBox" alignment="CENTER" layoutX="299.0" layoutY="-13.0" prefHeight="26.0" prefWidth="285.0" spacing="15.0">
                      <children>
-                        <Button id="button1" fx:id="newTask" text="New" />
+                        <Button id="button1" fx:id="newTask" onAction="#newTaskFired" text="New" />
                         <Button id="button1" fx:id="editTask" text="Edit" />
                         <Button fx:id="saveTask" mnemonicParsing="false" text="Save" />
                         <Button id="button1" fx:id="deleteTask" text="Delete" />
                      </children>
                   </HBox>
-                  <Button fx:id="enterCommand" layoutX="526.0" layoutY="441.0" mnemonicParsing="false" text="Enter" />
+                  <Button fx:id="enterCommand" layoutX="526.0" layoutY="441.0" mnemonicParsing="false" onAction="#enterCommandFired" text="Enter" />
                </children>
             </AnchorPane>
          </children>
