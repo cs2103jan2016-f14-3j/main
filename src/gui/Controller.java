@@ -133,10 +133,8 @@ public class Controller implements Initializable{
     public void enterCommandFired(ActionEvent event) {
         String input = inputCommand.getText();
         inputCommand.clear();
-        pompom.execute(input);
-        
-        configureTable();
-        
+        pompom.execute(input);        
+        configureTable();        
         inputCommand.setPromptText("Command:");
     }  
     
@@ -144,11 +142,8 @@ public class Controller implements Initializable{
         if (event.getCode().equals(KeyCode.ENTER)){
         	
             String input = inputCommand.getText();
-            pompom.execute(input);
-            
-           // System.out.println(POMPOM.getStorage().getTaskList().get(0).getStatus());
-            configureTable();
-            
+            pompom.execute(input);            
+            configureTable();            
             inputCommand.clear();
             inputCommand.setPromptText("Command:");
             
