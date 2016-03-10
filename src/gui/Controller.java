@@ -19,6 +19,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.text.Text;
 import utils.Item;
 
 
@@ -52,6 +53,10 @@ public class Controller implements Initializable{
     ListView<String> list;
     @FXML
     TextField inputCommand;
+    @FXML
+    Text returnMsg;
+    
+    String msg;
     
 	private Main main = new Main();
     
@@ -134,8 +139,7 @@ public class Controller implements Initializable{
     public void enterCommandFired(ActionEvent event) {
         String input = inputCommand.getText();
         inputCommand.clear();
-        pompom.execute(input);
-        
+        msg = pompom.execute(input);
         configureTable();
         
         inputCommand.setPromptText("Command:");
@@ -145,8 +149,7 @@ public class Controller implements Initializable{
         if (event.getCode().equals(KeyCode.ENTER)){
         	
             String input = inputCommand.getText();
-            pompom.execute(input);
-            
+            msg = pompom.execute(input);
            // System.out.println(POMPOM.getStorage().getTaskList().get(0).getStatus());
             configureTable();
             
@@ -160,5 +163,5 @@ public class Controller implements Initializable{
     public void newTaskFired(ActionEvent event) {
     	main.newTaskDialog();
     }    
-    
+        
     }
