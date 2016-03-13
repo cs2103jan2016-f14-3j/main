@@ -14,11 +14,9 @@ public class ListClassifier {
 	
 	public ArrayList<Item> getPendingList() {
 		
-		ArrayList<Item> result = new ArrayList<Item>();
-		
+		ArrayList<Item> result = new ArrayList<Item>();		
 		for (int i = 0; i < taskArrayList.size(); i++) {
-			Item currentTask = taskArrayList.get(i);
-			
+			Item currentTask = taskArrayList.get(i);			
 			if (currentTask.getStatus().toLowerCase().equals("pending")) {
 				result.add(currentTask);
 			}

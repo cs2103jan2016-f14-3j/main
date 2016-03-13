@@ -1,5 +1,6 @@
 package gui;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
@@ -19,8 +20,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.text.Text;
 import utils.Item;
-import utils.UserTaskList;
 
 
 public class Controller implements Initializable{
@@ -38,7 +39,7 @@ public class Controller implements Initializable{
     @FXML
     TableView<Item> table;
     @FXML
-    TableColumn<Item, String> taskID;
+    TableColumn<Item, Number> taskID;
     @FXML
     TableColumn<Item, String> taskName;
     @FXML
@@ -53,7 +54,12 @@ public class Controller implements Initializable{
     ListView<String> list;
     @FXML
     TextField inputCommand;
+    @FXML
+    Text returnMsg;
     
+    String msg;
+    
+	private Main main = new Main();
     
     ArrayList<Item> temp;
 
@@ -81,8 +87,8 @@ public class Controller implements Initializable{
         assert taskPriority != null : "fx:id=\"taskPriority\" was not injected: check your FXML file 'POMPOM.fxml'.";
         assert taskStatus != null : "fx:id=\"taskStatus\" was not injected: check your FXML file 'POMPOM.fxml'.";
         assert inputCommand != null : "fx:id=\"inputCommand\" was not injected: check your FXML file 'POMPOM.fxml'.";
-        System.out.println(this.getClass().getSimpleName() + ".initialize");
         
+        System.out.println(this.getClass().getSimpleName() + ".initialize");
         
         configureButtons();
         configureTable();
@@ -109,15 +115,15 @@ public class Controller implements Initializable{
 	
     private void configureTable() {
     	table.setEditable(true);
+    	taskID.setCellValueFactory(new PropertyValueFactory<Item, Number>("id"));
     	taskName.setCellValueFactory(new PropertyValueFactory<Item, String>("title"));
-        taskDateTime.setCellValueFactory(new PropertyValueFactory<Item, Date>("startDate"));
+        taskDateTime.setCellValueFactory(new PropertyValueFactory<Item, Date>("endDate"));
         taskLabel.setCellValueFactory(new PropertyValueFactory<Item, String>("label"));
         taskPriority.setCellValueFactory(new PropertyValueFactory<Item, String>("priority"));
         taskStatus.setCellValueFactory(new PropertyValueFactory<Item, String>("status"));
         
         
-        temp = POMPOM.getStorage().getTaskList();
-        
+        temp = POMPOM.getStorage().getTaskList();	        
         tableContent = FXCollections.observableArrayList(temp);    
         
         table.setItems(tableContent);        
@@ -125,26 +131,25 @@ public class Controller implements Initializable{
         
        
     }
-    public void onSaveClicked(ActionEvent event){
-//    	new UserTaskList();
-//    	
-    	
-    }
-    public void enterCommandFired(ActionEvent event) {
+
+    public void enterCommandFired(ActionEvent event) throws IOException {
         String input = inputCommand.getText();
         inputCommand.clear();
-        pompom.execute(input);        
-        configureTable();        
+        msg = pompom.execute(input);
+        configureTable();
+        POMPOM.getStorage().save();
         inputCommand.setPromptText("Command:");
     }  
     
-    public void enterCommandKey(KeyEvent event) {
+    public void enterCommandKey(KeyEvent event) throws IOException {
         if (event.getCode().equals(KeyCode.ENTER)){
         	
             String input = inputCommand.getText();
-            pompom.execute(input);            
-            configureTable();            
-            inputCommand.clear();
+            msg = pompom.execute(input);
+           // System.out.println(POMPOM.getStorage().getTaskList().get(0).getStatus());
+            configureTable();
+            POMPOM.getStorage().save();
+            inputCommand.clear();            
             inputCommand.setPromptText("Command:");
             
     }
@@ -152,6 +157,7 @@ public class Controller implements Initializable{
     }  
     
     public void newTaskFired(ActionEvent event) {
-        
+    	main.newTaskDialog();
     }    
+        
     }

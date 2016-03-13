@@ -95,11 +95,21 @@ public class Storage {
 	    FileHandler.writeStringToFile(storageFile, json);
 	    
 	}
+	public void save() throws IOException {
+		Item[] helper = taskList.toArray(new Item[taskList.size()]);
+		userTaskList.setTaskArray(helper);
+		final String json = gson.toJson(userTaskList);
+	    FileHandler.writeStringToFile(storageFile, json);
+	}
 	
-	
+
 	private UserTaskList deserializeJsonString(String jsonString){	
 		
-		if(jsonString.equals("")) return null;
+		if(jsonString.equals("")){
+			UserTaskList utl = new UserTaskList("Not Set", new Item[1]);
+			taskList = new ArrayList<Item>();
+			return utl;
+		}
 	    final UserTaskList userTaskList = gson.fromJson(jsonString, UserTaskList.class);
 		taskList = new ArrayList<Item>(Arrays.asList(userTaskList.getTaskArray()));
 		return userTaskList;

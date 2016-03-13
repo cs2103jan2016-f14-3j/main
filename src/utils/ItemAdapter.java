@@ -102,6 +102,7 @@ public class ItemAdapter extends TypeAdapter<UserTaskList> {
 			out.name("Label").value(task.getLabel());
 			out.name("Status").value(task.getStatus());
 			out.name("StartDate").value(task.getStartDate().toString());
+			
 			out.name("EndDate").value(task.getEndDate().toString());
 			out.endObject();
 

@@ -5,9 +5,6 @@ import command.EditCommand;
 
 public class EditParser extends ArgsParser{
 	
-	//Array content:
-	//[0: Task ID][1: Fields][2: New Data]
-	
 	private final int INDEX_TASK_ID = 0;
 	private final int INDEX_FIELDS = 1;
 	private final int INDEX_NEW_DATAS = 2; 
@@ -16,21 +13,21 @@ public class EditParser extends ArgsParser{
 	private String unparsedFields;
 	private String unparsedData;
 	
-	private int numberOfChanges;
-	
 	private String[] fieldsArray;
 	private String[] newDataArray;
+	private String[] argsArray;
 	
 	
 	public EditParser(String userCommand){
 		super(userCommand);
+		
+		argsArray = commandArgumentsString.split(" ");
 		taskID = getTaskID();
 		unparsedFields = getFields();
 		unparsedData = getNewData();
 		
 		fieldsArray = unparsedFields.split(",");
 		newDataArray = unparsedData.split(",");
-		numberOfChanges = fieldsArray.length;
 	}
 	
 	public Command executeCommand(){
@@ -38,15 +35,15 @@ public class EditParser extends ArgsParser{
 	}
 	
 	public int getTaskID(){
-		return Integer.parseInt(this.argsArray[INDEX_TASK_ID]);
+		return Integer.parseInt(argsArray[INDEX_TASK_ID]);
 	}
 	
 	public String getFields(){
-		return this.argsArray[INDEX_FIELDS];
+		return argsArray[INDEX_FIELDS];
 	}
 	
 	public String getNewData(){
-		return this.argsArray[INDEX_NEW_DATAS];
+		return argsArray[INDEX_NEW_DATAS];
 	}
 	
 	public String[] parseFields(String input){

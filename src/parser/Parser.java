@@ -53,12 +53,13 @@ public class Parser{
 			case CMD_SHOW:
 				//return new ShowParser(commandArgument);
 			case CMD_EXIT:
-				//return new ExitParser();
+				ExitParser exitParser = new ExitParser();
+				//return exitParser.executeCommand();
+				System.exit(0);
 	}
-		//InvalidParser InvalidParser = new InvalidParser(userCommand);
 		InvalidParser InvalidArgumentParser = new InvalidParser(userCommand);
-		//return InvalidArgumentParser.executeCommand();
-		return null;
+		return InvalidArgumentParser.executeCommand();
+
 	}
 	
 	public String[] splitCommand(String userCommand){
@@ -75,7 +76,10 @@ public class Parser{
 	
 	public String getArguments(String userCommand, String commandType) {
 		String[] toSplit = userCommand.split(" ", COMMAND_ARRAY_SIZE);
-		return toSplit[COMMAND_ARGUMENT_INDEX].toLowerCase().trim();
+		if (toSplit.length==2){
+			return toSplit[COMMAND_ARGUMENT_INDEX].toLowerCase().trim();
+		}
+		return "";
 	}
 
 }

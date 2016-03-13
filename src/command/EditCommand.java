@@ -1,7 +1,5 @@
 package command;
 
-import gui.Controller;
-
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -29,7 +27,7 @@ public class EditCommand extends Command {
 	private boolean canEdit;
 	
 	public EditCommand(int taskId, String field, String newData) {
-		this.taskId = taskId;
+		this.taskId = taskId-1;
 		this.field = field;
 		this.newData = newData;
 	}

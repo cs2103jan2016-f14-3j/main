@@ -1,8 +1,21 @@
 package parser;
+import command.InvalidCommand;
+import command.Command;
+
+
 
 public class ArgsParser {
-	protected String[] argsArray;
+	boolean noArgs=false;
+	String commandArgumentsString;
 	public ArgsParser(String commandArguments){
-		argsArray = commandArguments.split(" ");		
+		commandArgumentsString = commandArguments;
+		if (commandArgumentsString.equals("")){	
+			noArgs=true;
+		}
 	}
+	
+	public Command invalidArgs(){
+		return new InvalidCommand(commandArgumentsString);
+	}
+	
 }
