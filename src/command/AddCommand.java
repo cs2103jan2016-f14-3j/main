@@ -50,7 +50,9 @@ public class AddCommand extends Command {
 	}
 	
 	private void storeTask() {
-		POMPOM.getStorage().addItemWithId(task);
+		Long id = POMPOM.getStorage().getIdCounter();
+		task.setId(id);
+		POMPOM.getStorage().getTaskList().add(task);
 	}
 		
 	public String execute() {

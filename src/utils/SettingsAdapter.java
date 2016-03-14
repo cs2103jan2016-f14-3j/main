@@ -25,7 +25,6 @@ public class SettingsAdapter extends TypeAdapter<Settings>{
 	@Override
 	public void write(JsonWriter out, Settings settings) throws IOException {
 		out.beginObject();
-
 		out.name("StoragePath").value(settings.getStoragePath());
 		out.close();
 	}

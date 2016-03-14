@@ -15,8 +15,7 @@ public class FileHandler {
 	}
 	
 	public static String getStringFromFile(String path, Charset encoding) 
-			  throws IOException 
-	{
+			  throws IOException {
 	  byte[] encoded = Files.readAllBytes(Paths.get(path));
 	  return new String(encoded, encoding);
 	}

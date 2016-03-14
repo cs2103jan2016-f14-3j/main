@@ -11,6 +11,10 @@ import java.util.List;
 import java.util.logging.Logger;
 import java.util.logging.LoggingPermission;
 
+import javax.swing.text.html.HTMLDocument.HTMLReader.PreAction;
+
+import org.ocpsoft.prettytime.nlp.PrettyTimeParser;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -32,21 +36,22 @@ public class Storage {
 	private static final String SETTINGS_FILE_PATH = DEFAULT_FILE_DIRECTORY
 			+ "/" + SETTINGS_FILE_NAME;
 
-	// private static final Logger log= Logger.getLogger(
-	// Storage.class.getName() );
-	// private static SimpleDateFormat dateFormat = new SimpleDateFormat(
-	// "EEE MMM d HH:mm:ss z yyyy");
 	private File newDirectoryFile = new File(DEFAULT_FILE_DIRECTORY);
 	private File storageFile = new File(DEFAULT_STORAGE_FILE_PATH);
+
+
 	private File settingsFile = new File(SETTINGS_FILE_PATH);
-
-
+	
 	private Settings settings;
+	private String storageFilePath = DEFAULT_STORAGE_FILE_PATH;
+	
+
+
 	private UserTaskList userTaskList;
 	private ArrayList<Item> taskList;
-	private Long idCounter;
+	private long idCounter;
 
-	// Gson Library objects to read settings and storage file in json format
+	//Gson Library objects to read settings and storage file in json format
 	final GsonBuilder GSON_ITEM_BUILDER = new GsonBuilder();
 	final GsonBuilder GSON_SETTINGS_BUILDER = new GsonBuilder();
 	private Gson gsonItem;
@@ -56,6 +61,8 @@ public class Storage {
 		initializeGsonObjects();
 		initializeSettings();
 		initializeStorage();
+		PrettyTimeParser timeParser = new PrettyTimeParser();
+		timeParser.parseSyntax("next year");
 	}
 
 	public UserTaskList getUserTaskList() {
@@ -73,13 +80,29 @@ public class Storage {
 	public void setTaskList(ArrayList<Item> taskList) {
 		this.taskList = taskList;
 	}
-	public Long getIdCounter() {
+	
+	public long getIdCounter() {
+		idCounter = idCounter + 1;
 		return idCounter;
 	}
 
-	public void setIdCounter(Long idCounter) {
+	public void setIdCounter(long idCounter) {
 		this.idCounter = idCounter;
 	}
+	public File getStorageFile() {
+		return storageFile;
+	}
+
+	public void setStorageFile(File storageFile) {
+		this.storageFile = storageFile;
+	}
+	public String getStorageFilePath() {
+		return storageFilePath;
+	}
+
+	public void setStorageFilePath(String storageFilePath) {
+		this.storageFilePath = storageFilePath;
+	} 	
 	
 	private void initializeGsonObjects() {
 		GSON_ITEM_BUILDER.registerTypeAdapter(UserTaskList.class,
@@ -89,28 +112,35 @@ public class Storage {
 
 		GSON_SETTINGS_BUILDER.registerTypeAdapter(Settings.class,
 				new SettingsAdapter());
-		GSON_ITEM_BUILDER.setPrettyPrinting();
+		GSON_SETTINGS_BUILDER.setPrettyPrinting();
 		gsonSettings = GSON_ITEM_BUILDER.create();
-
 	}
+	
 	private void initializeSettings() throws IOException {
 		createNewDirectoryFolder();
 		createNewSettingsTxt();
 		String settingsString = FileHandler.getStringFromFile(
 				SETTINGS_FILE_PATH, StandardCharsets.UTF_8);
 		settings = deserializeSettingsString(settingsString);
+		
+		
 	}
 
 	private void initializeStorage() throws IOException {
-		if (settings.getStoragePath() != null) {
-			storageFile = new File(settings.getStoragePath());		
+		if (hasStoragePath()) {
+			setStorageFile(new File(settings.getStoragePath()));	
+			setStorageFilePath(settings.getStoragePath());
 		}
 		createNewStorageTxt();	
 		String storageString = FileHandler.getStringFromFile(
-				DEFAULT_STORAGE_FILE_PATH, StandardCharsets.UTF_8);
+				storageFilePath, StandardCharsets.UTF_8);
 		userTaskList = deserializeStorageString(storageString);
 		taskList = userTaskList.getTaskArray();
 		idCounter = userTaskList.getIdCounter();
+	}
+	
+	private boolean hasStoragePath(){
+		return settings.getStoragePath() != null;
 	}
 
 	private boolean createNewDirectoryFolder() {
@@ -134,11 +164,10 @@ public class Storage {
 		return true;
 	}
 
-
-
 	private UserTaskList deserializeStorageString(String jsonString) {
 		if (jsonString.equals("")) {
 			UserTaskList utl = new UserTaskList("Not Set", new ArrayList<Item>());
+			utl.setIdCounter(0);
 			taskList = new ArrayList<Item>();
 			return utl;
 		}
@@ -146,41 +175,37 @@ public class Storage {
 				UserTaskList.class);
 
 		return userTaskList;
-
-
 	}
 
 	private Settings deserializeSettingsString(String jsonString) {
 		if (jsonString.equals("")) {
 			Settings newSettings = new Settings();
-			idCounter = 1L;
 			return newSettings;
 		}		
+		
 		return gsonSettings.fromJson(jsonString, Settings.class);
 
 	}
+	
 	public void store(UserTaskList lst) throws IOException {
 		final String json = gsonItem.toJson(lst);
 		FileHandler.writeStringToFile(storageFile, json);
 
 	}
-
-
+	
 	public void save() throws IOException {		
 		userTaskList.setTaskArray(taskList);
 		userTaskList.setIdCounter(idCounter);
 		final String json = gsonItem.toJson(userTaskList);
 		FileHandler.writeStringToFile(storageFile, json);
+	}	
+	
+	public void saveSettings() throws IOException{
+		settings.setStoragePath(storageFilePath);
+		final String json = gsonSettings.toJson(settings);
+		FileHandler.writeStringToFile(settingsFile, json);
 	}
 	
-	public void addItemWithId(Item item){
-		item.setId(idCounter);
-		idCounter++;
-		taskList.add(item);
-	}
-
-
-
-
+	
 
 }

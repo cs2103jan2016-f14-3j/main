@@ -5,10 +5,7 @@ import java.util.Arrays;
 
 public class UserTaskList {
 	private String userName;
-	private Long IdCounter;
-	
-
-
+	private long IdCounter;
 	private ArrayList<Item> taskArray;
 	
 	public UserTaskList(String userName, ArrayList<Item> taskArray) {
@@ -19,7 +16,6 @@ public class UserTaskList {
 	public UserTaskList() {
 
 	}
-
 	public String getUserName() {
 		return userName;
 	}
@@ -35,16 +31,14 @@ public class UserTaskList {
 	public void setTaskArray(ArrayList<Item> taskArray) {
 		this.taskArray = taskArray;
 	}
-	public Long getIdCounter() {
+	public long getIdCounter() {
 		return IdCounter;
 	}
 
-	public void setIdCounter(Long idCounter) {
+	public void setIdCounter(long idCounter) {
 		IdCounter = idCounter;
 	}
-
-
-
+	// Debugging Method.
 	public void printInfo() {
 		if (userName == null)
 			System.out.println("User not set");
