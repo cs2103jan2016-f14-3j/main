@@ -5,9 +5,13 @@ import java.util.Arrays;
 
 public class UserTaskList {
 	private String userName;
-	private Item[] taskArray;
+	private Long IdCounter;
 	
-	public UserTaskList(String userName, Item[] taskArray) {
+
+
+	private ArrayList<Item> taskArray;
+	
+	public UserTaskList(String userName, ArrayList<Item> taskArray) {
 		this.userName = userName;
 		this.taskArray = taskArray;
 	}
@@ -24,19 +28,22 @@ public class UserTaskList {
 		this.userName = userName;
 	}
 
-	public Item[] getTaskArray() {
+	public ArrayList<Item> getTaskArray() {
 		return taskArray;
 	}
 
-	public void setTaskArray(Item[] taskArray) {
+	public void setTaskArray(ArrayList<Item> taskArray) {
 		this.taskArray = taskArray;
 	}
-
-	public ArrayList<Item> getTaskArrayList() {
-		if (taskArray == null)
-			return null;
-		return new ArrayList<Item>(Arrays.asList(taskArray));
+	public Long getIdCounter() {
+		return IdCounter;
 	}
+
+	public void setIdCounter(Long idCounter) {
+		IdCounter = idCounter;
+	}
+
+
 
 	public void printInfo() {
 		if (userName == null)
@@ -47,11 +54,12 @@ public class UserTaskList {
 		}
 
 		System.out.println("UserName: " + userName);
-		for (int i = 0; i < taskArray.length; i++) {
-			taskArray[i].printInfo();		
+		for (int i = 0; i < taskArray.size(); i++) {
+			taskArray.get(i).printInfo();		
 
 		}
 
 	}
+	
 
 }

@@ -20,9 +20,9 @@ public class DelCommand extends Command {
 	private void removeTask() {
 		ArrayList<Item> taskList = getTaskList();
 		taskList.remove(taskId);
-		for (int i = 0; i < taskList.size(); i++) {
-			taskList.get(i).setId(i+1);
-		}
+//		for (int i = 0; i < taskList.size(); i++) {
+//			taskList.get(i).setId(i+1);
+//		}
 		POMPOM.getStorage().setTaskList(taskList);
 	}
 	

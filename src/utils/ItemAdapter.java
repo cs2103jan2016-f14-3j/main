@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
@@ -17,13 +16,14 @@ public class ItemAdapter extends TypeAdapter<UserTaskList> {
 		final UserTaskList userTaskList = new UserTaskList();
 		SimpleDateFormat formatter = new SimpleDateFormat(
 				"EEE MMM d HH:mm:ss z yyyy");
-		Date startDate = null;
-		Date endDate = null;
 		in.beginObject();
 		while (in.hasNext()) {
 			switch (in.nextName()) {
 			case "Username":
 				userTaskList.setUserName(in.nextString());
+				break;
+			case "IdCounter":
+				userTaskList.setIdCounter(in.nextLong());
 				break;
 			case "TaskList":
 				in.beginArray();
@@ -34,7 +34,7 @@ public class ItemAdapter extends TypeAdapter<UserTaskList> {
 					while (in.hasNext()) {
 						switch (in.nextName()) {
 						case "Id":
-							task.setId(in.nextInt());
+							task.setId(in.nextLong());
 							break;
 						case "Title":
 							task.setTitle(in.nextString());
@@ -71,8 +71,7 @@ public class ItemAdapter extends TypeAdapter<UserTaskList> {
 					taskArrayList.add(task);
 					in.endObject();
 				}
-				userTaskList.setTaskArray(taskArrayList
-						.toArray(new Item[taskArrayList.size()]));
+				userTaskList.setTaskArray(taskArrayList);
 				in.endArray();
 				break;
 			}
@@ -86,30 +85,30 @@ public class ItemAdapter extends TypeAdapter<UserTaskList> {
 	public void write(JsonWriter out, UserTaskList userTaskList)
 			throws IOException {
 		out.beginObject();
-
 		out.name("Username").value(userTaskList.getUserName());
+		out.name("IdCounter").value(userTaskList.getIdCounter());
 		out.name("TaskList").beginArray();
 
-		if (userTaskList.getTaskArrayList() != null) {
-			ArrayList<Item> taskList = userTaskList.getTaskArrayList();			
+		if (userTaskList.getTaskArray() != null) {
+			ArrayList<Item> taskList = userTaskList.getTaskArray();
 
-		for (final Item task : taskList) {
-			out.beginObject();
-			out.name("Id").value(task.getId());
-			out.name("Title").value(task.getTitle());
-			out.name("Priority").value(task.getPriority());
-			out.name("Description").value(task.getDescription());
-			out.name("Label").value(task.getLabel());
-			out.name("Status").value(task.getStatus());
-			out.name("StartDate").value(task.getStartDate().toString());
-			
-			out.name("EndDate").value(task.getEndDate().toString());
+			for (final Item task : taskList) {
+				out.beginObject();
+				out.name("Id").value(task.getId());
+				out.name("Title").value(task.getTitle());
+				out.name("Priority").value(task.getPriority());
+				out.name("Description").value(task.getDescription());
+				out.name("Label").value(task.getLabel());
+				out.name("Status").value(task.getStatus());
+				out.name("StartDate").value(task.getStartDate().toString());
+
+				out.name("EndDate").value(task.getEndDate().toString());
+				out.endObject();
+
+			}
+			out.endArray();
 			out.endObject();
 
 		}
-		out.endArray();
-		out.endObject();
-
 	}
-}
 }

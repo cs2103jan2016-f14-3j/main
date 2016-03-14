@@ -24,7 +24,7 @@ public class CleanUpCommand extends Command {
 				taskList.remove(i);
 				removeCount++;
 			} else {
-				currentTask.setId(i+1-removeCount);
+//				currentTask.setId(i+1-removeCount);
 			}
 		}
 		

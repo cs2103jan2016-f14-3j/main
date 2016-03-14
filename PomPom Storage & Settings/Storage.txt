@@ -1,0 +1,76 @@
+{
+  "Username": "Wei Lip",
+  "IdCounter": 13,
+  "TaskList": [
+    {
+      "Id": 1,
+      "Title": "Title 1",
+      "Priority": "High",
+      "Description": "Tryin to test",
+      "Label": "red label",
+      "Status": "Done",
+      "StartDate": "Mon Mar 14 09:39:59 SGT 2016",
+      "EndDate": "Mon Mar 14 09:39:59 SGT 2016"
+    },
+    {
+      "Id": 2,
+      "Title": "Title 2111",
+      "Priority": "Medium",
+      "Description": "Tryin to test 2",
+      "Label": "red label",
+      "Status": "Done",
+      "StartDate": "Mon Mar 14 09:39:59 SGT 2016",
+      "EndDate": "Mon Mar 14 09:39:59 SGT 2016"
+    },
+    {
+      "Id": 3,
+      "Title": "do cs2103",
+      "Priority": "high",
+      "Description": "finish v0.1    f:next    ",
+      "Label": "hw",
+      "Status": "open",
+      "StartDate": "Mon Mar 21 09:54:59 SGT 2016",
+      "EndDate": "Tue Mar 22 09:54:59 SGT 2016"
+    },
+    {
+      "Id": 4,
+      "Title": "do cs2103",
+      "Priority": "high",
+      "Description": "finish v0.1    f:next    ",
+      "Label": "hw",
+      "Status": "open",
+      "StartDate": "Mon Mar 21 09:55:01 SGT 2016",
+      "EndDate": "Tue Mar 22 09:55:01 SGT 2016"
+    },
+    {
+      "Id": 5,
+      "Title": "do cs2103",
+      "Priority": "high",
+      "Description": "finish v0.1    f:next    ",
+      "Label": "hw",
+      "Status": "open",
+      "StartDate": "Mon Mar 21 09:55:02 SGT 2016",
+      "EndDate": "Tue Mar 22 09:55:02 SGT 2016"
+    },
+    {
+      "Id": 6,
+      "Title": "do cs2103",
+      "Priority": "high",
+      "Description": "finish v0.1    f:next    ",
+      "Label": "hw",
+      "Status": "open",
+      "StartDate": "Mon Mar 21 09:55:03 SGT 2016",
+      "EndDate": "Tue Mar 22 09:55:03 SGT 2016"
+    },
+    {
+      "Id": 7,
+      "Title": "do cs2103",
+      "Priority": "high",
+      "Description": "finish v0.1    f:next    ",
+      "Label": "hw",
+      "Status": "open",
+      "StartDate": "Mon Mar 21 09:55:05 SGT 2016",
+      "EndDate": "Tue Mar 22 09:55:05 SGT 2016"
+    }
+  ]
+}

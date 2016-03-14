@@ -1,14 +1,8 @@
 package utils;
-
-
-import java.text.DateFormat;
 import java.util.Date;
 
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.adapter.JavaBeanStringProperty;
-
 public class Item implements Comparable<Item>{
-	private int id;
+	private Long id;
 	private String title;
 	private String priority;
 	private String description;
@@ -19,7 +13,7 @@ public class Item implements Comparable<Item>{
 	
 	
 
-	public Item(int id, String title, String priority, String description,
+	public Item(Long id, String title, String priority, String description,
 			String status, String label, Date startDate, Date endDate) {
 		super();
 		this.id = id;
@@ -45,13 +39,12 @@ public class Item implements Comparable<Item>{
 
 	public Item() {
 		
-	}	
-	
-	public int getId() {
+	}		
+	public Long getId() {
 		return id;
 	}
-	public void setId(int id) {
-		this.id = id;
+	public void setId(Long i) {
+		this.id = i;
 	}
 	public String getTitle() {
 		return title;
@@ -90,9 +83,6 @@ public class Item implements Comparable<Item>{
 	public void setStartDate(Date startDate) {
 		this.startDate = startDate;
 	}
-
-
-
 	public Date getEndDate() {
 		return endDate;
 	}
@@ -101,11 +91,9 @@ public class Item implements Comparable<Item>{
 	}
 	//Debugging Method
 	public void printInfo(){
-
+		
 		System.out.println("");
-
 		System.out.println("Task ID: " + getId());
-
 		System.out.println("Title: " + getTitle());
 		System.out.println("Priority: " + getPriority());
 		System.out.println("Description: " + getDescription());
@@ -114,6 +102,7 @@ public class Item implements Comparable<Item>{
 		System.out.println("StartDate: " + getStartDate());
 		System.out.println("EndDate: " + getEndDate());
 		System.out.println("");
+		
 	}
 	@Override
 	public int compareTo(Item o) {

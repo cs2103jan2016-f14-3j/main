@@ -14,7 +14,6 @@ public class AddCommand extends Command {
 	
 	public AddCommand(String title) {
 		task = new Item();
-		task.setId(getTaskList().size()+1);
 		task.setTitle(title);
 		task.setDescription(null);
 		task.setPriority(null);
@@ -26,7 +25,6 @@ public class AddCommand extends Command {
 	
 	public AddCommand(String title, Date endDate) {
 		task = new Item();
-		task.setId(getTaskList().size()+1);
 		task.setTitle(title);
 		task.setDescription(null);
 		task.setPriority(null);
@@ -40,7 +38,7 @@ public class AddCommand extends Command {
 			String status, String label, Date startDate, Date endDate) {
 
 		task = new Item();
-		task.setId(getTaskList().size()+1);
+//		task.setId(getTaskList().size()+1);
 		task.setTitle(title);
 		task.setDescription(description);
 		task.setPriority(priority);
@@ -52,9 +50,7 @@ public class AddCommand extends Command {
 	}
 	
 	private void storeTask() {
-		ArrayList<Item> taskList = getTaskList();
-		taskList.add(task);
-		POMPOM.getStorage().setTaskList(taskList);
+		POMPOM.getStorage().addItemWithId(task);
 	}
 		
 	public String execute() {
