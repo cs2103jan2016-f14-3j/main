@@ -17,18 +17,24 @@ public abstract class Command {
 		
 	}
 	
-	protected Item getTask(int taskId) {
-		return getTaskList().get(taskId);
+	protected Item getTask(long taskId) {
+		ArrayList<Item> taskList = getTaskList(); 
+		for (int i  = 0; i < taskList.size(); i++) {
+			if (taskList.get(i).getId() == taskId) {
+				return taskList.get(i);
+			}
+		}
+		return null;
 	}
 	
 	protected ArrayList<Item> getTaskList() {
 		return POMPOM.getStorage().getTaskList();
 	}
 	
-	protected boolean checkExists(int taskID) {
+	protected boolean checkExists(long taskId) {
 		boolean exists;
 		try {
-			Item toDelete = getTask(taskID);
+			Item toDelete = getTask(taskId);
 			exists = true;
 		} catch (IndexOutOfBoundsException e) {
 			exists =  false;
