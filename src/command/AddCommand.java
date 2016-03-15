@@ -1,9 +1,7 @@
 package command;
 
-import java.util.ArrayList;
 import java.util.Date;
 
-import javafx.concurrent.Task;
 import main.POMPOM;
 import utils.Item;
 
@@ -14,6 +12,9 @@ public class AddCommand extends Command {
 	
 	public AddCommand(String title) {
 		task = new Item();
+		
+		Long id = POMPOM.getStorage().getIdCounter();
+		task.setId(id);
 		task.setTitle(title);
 		task.setDescription(null);
 		task.setPriority(null);
@@ -25,6 +26,9 @@ public class AddCommand extends Command {
 	
 	public AddCommand(String title, Date endDate) {
 		task = new Item();
+		
+		Long id = POMPOM.getStorage().getIdCounter();
+		task.setId(id);
 		task.setTitle(title);
 		task.setDescription(null);
 		task.setPriority(null);
@@ -38,7 +42,9 @@ public class AddCommand extends Command {
 			String status, String label, Date startDate, Date endDate) {
 
 		task = new Item();
-//		task.setId(getTaskList().size()+1);
+		
+		Long id = POMPOM.getStorage().getIdCounter();
+		task.setId(id);
 		task.setTitle(title);
 		task.setDescription(description);
 		task.setPriority(priority);
@@ -50,13 +56,22 @@ public class AddCommand extends Command {
 	}
 	
 	private void storeTask() {
-		Long id = POMPOM.getStorage().getIdCounter();
-		task.setId(id);
 		POMPOM.getStorage().getTaskList().add(task);
+	}
+	
+	private Command createCounterAction() {
+		DelCommand counterAction = new DelCommand(task.getId());
+		return counterAction;
+	}
+	
+	private void updateUndoStack() {
+		Command counterAction = createCounterAction();
+		POMPOM.getUndoStack().push(counterAction);
 	}
 		
 	public String execute() {
 		returnMsg = MESSAGE_TASK_ADDED;
+		updateUndoStack();
 		storeTask();
 		return returnMsg;
 	}
