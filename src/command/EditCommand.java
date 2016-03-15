@@ -27,13 +27,15 @@ public class EditCommand extends Command {
 	private boolean canEdit;
 	
 	public EditCommand(int taskId, String field, String newData) {
-		this.taskId = taskId-1;
+		this.taskId = taskId;
+		this.task = getTask(taskId);
 		this.field = field;
 		this.newData = newData;
 	}
 	
 	public EditCommand(int taskId, String field, Date newDate) {
 		this.taskId = taskId;
+		this.task = getTask(taskId);
 		this.field = field;
 		this.newDate = newDate;
 	}
@@ -65,13 +67,52 @@ public class EditCommand extends Command {
 		}
 		
 	}
-
+	
+	private Command createCounterAction() {
+		EditCommand counterAction;
+		
+		switch (field.toLowerCase()) {
+		case FIELD_TITLE:
+			counterAction = new EditCommand(taskId, field, task.getTitle());			
+			break;
+		case FIELD_DESCRIPTION:
+			counterAction = new EditCommand(taskId, field, task.getDescription());
+			break;
+		case FIELD_PRIORITY:
+			counterAction = new EditCommand(taskId, field, task.getPriority());
+			break;
+		case FIELD_STATUS:
+			counterAction = new EditCommand(taskId, field, task.getStatus());
+			break;
+		case FIELD_LABEL:
+			counterAction = new EditCommand(taskId, field, task.getLabel());
+			break;
+		case FIELD_START_DATE:
+			counterAction = new EditCommand(taskId, field, task.getStartDate());
+			break;
+		case FIELD_END_DATE:
+			counterAction = new EditCommand(taskId, field, task.getEndDate());
+			break;
+		default:
+			counterAction = null;
+			break;
+		}
+		
+		return counterAction;
+		
+	}
+	
+	private void updateUndoStack() {
+		Command counterAction = createCounterAction();
+		POMPOM.getUndoStack().push(counterAction);
+	}
+	
 	
 	public String execute() {
 		canEdit = checkExists(taskId);
-		this.task = getTask(taskId);
 		
 		if (canEdit) {
+			updateUndoStack();
 			updateChanges();
 			returnMsg = String.format(MESSAGE_TASK_EDITED, "Task"+taskId);
 			ArrayList<Item> taskList = getTaskList();
