@@ -11,15 +11,21 @@ public class POMPOM {
 	private static Storage storage; 
 	
 	public POMPOM() {
-		init();
+		try {
+			init();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
-	private void init() {
+	private void init() throws IOException {
 		try {
 			storage = new Storage();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		storage.init();
 	}
 	
 	public String execute(String input) {

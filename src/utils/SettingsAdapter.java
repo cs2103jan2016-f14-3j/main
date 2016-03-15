@@ -6,6 +6,10 @@ import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 
+/**
+ * @author A0121628L
+ *
+ */
 public class SettingsAdapter extends TypeAdapter<Settings>{
 
 	@Override

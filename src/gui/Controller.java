@@ -137,7 +137,7 @@ public class Controller implements Initializable{
         inputCommand.clear();
         msg = pompom.execute(input);
         configureTable();
-        POMPOM.getStorage().save();
+        POMPOM.getStorage().saveStorage();
         inputCommand.setPromptText("Command:");
     }  
     
@@ -148,7 +148,7 @@ public class Controller implements Initializable{
             msg = pompom.execute(input);
            // System.out.println(POMPOM.getStorage().getTaskList().get(0).getStatus());
             configureTable();
-            POMPOM.getStorage().save();
+            POMPOM.getStorage().saveStorage();
             inputCommand.clear();            
             inputCommand.setPromptText("Command:");
             

@@ -7,6 +7,10 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+/**
+ * @author A0121628L
+ *
+ */
 public class FileHandler {
 	public static void writeStringToFile(File file,String text) throws IOException{
 		FileWriter out = new FileWriter(file);

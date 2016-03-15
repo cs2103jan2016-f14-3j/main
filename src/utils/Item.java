@@ -1,7 +1,8 @@
 package utils;
+import java.util.Comparator;
 import java.util.Date;
 
-public class Item implements Comparable<Item>{
+public class Item implements Comparator<Item>{
 	private Long id;
 	private String title;
 	private String priority;
@@ -25,16 +26,6 @@ public class Item implements Comparable<Item>{
 		this.startDate = startDate;
 		this.endDate = endDate;
 	}	
-	
-//	public Task(String title, String priority, String description,
-//			Date startDate, Date endDate) {
-//		super();
-//		this.title = title;
-//		this.priority = priority;
-//		this.description = description;
-//		this.startDate = startDate;
-//		this.endDate = endDate;
-//	}
 
 
 	public Item() {
@@ -104,9 +95,18 @@ public class Item implements Comparable<Item>{
 		System.out.println("");
 		
 	}
+
+
 	@Override
-	public int compareTo(Item o) {
-		// TODO Auto-generated method stub
+	public int compare(Item item1, Item item2) {
+		if(item1.getEndDate().compareTo(item2.getEndDate())> 0){
+			return 1;
+		}else if(item1.getEndDate().compareTo(item2.getEndDate())< 0){
+			return -1;
+		}
+		else if(item1.getEndDate().compareTo(item2.getEndDate())== 0){
+			return 0;
+		}
 		return 0;
 	}
 }

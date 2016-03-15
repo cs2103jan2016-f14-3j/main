@@ -3,6 +3,10 @@ package utils;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+/**
+ * @author A0121628L
+ *
+ */
 public class UserTaskList {
 	private String userName;
 	private long IdCounter;
@@ -14,8 +18,8 @@ public class UserTaskList {
 	}
 
 	public UserTaskList() {
-
 	}
+	
 	public String getUserName() {
 		return userName;
 	}

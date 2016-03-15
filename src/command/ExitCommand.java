@@ -7,7 +7,7 @@ import main.POMPOM;
 public class ExitCommand {
 	public ExitCommand() {
 		try {
-			POMPOM.getStorage().save();
+			POMPOM.getStorage().saveStorage();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
