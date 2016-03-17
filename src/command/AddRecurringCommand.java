@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 public class AddRecurringCommand extends Command {
 
+	private static final String MESSAGE_RECURRING = "A recurring task has been added";
+	
 	ArrayList<DelCommand> addList;
 	
 	public AddRecurringCommand(ArrayList<DelCommand> addList) {
@@ -15,7 +17,8 @@ public class AddRecurringCommand extends Command {
 			addList.get(i).execute();
 		}
 		
-		return null;
+		returnMsg = MESSAGE_RECURRING;
+		return returnMsg;
 	}
 	
 }
