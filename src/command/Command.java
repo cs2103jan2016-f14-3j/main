@@ -8,9 +8,9 @@ import utils.Item;
 public abstract class Command {
 
 	protected static final String STATUS_PENDING = "pending";
+	protected static final String STATUS_ONGOING = "ongoing";
 	protected static final String STATUS_COMPLETED = "completed";
 	protected static final String STATUS_OVERDUE = "overdue";
-	protected static final String STATUS_DELETED = "deleted";
 	protected String returnMsg = "";
 	
 	public Command() {
