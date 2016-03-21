@@ -28,7 +28,7 @@ public abstract class Command {
 	}
 	
 	protected ArrayList<Item> getTaskList() {
-		return POMPOM.getStorage().getTaskList();
+		return POMPOM.getStorage().getTaskList();		
 	}
 	
 	protected boolean checkExists(long taskId) {

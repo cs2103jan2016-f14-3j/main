@@ -10,11 +10,18 @@ public class DelCommand extends Command {
 	private static final String MESSAGE_TASK_DELETED = "%s has been deleted";	
 	private static final String MESSAGE_TASK_ERROR = "Unable to delete task %s";
 	private long taskId;
+	private boolean isUndo;
 	private boolean canDelete;
 	private Item toDelete;
 	
 	public DelCommand(long taskId) {
 		this.taskId = taskId;
+		isUndo = false;
+	}
+	
+	public DelCommand(long taskId, boolean isUndo) {
+		this.taskId = taskId;
+		this.isUndo = isUndo;
 	}
 	
 	private void removeTask() {
@@ -29,7 +36,7 @@ public class DelCommand extends Command {
 	
 	private Command createCounterAction() {
 		toDelete = getTask(taskId);
-		AddCommand counterAction = new AddCommand(toDelete.getTitle(), toDelete.getDescription(), toDelete.getPriority(), 
+		AddCommand counterAction = new AddCommand(toDelete.getId(), toDelete.getTitle(), toDelete.getDescription(), toDelete.getPriority(), 
 				toDelete.getStatus(), toDelete.getLabel(), toDelete.getStartDate(), toDelete.getEndDate());
 		return counterAction;
 	}
@@ -42,7 +49,7 @@ public class DelCommand extends Command {
 	public String execute() {
 		canDelete = checkExists(taskId);
 		if (canDelete) {
-			updateUndoStack();
+			if (!isUndo) updateUndoStack();
 			removeTask();
 			returnMsg = String.format(MESSAGE_TASK_DELETED, (taskId+". "));
 		} else {

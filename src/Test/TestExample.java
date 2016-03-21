@@ -9,19 +9,19 @@ import com.google.gson.GsonBuilder;
 
 import utils.Item;
 import utils.ItemAdapter;
-import utils.UserTaskList;
+import utils.UserItemList;
 
 public class TestExample {
 	//Basic example to show my teammates how the gson library works. 
 	public static void main(String[] args) {
 	    final GsonBuilder gsonBuilder = new GsonBuilder();
-	    gsonBuilder.registerTypeAdapter(UserTaskList.class, new ItemAdapter());
+	    gsonBuilder.registerTypeAdapter(UserItemList.class, new ItemAdapter());
 	    gsonBuilder.setPrettyPrinting();
 
 	    final Gson gson = gsonBuilder.create();
 	    
-	    UserTaskList taskList = new UserTaskList();
-	    final Item task1 = new Item(1L,"It is a sunny day", "High", "I want to swim","Done","red label",
+	    UserItemList taskList = new UserItemList();
+	    final Item task1 = new Item(1L,"EVENT","It is a sunny day", "High", "I want to swim","Done","red label",
 	    		new Date(), new Date());
 	    
 	    final Item task2 = new Item(2L,"It is a rainny day", "Medium", "I want to study","Undone"
@@ -36,7 +36,7 @@ public class TestExample {
 	    System.out.println("Serialised");
 	    System.out.println(json);
 	    
-	    final UserTaskList userTaskList = gson.fromJson(json, UserTaskList.class);
+	    final UserItemList userTaskList = gson.fromJson(json, UserItemList.class);
 	    System.out.println("\nDeserialised");
 	    userTaskList.getTaskArray().get(0).printInfo();
 	    userTaskList.getTaskArray().get(1).printInfo();

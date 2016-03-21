@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Stack;
 
+import org.ocpsoft.prettytime.nlp.PrettyTimeParser;
+
 import command.Command;
 import parser.Parser;
 import storage.Storage;
@@ -18,8 +20,29 @@ public class POMPOM {
 	protected static final String STATUS_OVERDUE = "overdue";
 	
 	private static Storage storage; 
-	public static Stack<Command> undoStack;
+	private static Stack<Command> undoStack;
+	public static PrettyTimeParser timeParser;
+	public static ArrayList<Item> searchList;
+	public static String changedTab;
 	
+
+
+	public static String getChangedTab() {
+		return changedTab;
+	}
+
+	public static void setChangedTab(String setTab) {
+		POMPOM.changedTab = setTab;
+	}
+
+	public static ArrayList<Item> getSearchList() {
+		return searchList;
+	}
+
+	public static void setSearchList(ArrayList<Item> searchList) {
+		POMPOM.searchList = searchList;
+	}
+
 	public POMPOM() {
 		try {
 			init();
@@ -35,7 +58,8 @@ public class POMPOM {
 			storage.init();
 			undoStack = new Stack<Command>();
 			refreshStatus();
-			
+			timeParser = new PrettyTimeParser();
+			timeParser.parseSyntax("next year");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -66,12 +90,27 @@ public class POMPOM {
 	public String execute(String input) {
 		Parser parser = new Parser();
 		Command command = parser.executeCommand(input);
+		System.out.println(command);
 		String returnMsg = command.execute();
 		return returnMsg;
 	}
-	
+	public static String executeCommand(Command executable){
+		String returnMsg = executable.execute();
+		return returnMsg;
+	}
+	public static PrettyTimeParser getTimeParser() {
+		return timeParser;
+	}
+
+	public static void setTimeParser(PrettyTimeParser timeParser) {
+		POMPOM.timeParser = timeParser;
+	}
 	public static Storage getStorage() {
 		return storage;
+	}
+	public static void saveSettings(String storageFilePath) throws IOException{
+		storage.setStorageFilePath(storageFilePath);
+		storage.saveSettings();
 	}
 
 	public static Stack getUndoStack() {

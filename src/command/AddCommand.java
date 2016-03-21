@@ -1,7 +1,7 @@
 package command;
 
 import java.util.Date;
-
+import static org.junit.Assert.*;
 import main.POMPOM;
 import utils.Item;
 
@@ -9,10 +9,13 @@ public class AddCommand extends Command {
 	
 	private static final String MESSAGE_TASK_ADDED = "Task added";	
 	private Item task;
+	private boolean isUndo;
 	
 	public AddCommand(String title) {
 		task = new Item();
-		
+		isUndo = false;
+		assertNotNull(title);
+
 		Long id = POMPOM.getStorage().getIdCounter();
 		task.setId(id);
 		task.setTitle(title);
@@ -26,6 +29,8 @@ public class AddCommand extends Command {
 	
 	public AddCommand(String title, Date endDate) {
 		task = new Item();
+		isUndo = false;
+		assertNotNull(title);
 		
 		Long id = POMPOM.getStorage().getIdCounter();
 		task.setId(id);
@@ -42,8 +47,28 @@ public class AddCommand extends Command {
 			String status, String label, Date startDate, Date endDate) {
 
 		task = new Item();
+		isUndo = false;
+		assertNotNull(title);
 		
 		Long id = POMPOM.getStorage().getIdCounter();
+		task.setId(id);
+		task.setTitle(title);
+		task.setDescription(description);
+		task.setPriority(priority);
+		task.setStatus(status);
+		task.setLabel(label);
+		task.setStartDate(startDate);
+		task.setEndDate(endDate);
+		
+	}
+	
+	public AddCommand(Long id, String title, String description, String priority, 
+			String status, String label, Date startDate, Date endDate) {
+
+		task = new Item();
+		isUndo = true;
+		assertNotNull(title);
+		
 		task.setId(id);
 		task.setTitle(title);
 		task.setDescription(description);
@@ -60,7 +85,7 @@ public class AddCommand extends Command {
 	}
 	
 	private Command createCounterAction() {
-		DelCommand counterAction = new DelCommand(task.getId());
+		DelCommand counterAction = new DelCommand(task.getId(), true);
 		return counterAction;
 	}
 	
@@ -71,7 +96,7 @@ public class AddCommand extends Command {
 		
 	public String execute() {
 		returnMsg = MESSAGE_TASK_ADDED;
-		updateUndoStack();
+		if (!isUndo) updateUndoStack();
 		storeTask();
 		return returnMsg;
 	}

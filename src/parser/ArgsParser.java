@@ -3,19 +3,23 @@ import command.InvalidCommand;
 import command.Command;
 
 
-
 public class ArgsParser {
-	boolean noArgs=false;
-	String commandArgumentsString;
+	
+	protected boolean hasNoArguments=false;
+	protected String commandArgumentsString;
+	
 	public ArgsParser(String commandArguments){
 		commandArgumentsString = commandArguments;
+		checkForAnyArguments();
+	}
+
+	private void checkForAnyArguments() {
 		if (commandArgumentsString.equals("")){	
-			noArgs=true;
+			hasNoArguments=true;
 		}
 	}
 	
 	public Command invalidArgs(){
 		return new InvalidCommand(commandArgumentsString);
 	}
-	
 }

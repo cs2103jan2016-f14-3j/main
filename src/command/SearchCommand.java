@@ -2,6 +2,7 @@ package command;
 
 import java.util.ArrayList;
 
+import main.POMPOM;
 import utils.Item;
 
 public class SearchCommand extends Command {
@@ -20,8 +21,7 @@ public class SearchCommand extends Command {
 		
 		ArrayList<Item> taskList = getTaskList();
 		for (int i = 0; i < taskList.size(); i++) {
-			Item currentTask = getTask(i);
-			
+			Item currentTask = taskList.get(i);
 			if (currentTask.getTitle().contains(keyword)) {
 				searchResults.add(currentTask);
 			}
@@ -32,7 +32,8 @@ public class SearchCommand extends Command {
 	}
 	
 	public String execute() {
-		search();
+		POMPOM.setSearchList(search());
+		POMPOM.setChangedTab("Search");
 		returnMsg = String.format(MESSAGE_SEARCH, searchResults.size());
 		return returnMsg;
 	}
