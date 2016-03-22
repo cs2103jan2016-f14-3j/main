@@ -1,49 +1,20 @@
 package command;
 
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import static org.junit.Assert.*;
 import main.POMPOM;
 import utils.Item;
 
 public class AddCommand extends Command {
 	
-	private static final String MESSAGE_TASK_ADDED = "Task added";	
+	private static final String MESSAGE_TASK_ADDED = "%s added";	
 	private Item task;
 	private boolean isUndo;
 	
-	public AddCommand(String title) {
-		task = new Item();
-		isUndo = false;
-		assertNotNull(title);
-
-		Long id = POMPOM.getStorage().getIdCounter();
-		task.setId(id);
-		task.setTitle(title);
-		task.setDescription(null);
-		task.setPriority(null);
-		task.setStatus(null);
-		task.setLabel(null);
-		task.setStartDate(null);
-		task.setEndDate(null);
-	}
-	
-	public AddCommand(String title, Date endDate) {
-		task = new Item();
-		isUndo = false;
-		assertNotNull(title);
-		
-		Long id = POMPOM.getStorage().getIdCounter();
-		task.setId(id);
-		task.setTitle(title);
-		task.setDescription(null);
-		task.setPriority(null);
-		task.setStatus(null);
-		task.setLabel(null);
-		task.setStartDate(null);
-		task.setEndDate(endDate);
-	}
-	
-	public AddCommand(String title, String description, String priority, 
+	public AddCommand(String type, String title, String description, String priority, 
 			String status, String label, Date startDate, Date endDate) {
 
 		task = new Item();
@@ -52,6 +23,7 @@ public class AddCommand extends Command {
 		
 		Long id = POMPOM.getStorage().getIdCounter();
 		task.setId(id);
+		task.setType(type);
 		task.setTitle(title);
 		task.setDescription(description);
 		task.setPriority(priority);
@@ -60,9 +32,10 @@ public class AddCommand extends Command {
 		task.setStartDate(startDate);
 		task.setEndDate(endDate);
 		
+		logger.log(Level.INFO, "AddCommand initialized");
 	}
 	
-	public AddCommand(Long id, String title, String description, String priority, 
+	public AddCommand(Long id, String type, String title, String description, String priority, 
 			String status, String label, Date startDate, Date endDate) {
 
 		task = new Item();
@@ -70,6 +43,7 @@ public class AddCommand extends Command {
 		assertNotNull(title);
 		
 		task.setId(id);
+		task.setType(type);
 		task.setTitle(title);
 		task.setDescription(description);
 		task.setPriority(priority);
@@ -78,6 +52,7 @@ public class AddCommand extends Command {
 		task.setStartDate(startDate);
 		task.setEndDate(endDate);
 		
+		logger.log(Level.INFO, "Counter action AddCommand initialized");
 	}
 	
 	private void storeTask() {
@@ -95,9 +70,18 @@ public class AddCommand extends Command {
 	}
 		
 	public String execute() {
-		returnMsg = MESSAGE_TASK_ADDED;
+		
 		if (!isUndo) updateUndoStack();
 		storeTask();
+		
+		if (task.getType().equals(POMPOM.LABEL_EVENT)) {
+			returnMsg = String.format(MESSAGE_TASK_ADDED, POMPOM.LABEL_EVENT);
+			POMPOM.setCurrentTab(POMPOM.LABEL_EVENT);
+		} else {
+			returnMsg = String.format(MESSAGE_TASK_ADDED, POMPOM.LABEL_TASK);
+			POMPOM.setCurrentTab(POMPOM.LABEL_TASK);
+		}
+		
 		return returnMsg;
 	}
 	
