@@ -4,12 +4,18 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
 
 <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="317.0" prefWidth="406.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.SettingsController">
    <children>
-      <Label layoutX="14.0" layoutY="36.0" text="Task Storage Location:" />
-      <TextField fx:id="storageLocationString" layoutX="161.0" layoutY="31.0" />
-      <Button layoutX="334.0" layoutY="31.0" mnemonicParsing="false" text="Open.." />
-      <Button fx:id="save" layoutX="177.0" layoutY="212.0" mnemonicParsing="false" onAction="#clickSave" text="Save" />
+      <Label layoutX="23.0" layoutY="66.0" text="Task Storage Location:" />
+      <TextField fx:id="storageLocationString" layoutX="170.0" layoutY="61.0" />
+      <Button fx:id="selectFile" layoutX="343.0" layoutY="61.0" mnemonicParsing="false" onAction="#showSingleFileChooser" text="Open.." />
+      <Button fx:id="saveFile" layoutX="112.0" layoutY="32.0" mnemonicParsing="false" onAction="#clickSave" text="Save" />
+      <Label fx:id="label" layoutX="24.0" layoutY="31.0" text="Settings">
+         <font>
+            <Font name="Tw Cen MT Bold" size="24.0" />
+         </font>
+      </Label>
    </children>
 </Pane>

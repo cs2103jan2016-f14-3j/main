@@ -17,7 +17,6 @@ import javafx.scene.control.SplitMenuButton;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import main.POMPOM;
-import gui.Controller;
 import utils.Item;
 import gui.Controller;
 
@@ -49,14 +48,15 @@ public class NewTaskController implements Initializable{
 	Button newTaskCancel;
 	
 	private Stage dialogStage;
-	Controller control = new Controller();
     POMPOM pompom = new POMPOM();
 	private Controller controller;
 	private boolean okClicked = false;
     String title;
     LocalDate startDate;
+    String formattedStartDate;
     String startTime;
     LocalDate endDate;
+    String formattedEndDate;
     String endTime;
     String label;
     String priority;
@@ -77,25 +77,32 @@ public class NewTaskController implements Initializable{
 	}
 	
 	public void setDialogStage(Stage dialogStage) {
-		this.dialogStage = dialogStage;					
-	}	
-	
-	
-	@FXML
-	private void handleSave() throws IOException, ParseException{
-		controller = new Controller();
+		this.dialogStage = dialogStage;
+	}
+
+	public void getItem() throws ParseException {		
 		title = newTaskTitle.getText();
 		startDate = newStartDate.getValue();
+		formattedStartDate = startDate.toString();
 		startTime = newStartTime.getText();
 		endDate = newEndDate.getValue();
+		formattedEndDate = endDate.toString();
 		endTime = newEndTime.getText();
 		label = newLabel.getText();
 		priority = newPriority.getText();
-		String input = "add " + title + " null " + priority + " Upcoming " + label  + " " + startDate + "/" + startTime + " " + endDate + "/" + endTime;
+	}
+
+	@FXML
+	private void handleSave() throws IOException, ParseException{
+		controller = new Controller();
+		getItem();
+		String input = "add " + title + " null " + priority + " Upcoming " + label  + " " + formattedStartDate + "/" + startTime + " " + formattedEndDate + "/" + endTime;
 		System.out.println(input);
 		pompom.execute(input);
 		okClicked = true;
 		dialogStage.close();
+		//controller.configureTable();
+        //POMPOM.getStorage().saveStorage();
 	}
 	
 	@FXML

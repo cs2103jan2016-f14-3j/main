@@ -86,15 +86,16 @@
                         <Font name="Tw Cen MT" size="14.0" />
                      </font>
                   </TextField>
-                  <HBox id="HBox" alignment="CENTER" layoutX="367.0" layoutY="-13.0" prefHeight="26.0" prefWidth="217.0" spacing="15.0">
+                  <HBox id="HBox" alignment="CENTER" layoutX="213.0" layoutY="-13.0" prefHeight="26.0" prefWidth="371.0" spacing="15.0">
                      <children>
                         <Button id="button1" fx:id="newTask" onAction="#newTaskFired" text="New" />
                         <Button id="button1" fx:id="editTask" text="Edit" />
                         <Button id="button1" fx:id="deleteTask" text="Delete" />
+                        <TextField prefHeight="23.0" prefWidth="170.0" promptText="Search:" />
                      </children>
                   </HBox>
                   <Button fx:id="enterCommand" layoutX="526.0" layoutY="441.0" mnemonicParsing="false" onAction="#enterCommandFired" text="Enter" />
-                  <Label fx:id="returnMsg" layoutX="14.0" layoutY="476.0" prefHeight="15.0" prefWidth="526.0">
+                  <Label fx:id="returnMsg" layoutX="14.0" layoutY="476.0" prefHeight="15.0" prefWidth="109.0">
                      <font>
                         <Font name="Andale Mono" size="10.0" />
                      </font>

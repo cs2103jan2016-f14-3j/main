@@ -1,5 +1,34 @@
 {
   "Username": "Not Set",
-  "IdCounter": 26,
-  "TaskList": []
+  "IdCounter": 21,
+  "TaskList": [
+    {
+      "Id": 20,
+      "Type": "Task",
+      "Title": "dothisnow",
+      "Status": "ongoing",
+      "EndDate": "Tue Mar 29 22:00:35 SGT 2016"
+    },
+    {
+      "Id": 21,
+      "Type": "Event",
+      "Title": "party@myhouse",
+      "Status": "pending",
+      "StartDate": "Wed Mar 23 19:00:00 SGT 2016",
+      "EndDate": "Wed Mar 23 21:00:00 SGT 2016"
+    },
+    {
+      "Id": 19,
+      "Type": "Task",
+      "Title": "do cs2103t",
+      "Status": "ongoing",
+      "StartDate": "Tue Mar 22 21:16:13 SGT 2016"
+    },
+    {
+      "Id": 17,
+      "Type": "Task",
+      "Title": "do cs3241",
+      "Status": "floating"
+    }
+  ]
 }

@@ -1,6 +1,7 @@
-/Test/
-/command/
-/gui/
+/main/
 /parser/
+/gui/
+/command/
 /storage/
 /utils/
+/Test/

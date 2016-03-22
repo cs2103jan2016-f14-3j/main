@@ -1,30 +1,34 @@
 package gui;
 
+import java.io.File;
 import java.io.IOException;
 
-import command.PathCommand;
-
-import main.POMPOM;
-import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
-import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
-import javafx.util.Duration;
+import javafx.stage.DirectoryChooser;
+import main.POMPOM;
 
 public class SettingsController {
 	@FXML
-	Button save;
+	Button saveFile;
+	@FXML
+	Button selectFile;
 	@FXML
 	TextField storageLocationString;
 	
     public void clickSave(ActionEvent event) throws IOException {
     	String storageFilePath = storageLocationString.getText();
-    	PathCommand pathCommand = new PathCommand(storageFilePath);
-    	String msgReturned = POMPOM.executeCommand(pathCommand);
-//      POMPOM.saveSettings(storageFilePath);
+        POMPOM.saveSettings(storageFilePath);
     }  
 	
+
+	public void showSingleFileChooser() {
+        DirectoryChooser directoryChooser = new DirectoryChooser(); 
+		File selectedPath = directoryChooser.showDialog(null);
+		storageLocationString.setText(selectedPath.getPath());
+	}
+
 }

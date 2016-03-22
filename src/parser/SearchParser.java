@@ -12,7 +12,7 @@ public class SearchParser extends ArgsParser{
 	}
 	public Command executeCommand(){
 		
-			System.out.println(commandArgumentsString + "lol");
+			//System.out.println(commandArgumentsString + "lol");
 			return new SearchCommand(keyWord);
 		
 		

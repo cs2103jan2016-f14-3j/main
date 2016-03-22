@@ -27,19 +27,6 @@ public class Item implements Comparator<Item>{
 		this.startDate = startDate;
 		this.endDate = endDate;
 	}	
-	public Item(Long id, String title, String priority, String description,
-			String status, String label, Date startDate, Date endDate) {
-		super();
-		this.id = id;
-		this.title = title;
-		this.priority = priority;
-		this.description = description;
-		this.status = status;
-		this.label = label;
-		this.startDate = startDate;
-		this.endDate = endDate;
-	}	
-
 
 	public Item() {
 		

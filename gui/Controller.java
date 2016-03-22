@@ -95,6 +95,7 @@ public class Controller implements Initializable {
 
 	String msg;
 	Stage stage;
+	String currentTabview = "tasks";
 	private Main main = new Main();
 	private boolean initialized = false;
 
@@ -135,11 +136,11 @@ public class Controller implements Initializable {
 		assert inputCommand != null : "fx:id=\"inputCommand\" was not injected: check your FXML file 'POMPOM.fxml'.";
 
 		System.out.println(this.getClass().getSimpleName() + ".initialize");
-		POMPOM.setCurrentTab(POMPOM.LABEL_TASK);
 		displayList = ListClassifier.getTaskList(POMPOM.getStorage().getTaskList());
 		configureButtons();
 		configureTable();
 		initialized = true;
+		System.out.println("test 112");
 
 	}
 
@@ -163,6 +164,7 @@ public class Controller implements Initializable {
 
 	void configureTable() {
 		table.setEditable(true);
+
 		taskID.setCellValueFactory(new PropertyValueFactory<Item, Number>("id"));
 		taskName.setCellValueFactory(new PropertyValueFactory<Item, String>(
 				"title"));
@@ -179,12 +181,120 @@ public class Controller implements Initializable {
 						"priority"));
 		taskStatus.setCellValueFactory(new PropertyValueFactory<Item, String>(
 				"status"));
+//		switchToTab(currentTabview);
 		tableContent = FXCollections.observableArrayList(displayList);
 		table.setItems(tableContent);
 		table.refresh();
 
 	}
+
+
+
+	// New methods by wei lip
+
+	public void switchToTab(String type) {
+		SingleSelectionModel<Tab> selectionModel = tabViews.getSelectionModel();
+		if (type == "Tasks") {
+			selectionModel.select(taskTab);
+			currentTabview = "Tasks";
+			taskTabAction();
+		} else if (type == "CompletedTasks") {
+			selectionModel.select(eventTab);
+			completedTaskTabAction();
+			currentTabview = "CompletedTasks";
+		} else if (type == "Events") {
+			selectionModel.select(eventTab);
+			eventTabAction();
+			currentTabview = "Events";
+		} else if (type == "CompletedEvents") {
+			selectionModel.select(eventTab);
+			completedEventTabAction();
+			currentTabview = "CompletedEvents";
+		}else if (type == "Search") {
+			selectionModel.select(searchTab);
+			searchTabAction();
+			currentTabview = "Search";
+		}
+		return;
+	}
+
+	public void taskTabAction() {
+		if (!initialized)
+			return;
+		displayList = ListClassifier.getTaskList(POMPOM.getStorage().getTaskList());
+		currentTabview = "Tasks";
+		configureTable();
+	}
+
+	public void completedTaskTabAction() {
+		if (!initialized){
+			return;
+		}
+		currentTabview = "CompletedTasks";
+		displayList = ListClassifier
+				.getDoneTaskList(POMPOM.getStorage().getTaskList());
+		configureTable();
+	}
+
+	public void eventTabAction() {
+		displayList = ListClassifier.getEventList(POMPOM.getStorage().getTaskList());
+		configureTable();
+		currentTabview = "Events";
+	}
+
+	public void completedEventTabAction() {
+		displayList = ListClassifier.getDoneEventList(POMPOM.getStorage()
+				.getTaskList());
+		configureTable();
+		currentTabview = "CompletedEvents";
+	}
+	public void searchTabAction(){
+		if(POMPOM.getSearchList() != null)displayList = POMPOM.getSearchList();
+		configureTable();
+		currentTabview = "Search";
+	}
+
+	// //////////Wei LIP////////////
+	public void enterCommandFired(ActionEvent event) throws IOException {
+		Timeline timeline = new Timeline();
+		String input = inputCommand.getText();
+		inputCommand.clear();
+		msg = pompom.execute(input);
+		checkTab();
+		timeline.getKeyFrames().add(
+				new KeyFrame(Duration.seconds(0), new KeyValue(returnMsg
+						.textProperty(), msg)));
+		timeline.getKeyFrames().add(
+				new KeyFrame(Duration.seconds(2), new KeyValue(returnMsg
+						.textProperty(), " ")));
+		timeline.play();
+		configureTable();
+		POMPOM.getStorage().saveStorage();
+		inputCommand.setPromptText("Command:");
+	}
 	
+	public void enterCommandKey(KeyEvent event) throws IOException {
+		Timeline timeline = new Timeline();
+		if (event.getCode().equals(KeyCode.ENTER)) {
+			String input = inputCommand.getText();
+			msg = pompom.execute(input);
+			checkTab();
+			timeline.getKeyFrames().add(
+					new KeyFrame(Duration.seconds(2), new KeyValue(returnMsg
+							.textProperty(), msg)));
+			timeline.play();
+			returnMsg.setText("");
+			POMPOM.getStorage().saveStorage();
+			inputCommand.clear();
+			inputCommand.setPromptText("Command:");
+
+		}
+
+	}
+	//Check for tab switch by invokation of command
+	public void checkTab(){
+		if(POMPOM.getChangedTab() == "Search") switchToTab("Search");
+	}
 	public void newTaskFired(ActionEvent event) {
 		main.newTaskDialog();
 	}
@@ -206,112 +316,4 @@ public class Controller implements Initializable {
 		stage.setScene(scene);
 		stage.show();
 	}
-
-
-
-	// New methods by wei lip
-
-	public void switchToTab(String type) {
-//		System.out.println("SWITCH TO TAB: " + type);
-		SingleSelectionModel<Tab> selectionModel = tabViews.getSelectionModel();
-		if (type.equals(POMPOM.LABEL_TASK.toLowerCase())) {
-			selectionModel.select(taskTab);
-			taskTabAction();
-		} else if (type.equals(POMPOM.LABEL_COMPLETED_TASK.toLowerCase())) {
-			selectionModel.select(taskTab);
-			completedTaskTabAction();
-		} else if (type.equals(POMPOM.LABEL_EVENT.toLowerCase())) {
-			selectionModel.select(eventTab);
-			eventTabAction();
-		} else if (type.equals(POMPOM.LABEL_COMPLETED_EVENT.toLowerCase())) {
-			selectionModel.select(eventTab);
-			completedEventTabAction();
-		}else if (type.equals(POMPOM.LABEL_SEARCH.toLowerCase())) {
-			System.out.println("SEARCH TESET");
-			selectionModel.select(searchTab);
-			searchTabAction();
-		}
-		return;
-	}
-
-	public void taskTabAction() {
-		if (!initialized)
-			return;
-		displayList = ListClassifier.getTaskList(POMPOM.getStorage().getTaskList());
-		configureTable();
-		POMPOM.setCurrentTab(POMPOM.LABEL_TASK);
-	}
-
-	public void completedTaskTabAction() {
-		if (!initialized){
-			return;
-		}
-		displayList = ListClassifier
-				.getDoneTaskList(POMPOM.getStorage().getTaskList());
-		configureTable();
-		POMPOM.setCurrentTab(POMPOM.LABEL_COMPLETED_TASK);
-	}
-
-	public void eventTabAction() {
-		displayList = ListClassifier.getEventList(POMPOM.getStorage().getTaskList());
-		configureTable();
-		POMPOM.setCurrentTab(POMPOM.LABEL_EVENT);
-	}
-
-	public void completedEventTabAction() {
-		displayList = ListClassifier.getDoneEventList(POMPOM.getStorage()
-				.getTaskList());
-		configureTable();
-		POMPOM.setCurrentTab(POMPOM.LABEL_COMPLETED_EVENT);
-	}
-	public void searchTabAction(){
-		if(POMPOM.getSearchList() != null){
-			displayList = POMPOM.getSearchList();
-		}
-		configureTable();
-		POMPOM.setCurrentTab(POMPOM.LABEL_SEARCH);
-	}
-
-	// //////////           Wei LIP             ////////////
-	public void enterCommandFired(ActionEvent event) throws IOException {
-		Timeline timeline = new Timeline();
-		String input = inputCommand.getText();
-		inputCommand.clear();
-		msg = pompom.execute(input);
-		switchToTab(POMPOM.currentTab.toLowerCase());
-		timeline.getKeyFrames().add(
-				new KeyFrame(Duration.seconds(0), new KeyValue(returnMsg
-						.textProperty(), msg)));
-		timeline.getKeyFrames().add(
-				new KeyFrame(Duration.seconds(2), new KeyValue(returnMsg
-						.textProperty(), " ")));
-		timeline.play();
-		configureTable();
-		POMPOM.getStorage().saveStorage();
-		inputCommand.setPromptText("Command:");
-	}
-	
-	public void enterCommandKey(KeyEvent event) throws IOException {
-		Timeline timeline = new Timeline();
-		if (event.getCode().equals(KeyCode.ENTER)) {
-			String input = inputCommand.getText();
-			msg = pompom.execute(input);
-			switchToTab(POMPOM.currentTab.toLowerCase());
-			timeline.getKeyFrames().add(
-					new KeyFrame(Duration.seconds(2), new KeyValue(returnMsg
-							.textProperty(), msg)));
-			timeline.play();
-			returnMsg.setText("");
-			POMPOM.getStorage().saveStorage();
-			inputCommand.clear();
-			inputCommand.setPromptText("Command:");
-
-		}
-
-	}
-	
-	
-
-	
-
 }

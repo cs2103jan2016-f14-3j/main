@@ -2,9 +2,8 @@ package parser;
 
 import command.Command;
 import command.DelCommand;
-import command.UndoCommand;
-
 import java.text.SimpleDateFormat;
+import java.util.logging.Level;
 
 
 public class DeleteParser extends ArgsParser{
@@ -33,6 +32,7 @@ public class DeleteParser extends ArgsParser{
 		} catch (Exception e){
 			InvalidParser InvalidArgumentParser = new InvalidParser(commandArgumentsString);
 			outputCommand = InvalidArgumentParser.executeCommand();
+			logger.log(Level.INFO,"tried to parse '"+commandArgumentsString+"' into integer but failed.");
 		}
 	}	
 }
