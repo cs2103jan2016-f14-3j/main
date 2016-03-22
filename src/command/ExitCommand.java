@@ -5,7 +5,6 @@ import java.io.IOException;
 import main.POMPOM;
 
 public class ExitCommand {
-	
 	public ExitCommand() {
 		try {
 			POMPOM.getStorage().saveStorage();
