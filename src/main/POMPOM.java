@@ -13,35 +13,24 @@ import storage.Storage;
 import utils.Item;
 
 public class POMPOM {
-	
-	protected static final String STATUS_PENDING = "pending";
-	protected static final String STATUS_ONGOING = "ongoing";
-	protected static final String STATUS_COMPLETED = "completed";
-	protected static final String STATUS_OVERDUE = "overdue";
-	
-	private static Storage storage; 
+
+	public static final String STATUS_PENDING = "pending";
+	public static final String STATUS_ONGOING = "ongoing";
+	public static final String STATUS_COMPLETED = "completed";
+	public static final String STATUS_OVERDUE = "overdue";
+	public static final String STATUS_FLOATING = "floating";
+
+	public static final String LABEL_TASK = "Task";
+	public static final String LABEL_COMPLETED_TASK = "CompletedTask";
+	public static final String LABEL_EVENT = "Event";
+	public static final String LABEL_COMPLETED_EVENT = "CompletedEvent";
+	public static final String LABEL_SEARCH = "Search";
+
+	private static Storage storage;
 	private static Stack<Command> undoStack;
 	public static PrettyTimeParser timeParser;
 	public static ArrayList<Item> searchList;
-	public static String changedTab;
-	
-
-
-	public static String getChangedTab() {
-		return changedTab;
-	}
-
-	public static void setChangedTab(String setTab) {
-		POMPOM.changedTab = setTab;
-	}
-
-	public static ArrayList<Item> getSearchList() {
-		return searchList;
-	}
-
-	public static void setSearchList(ArrayList<Item> searchList) {
-		POMPOM.searchList = searchList;
-	}
+	public static String currentTab;
 
 	public POMPOM() {
 		try {
@@ -51,7 +40,7 @@ public class POMPOM {
 			e.printStackTrace();
 		}
 	}
-	
+
 	private void init() throws IOException {
 		try {
 			storage = new Storage();
@@ -64,40 +53,69 @@ public class POMPOM {
 			e.printStackTrace();
 		}
 	}
-	
-	private void refreshStatus() {
-		ArrayList<Item> taskList =  storage.getTaskList();
+
+	public void refreshStatus() {
+		ArrayList<Item> taskList = storage.getTaskList();
 		Date currentDate = new Date();
-		
+
 		for (int i = 0; i < taskList.size(); i++) {
 			Item currentTask = taskList.get(i);
 			Date taskStartDate = currentTask.getStartDate();
 			Date taskEndDate = currentTask.getEndDate();
-			
-			if (currentDate.compareTo(taskStartDate) < 0) {
+
+			if (taskStartDate == null && taskEndDate == null) {
+				currentTask.setStatus(STATUS_FLOATING);
+
+			} else if (taskStartDate == null) {
+
+				if (currentDate.before(taskEndDate)) {
+					currentTask.setStatus(STATUS_ONGOING);
+				} else if (!currentTask.getStatus().equals(STATUS_COMPLETED)) {
+					currentTask.setStatus(STATUS_OVERDUE);
+				}
+
+			} else if (taskEndDate == null) {
+
+				if (taskStartDate.after(currentDate)) {
+					currentTask.setStatus(STATUS_PENDING);
+				} else if (taskStartDate.before(currentDate) && isNotCompleted(currentTask)) {
+					currentTask.setStatus(STATUS_ONGOING);
+				}
+
+			} else if (currentDate.before(taskStartDate)) {
 				currentTask.setStatus(STATUS_PENDING);
-				
-			} else if (currentDate.compareTo(taskStartDate) >= 0 && currentDate.compareTo(taskEndDate) < 0) {
+
+			} else if (currentDate.compareTo(taskStartDate) >= 0 && currentDate.before(taskEndDate)
+					&& isNotCompleted(currentTask)) {
 				currentTask.setStatus(STATUS_ONGOING);
-				
-			} else if (currentDate.compareTo(taskEndDate) > 0 && !currentTask.getStatus().equals(STATUS_COMPLETED)) {
+
+			} else if (currentDate.after(taskEndDate) && isNotCompleted(currentTask)) {
 				currentTask.setStatus(STATUS_OVERDUE);
 
 			}
 		}
 	}
-	
+
 	public String execute(String input) {
 		Parser parser = new Parser();
 		Command command = parser.executeCommand(input);
 		System.out.println(command);
 		String returnMsg = command.execute();
+		refreshStatus();
 		return returnMsg;
 	}
-	public static String executeCommand(Command executable){
+
+	public static String executeCommand(Command executable) {
 		String returnMsg = executable.execute();
 		return returnMsg;
 	}
+	
+	private static boolean isNotCompleted(Item item) {
+		
+		return !item.getStatus().equals(STATUS_COMPLETED);
+		
+	}
+
 	public static PrettyTimeParser getTimeParser() {
 		return timeParser;
 	}
@@ -105,16 +123,34 @@ public class POMPOM {
 	public static void setTimeParser(PrettyTimeParser timeParser) {
 		POMPOM.timeParser = timeParser;
 	}
+
 	public static Storage getStorage() {
 		return storage;
-	}
-	public static void saveSettings(String storageFilePath) throws IOException{
-		storage.setStorageFilePath(storageFilePath);
-		storage.saveSettings();
 	}
 
 	public static Stack getUndoStack() {
 		return undoStack;
 	}
-	
+
+	public static void saveSettings(String storageFilePath) throws IOException {
+		storage.setStorageFilePath(storageFilePath);
+		storage.saveSettings();
+	}
+
+	public static String getCurrentTab() {
+		return currentTab;
+	}
+
+	public static void setCurrentTab(String setTab) {
+		POMPOM.currentTab = setTab;
+	}
+
+	public static ArrayList<Item> getSearchList() {
+		return searchList;
+	}
+
+	public static void setSearchList(ArrayList<Item> searchList) {
+		POMPOM.searchList = searchList;
+	}
+
 }
