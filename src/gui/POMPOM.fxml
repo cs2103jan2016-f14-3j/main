@@ -2,6 +2,8 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
@@ -22,7 +24,7 @@
                      <font>
                         <Font name="Microsoft Yi Baiti" size="18.0" />
                      </font></Label>
-                  <ImageView accessibleRole="BUTTON" fitHeight="32.0" fitWidth="200.0" layoutY="28.0" styleClass="button-clicked">
+                  <ImageView fx:id="dashBoard" accessibleRole="BUTTON" fitHeight="32.0" fitWidth="200.0" layoutY="28.0" onMouseClicked="#toDashBoardView" styleClass="button-clicked">
                      <image>
                         <Image url="@images/dashboardClicked.png" />
                      </image>
@@ -32,7 +34,7 @@
                         <Image url="@images/Calendar.png" />
                      </image>
                   </ImageView>
-                  <ImageView fitHeight="33.0" fitWidth="200.0" layoutY="93.0">
+                  <ImageView fx:id="settings" fitHeight="33.0" fitWidth="200.0" layoutY="93.0" onMouseClicked="#toSettingsView">
                      <image>
                         <Image url="@images/Settings.png" />
                      </image>
@@ -46,23 +48,37 @@
             <Image url="@images/logo.png" />
          </image>
       </ImageView>
-      <Pane layoutX="200.0" prefHeight="566.0" prefWidth="598.0" styleClass="content">
+      <Pane fx:id="content" layoutX="200.0" prefHeight="566.0" prefWidth="598.0" styleClass="content">
          <children>
-            <Label layoutX="14.0" layoutY="21.0" text="Dashboard">
+            <Label fx:id="label" layoutX="14.0" layoutY="21.0" text="Dashboard">
                <font>
                   <Font name="Tw Cen MT Bold" size="24.0" />
                </font></Label>
             <AnchorPane layoutY="46.0" prefHeight="515.0" prefWidth="598.0">
                <children>
+                  <TabPane fx:id="tabViews" layoutX="8.0" prefHeight="200.0" prefWidth="349.0" tabClosingPolicy="UNAVAILABLE">
+                    <tabs>
+                      <Tab fx:id="taskTab" onSelectionChanged="#taskTabAction" text="Task" />
+                      <Tab fx:id="completedTaskTab" onSelectionChanged="#completedTaskTabAction" text="CompletedTask" />
+                        <Tab fx:id="eventTab" onSelectionChanged="#eventTabAction" text="Events" />
+                        <Tab fx:id="completedEventTab" onSelectionChanged="#completedEventTabAction" text="CompletedEvents" />
+                        <Tab fx:id="searchTab" onSelectionChanged="#searchTabAction" text="Search">
+                          <content>
+                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                          </content>
+                        </Tab>
+                    </tabs>
+                  </TabPane>
                   <TableView fx:id="table" layoutX="14.0" layoutY="32.0" prefHeight="397.0" prefWidth="564.0">
                     <columns>
-                        <TableColumn prefWidth="32.0" />
-                      <TableColumn fx:id="taskID" prefWidth="52.0" text="ID" />
-                      <TableColumn fx:id="taskName" prefWidth="92.0" text="Task" />
-                        <TableColumn fx:id="taskDateTime" prefWidth="92.0" text="Date/Time" />
-                        <TableColumn fx:id="taskLabel" prefWidth="91.0" text="Label" />
-                        <TableColumn fx:id="taskPriority" prefWidth="111.0" text="Priority" />
-                        <TableColumn fx:id="taskStatus" prefWidth="93.0" text="Status" />
+                        <TableColumn fx:id="checkBox" prefWidth="19.0" />
+                      <TableColumn fx:id="taskID" prefWidth="41.0" text="ID" />
+                      <TableColumn fx:id="taskName" prefWidth="69.0" text="Task" />
+                        <TableColumn fx:id="taskStartDateTime" prefWidth="122.0" text="Start Date / Time" />
+                        <TableColumn fx:id="taskEndDateTime" prefWidth="102.0" text="End Date/Time" />
+                        <TableColumn fx:id="taskLabel" prefWidth="63.0" text="Label" />
+                        <TableColumn fx:id="taskPriority" maxWidth="83.0" prefWidth="60.0" text="Priority" />
+                        <TableColumn fx:id="taskStatus" prefWidth="87.0" text="Status" />
                     </columns>
                   </TableView>
                   <TextField fx:id="inputCommand" layoutX="14.0" layoutY="442.0" onKeyPressed="#enterCommandKey" prefHeight="22.0" prefWidth="501.0" promptText="Command:">
@@ -70,15 +86,19 @@
                         <Font name="Tw Cen MT" size="14.0" />
                      </font>
                   </TextField>
-                  <HBox id="HBox" alignment="CENTER" layoutX="299.0" layoutY="-13.0" prefHeight="26.0" prefWidth="285.0" spacing="15.0">
+                  <HBox id="HBox" alignment="CENTER" layoutX="367.0" layoutY="-13.0" prefHeight="26.0" prefWidth="217.0" spacing="15.0">
                      <children>
-                        <Button id="button1" fx:id="newTask" text="New" />
+                        <Button id="button1" fx:id="newTask" onAction="#newTaskFired" text="New" />
                         <Button id="button1" fx:id="editTask" text="Edit" />
-                        <Button fx:id="saveTask" mnemonicParsing="false" text="Save" />
                         <Button id="button1" fx:id="deleteTask" text="Delete" />
                      </children>
                   </HBox>
                   <Button fx:id="enterCommand" layoutX="526.0" layoutY="441.0" mnemonicParsing="false" onAction="#enterCommandFired" text="Enter" />
+                  <Label fx:id="returnMsg" layoutX="14.0" layoutY="476.0" prefHeight="15.0" prefWidth="526.0">
+                     <font>
+                        <Font name="Andale Mono" size="10.0" />
+                     </font>
+                  </Label>
                </children>
             </AnchorPane>
          </children>

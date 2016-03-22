@@ -1,0 +1,22 @@
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: lb3
+Build-Jdk: 1.7.0_55
+Specification-Title: PrettyTime - Natural Language Processing
+Specification-Version: 4.0.1.Final
+Specification-Vendor: OCPsoft
+Implementation-Title: PrettyTime - Natural Language Processing
+Implementation-Version: 4.0.1.Final
+Implementation-Vendor-Id: org.ocpsoft.prettytime
+Implementation-Vendor: OCPsoft
+Implementation-URL: http://ocpsoft.org/prettytime/prettytime-nlp/
+
+Name: Build-Information
+Os-Name: Mac OS X
+Java-Version: 1.7.0_55
+Scm-Url: http://github.com/ocpsoft/prettytime/prettytime-nlp
+Java-Vendor: Oracle Corporation
+Os-Version: 10.10.5
+Os-Arch: x86_64
+

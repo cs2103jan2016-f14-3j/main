@@ -3,19 +3,23 @@ package utils;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class UserTaskList {
+/**
+ * @author A0121628L
+ *
+ */
+public class UserItemList {
 	private String userName;
-	private Item[] taskArray;
+	private long IdCounter;
+	private ArrayList<Item> taskArray;
 	
-	public UserTaskList(String userName, Item[] taskArray) {
+	public UserItemList(String userName, ArrayList<Item> taskArray) {
 		this.userName = userName;
 		this.taskArray = taskArray;
 	}
 
-	public UserTaskList() {
-
+	public UserItemList() {
 	}
-
+	
 	public String getUserName() {
 		return userName;
 	}
@@ -24,20 +28,21 @@ public class UserTaskList {
 		this.userName = userName;
 	}
 
-	public Item[] getTaskArray() {
+	public ArrayList<Item> getTaskArray() {
 		return taskArray;
 	}
 
-	public void setTaskArray(Item[] taskArray) {
+	public void setTaskArray(ArrayList<Item> taskArray) {
 		this.taskArray = taskArray;
 	}
-
-	public ArrayList<Item> getTaskArrayList() {
-		if (taskArray == null)
-			return null;
-		return new ArrayList<Item>(Arrays.asList(taskArray));
+	public long getIdCounter() {
+		return IdCounter;
 	}
 
+	public void setIdCounter(long idCounter) {
+		IdCounter = idCounter;
+	}
+	// Debugging Method.
 	public void printInfo() {
 		if (userName == null)
 			System.out.println("User not set");
@@ -47,11 +52,12 @@ public class UserTaskList {
 		}
 
 		System.out.println("UserName: " + userName);
-		for (int i = 0; i < taskArray.length; i++) {
-			taskArray[i].printInfo();		
+		for (int i = 0; i < taskArray.size(); i++) {
+			taskArray.get(i).printInfo();		
 
 		}
 
 	}
+	
 
 }

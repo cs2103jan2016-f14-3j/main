@@ -1,51 +1,118 @@
 package parser;
 
-import command.AddCommand;
+import org.ocpsoft.prettytime.nlp.PrettyTimeParser;
+import org.ocpsoft.prettytime.nlp.parse.DateGroup;
+import main.POMPOM;
+
 import static org.junit.Assert.*;
 import java.util.Date;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.util.List;
+
 import org.junit.Test;
 
-public class ParserTest{
+pu
+blic class ParserTest{
 
-	Parser parser = new Parser();
+	Parser parser = Parser.getInstance();
+	POMPOM pompom = new POMPOM();
+	PrettyTimeParser timeParser = pompom.timeParser;
+	
+//	@Test
+	public void testPrettyTime(){
+		List<DateGroup> dgl = timeParser.parseSyntax("16 mar");		
+		assertEquals("16 mar",dgl.get(0).getText());
+	//	System.out.println(dgl.get(0).getText());
+	}
+	
+//	@Test
+	public void testAddCommand1(){
+		AddParser add = new AddParser("do project");
+		System.out.println(add.getTitle());
+		assertEquals("do project",add.getTitle());
+	}
+	
+//	@Test
+	public void testAddCommand2(){
+		AddParser add = new AddParser("do project 28 march");
+		System.out.println(add.getTitle());
+		assertEquals("do project",add.getTitle());
+		Date endDate= timeParser.parseSyntax("28 march").get(0).getDates().get(0);
+		assertEquals(endDate.compareTo(add.getEndDate()),1);	
+	}
+	
+//	@Test
+	public void testAddCommand3(){
+		AddParser add = new AddParser("do project e:28 march f:16 march");
+		System.out.println(add.getTitle());
+		assertEquals("do project",add.getTitle());
+		Date endDate= timeParser.parseSyntax("28 march").get(0).getDates().get(0);
+		Date startDate= timeParser.parseSyntax("16 march").get(0).getDates().get(0);
+		assertEquals(endDate.compareTo(add.getEndDate()),1);	
+		assertEquals(startDate.compareTo(add.getStartDate()),1);	
+	}
+	
+//	@Test
+	public void testAddCommand4(){
+		AddParser add = new AddParser("28 march do project");
+		System.out.println(add.getTitle());
+		assertEquals("do project",add.getTitle());
+		Date endDate= timeParser.parseSyntax("28 march").get(0).getDates().get(0);
+		assertEquals(endDate.compareTo(add.getEndDate()),1);	
+	}
+	
+//	@Test
+	public void testAddCommand5(){
+		AddParser add = new AddParser("e:28 march f:16 march do project");
+		System.out.println(add.getTitle());
+		assertEquals("do project",add.getTitle());
+		Date endDate= timeParser.parseSyntax("28 march").get(0).getDates().get(0);
+		assertEquals(endDate.compareTo(add.getEndDate()),1);	
+	}
+	
+//	@Test
+	public void testAddCommand6(){
+		AddParser add = new AddParser("f:16 march e:28 march do project");
+		System.out.println(add.getTitle());
+		assertEquals("do project",add.getTitle());
+		Date endDate= timeParser.parseSyntax("28 march").get(0).getDates().get(0);
+		assertEquals(endDate.compareTo(add.getEndDate()),1);	
+	}
+	
+//	@Test
+	public void testAddCommand7(){
+		AddParser add = new AddParser("do cs2103 every friday e:28 march");
+		System.out.println(add.getTitle());
+		assertEquals("do cs2103",add.getTitle());
+		Date endDate= timeParser.parseSyntax("28 march").get(0).getDates().get(0);
+		assertEquals(endDate.compareTo(add.getEndDate()),1);	
+	}
 	
 	//@Test
-
-	@Test
-	public void testAddParser() {
-		//edit 1 status asd
-		//add rewrq vss afd rae vavd 01-01-1999/00:00 01/02/1999/00:00
-		//add lol lol lol lol lol 01-01-1999/00:00 01/02/1999/00:00
-		//edit 1 title asd
-		//delete 1
-		String userCommand = "lol lol lol lol lol 01-01-1999/00:00 01/02/1999/00:00";
-		Date parsedStartDate =null;
-	 	Date parsedEndDate = null;
-		AddParser ap = new AddParser(userCommand);
-		SimpleDateFormat dateFormatter = new SimpleDateFormat("dd-MM-yyyy/HH:mm");
-		String startDate = "01-01-1999/00:00";
-		String endDate = "01-02-1999/00:00";
-		try{			
-			parsedStartDate = dateFormatter.parse(startDate);
-		    parsedEndDate = dateFormatter.parse(endDate);
-		} catch (ParseException e){
-			
-			System.out.println("err!");
-			
-		}
-	
-		AddCommand ac = new AddCommand("lol","lol","lol","lol","lol",parsedStartDate,parsedEndDate);
-		assertEquals(ap.executeCommand(), ac);
-	}
+	public void testAddCommand8(){
+		AddParser add = new AddParser("do cs2103 e:28 march every friday");
+		assertEquals("do cs2103",add.getTitle());
+		Date endDate= timeParser.parseSyntax("28 march").get(0).getDates().get(0);
+		assertEquals(endDate.compareTo(add.getEndDate()),1);	
+		assertTrue(add.getIsRecurring());
+		
+	}	
 	
 	@Test
-	public void testAddCommand(){
-		String userCommand = "add lol lol lol lol lol 01-01-1999/00:00 01-02-1999/00:00";
-		AddCommand ac1 = (AddCommand)parser.executeCommand(userCommand);
-		assertEquals(ac1,"lol");
+	public void testAddCommand9(){
+		AddParser add = new AddParser("do cs2103 e:28 march every friday");
+		assertEquals("do cs2103",add.getTitle());
+		Date endDate= timeParser.parseSyntax("28 march").get(0).getDates().get(0);
+		assertEquals(endDate.compareTo(add.getEndDate()),1);
+		add.executeCommand();
 	}
 	
-
+	//@Test
+	public void testAddCommand10(){
+		AddParser add = new AddParser("2103");
+		assertEquals("2103",add.getTitle());
+		Date endDate= new Date();
+		assertEquals(endDate.compareTo(add.getEndDate()),0);
+	}	
 }
+	
+	
