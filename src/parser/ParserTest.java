@@ -13,8 +13,7 @@ import org.junit.Test;
 public class ParserTest{
 
 	Parser parser = Parser.getInstance();
-	PrettyTimeParser timeParser = POMPOM.timeParser;
-	
+	PrettyTimeParser timeParser = new PrettyTimeParser();
 	@Test
 	public void testPrettyTime(){
 		List<DateGroup> dgl = timeParser.parseSyntax("16 mar");		
