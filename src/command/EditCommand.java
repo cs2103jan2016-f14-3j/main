@@ -2,13 +2,14 @@ package command;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.logging.Level;
 
 import main.POMPOM;
 import utils.Item;
 
 public class EditCommand extends Command {
 	
-	private static final String MESSAGE_TASK_EDITED = "%s was successfully editted";	
+	private static final String MESSAGE_TASK_EDITED = "%s. was successfully edited";	
 	private static final String MESSAGE_TASK_ERROR = "Unable to edit task %s";
 	
 	private static final String FIELD_TYPE = "type";
@@ -20,7 +21,7 @@ public class EditCommand extends Command {
 	private static final String FIELD_START_DATE = "start date";
 	private static final String FIELD_END_DATE = "end date";
 	
-	private int taskId;
+	private long taskId;
 	private String field;
 	private String newData;
 	private Date newDate;
@@ -28,36 +29,44 @@ public class EditCommand extends Command {
 	private boolean canEdit;
 	private boolean isUndo;
 	
-	public EditCommand(int taskId, String field, String newData) {
+	public EditCommand(long taskId, String field, String newData) {
 		this.taskId = taskId;
 		this.task = getTask(taskId);
 		this.field = field;
 		this.newData = newData;
 		isUndo = false;
+		
+		logger.log(Level.INFO, "EditCommand initialized");
 	}
 	
-	public EditCommand(int taskId, String field, Date newDate) {
+	public EditCommand(long taskId, String field, Date newDate) {
 		this.taskId = taskId;
 		this.task = getTask(taskId);
 		this.field = field;
 		this.newDate = newDate;
 		isUndo = false;
+		
+		logger.log(Level.INFO, "EditCommand initialized");
 	}
 	
-	public EditCommand(int taskId, String field, String newData, boolean isUndo) {
+	public EditCommand(long taskId, String field, String newData, boolean isUndo) {
 		this.taskId = taskId;
 		this.task = getTask(taskId);
 		this.field = field;
 		this.newData = newData;
 		this.isUndo = isUndo;
+		
+		logger.log(Level.INFO, "Counter action EditCommand initialized");
 	}
 	
-	public EditCommand(int taskId, String field, Date newDate, boolean isUndo) {
+	public EditCommand(long taskId, String field, Date newDate, boolean isUndo) {
 		this.taskId = taskId;
 		this.task = getTask(taskId);
 		this.field = field;
 		this.newDate = newDate;
 		this.isUndo = isUndo;
+		
+		logger.log(Level.INFO, "Counter action EditCommand initialized");
 	}
 	
 	private void updateChanges() {		
@@ -137,7 +146,7 @@ public class EditCommand extends Command {
 		if (canEdit) {
 			if (!isUndo) updateUndoStack();
 			updateChanges();
-			returnMsg = String.format(MESSAGE_TASK_EDITED, "Task"+taskId);
+			returnMsg = String.format(MESSAGE_TASK_EDITED, taskId);
 			ArrayList<Item> taskList = getTaskList();
 			POMPOM.getStorage().setTaskList(taskList);
 		} else {
