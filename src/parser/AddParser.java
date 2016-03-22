@@ -61,7 +61,6 @@ public class AddParser extends ArgsParser{
 			extractRecurring();
 			extractStartDate();
 			extractEndDate();	
-			//extractRecurring();	
 			extractDescription();	
 			extractTitle();
 		}

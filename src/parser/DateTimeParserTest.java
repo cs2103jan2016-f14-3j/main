@@ -4,7 +4,6 @@ import static org.junit.Assert.*;
 
 import java.util.Date;
 import java.util.List;
-import main.POMPOM;
 import org.junit.Test;
 import org.ocpsoft.prettytime.nlp.PrettyTimeParser;
 import org.ocpsoft.prettytime.nlp.parse.DateGroup;
@@ -13,7 +12,7 @@ public class DateTimeParserTest {
 
 	PrettyTimeParser timeParser = new PrettyTimeParser();
 	
-//	@Test
+	@Test
 	public void testEveryWeek() {
 		DateTimeParser dp = new DateTimeParser("end","shopping every monday");
 		String output = dp.getString();

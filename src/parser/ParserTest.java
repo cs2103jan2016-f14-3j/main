@@ -10,28 +10,25 @@ import java.util.List;
 
 import org.junit.Test;
 
-pu
-blic class ParserTest{
+public class ParserTest{
 
 	Parser parser = Parser.getInstance();
-	POMPOM pompom = new POMPOM();
-	PrettyTimeParser timeParser = pompom.timeParser;
+	PrettyTimeParser timeParser = POMPOM.timeParser;
 	
-//	@Test
+	@Test
 	public void testPrettyTime(){
 		List<DateGroup> dgl = timeParser.parseSyntax("16 mar");		
 		assertEquals("16 mar",dgl.get(0).getText());
-	//	System.out.println(dgl.get(0).getText());
 	}
 	
-//	@Test
+	@Test
 	public void testAddCommand1(){
 		AddParser add = new AddParser("do project");
 		System.out.println(add.getTitle());
 		assertEquals("do project",add.getTitle());
 	}
 	
-//	@Test
+	@Test
 	public void testAddCommand2(){
 		AddParser add = new AddParser("do project 28 march");
 		System.out.println(add.getTitle());
@@ -40,7 +37,7 @@ blic class ParserTest{
 		assertEquals(endDate.compareTo(add.getEndDate()),1);	
 	}
 	
-//	@Test
+	@Test
 	public void testAddCommand3(){
 		AddParser add = new AddParser("do project e:28 march f:16 march");
 		System.out.println(add.getTitle());
@@ -51,7 +48,7 @@ blic class ParserTest{
 		assertEquals(startDate.compareTo(add.getStartDate()),1);	
 	}
 	
-//	@Test
+	@Test
 	public void testAddCommand4(){
 		AddParser add = new AddParser("28 march do project");
 		System.out.println(add.getTitle());
@@ -60,7 +57,7 @@ blic class ParserTest{
 		assertEquals(endDate.compareTo(add.getEndDate()),1);	
 	}
 	
-//	@Test
+	@Test
 	public void testAddCommand5(){
 		AddParser add = new AddParser("e:28 march f:16 march do project");
 		System.out.println(add.getTitle());
@@ -69,7 +66,7 @@ blic class ParserTest{
 		assertEquals(endDate.compareTo(add.getEndDate()),1);	
 	}
 	
-//	@Test
+	@Test
 	public void testAddCommand6(){
 		AddParser add = new AddParser("f:16 march e:28 march do project");
 		System.out.println(add.getTitle());
@@ -78,7 +75,7 @@ blic class ParserTest{
 		assertEquals(endDate.compareTo(add.getEndDate()),1);	
 	}
 	
-//	@Test
+	@Test
 	public void testAddCommand7(){
 		AddParser add = new AddParser("do cs2103 every friday e:28 march");
 		System.out.println(add.getTitle());
@@ -87,7 +84,7 @@ blic class ParserTest{
 		assertEquals(endDate.compareTo(add.getEndDate()),1);	
 	}
 	
-	//@Test
+	@Test
 	public void testAddCommand8(){
 		AddParser add = new AddParser("do cs2103 e:28 march every friday");
 		assertEquals("do cs2103",add.getTitle());
@@ -106,7 +103,7 @@ blic class ParserTest{
 		add.executeCommand();
 	}
 	
-	//@Test
+	@Test
 	public void testAddCommand10(){
 		AddParser add = new AddParser("2103");
 		assertEquals("2103",add.getTitle());
