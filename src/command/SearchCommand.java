@@ -9,8 +9,8 @@ public class SearchCommand extends Command {
 	
 	private static final String MESSAGE_SEARCH = "Search resulted in %s result(s).";
 	
-	ArrayList<Item> searchResults;
-	String keyword;
+	public ArrayList<Item> searchResults;
+	private String keyword;
 	
 	public SearchCommand(String keyword) {
 		this.searchResults = new ArrayList<Item>();
@@ -33,7 +33,7 @@ public class SearchCommand extends Command {
 	
 	public String execute() {
 		POMPOM.setSearchList(search());
-		POMPOM.setChangedTab("Search");
+		POMPOM.setCurrentTab(POMPOM.LABEL_SEARCH);
 		returnMsg = String.format(MESSAGE_SEARCH, searchResults.size());
 		return returnMsg;
 	}
