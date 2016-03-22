@@ -5,6 +5,7 @@ import java.util.Date;
 public class Item implements Comparator<Item>{
 	private Long id;
 	private String title;
+	private String type;
 	private String priority;
 	private String description;
 	private String status;
@@ -13,11 +14,11 @@ public class Item implements Comparator<Item>{
 	private Date endDate;
 	
 	
-
-	public Item(Long id, String title, String priority, String description,
+	public Item(Long id, String type, String title, String priority, String description,
 			String status, String label, Date startDate, Date endDate) {
 		super();
 		this.id = id;
+		this.type = type;
 		this.title = title;
 		this.priority = priority;
 		this.description = description;
@@ -26,7 +27,6 @@ public class Item implements Comparator<Item>{
 		this.startDate = startDate;
 		this.endDate = endDate;
 	}	
-
 
 	public Item() {
 		
@@ -43,7 +43,12 @@ public class Item implements Comparator<Item>{
 	public void setTitle(String title) {
 		this.title = title;
 	}
-	
+	public String getType() {
+		return type;
+	}
+	public void setType(String type) {
+		this.type = type;
+	}
 	public String getPriority() {
 		return priority;
 	}
@@ -81,10 +86,10 @@ public class Item implements Comparator<Item>{
 		this.endDate = endDate;
 	}
 	//Debugging Method
-	public void printInfo(){
-		
+	public void printInfo(){		
 		System.out.println("");
 		System.out.println("Task ID: " + getId());
+		System.out.println("Type: " + getType());
 		System.out.println("Title: " + getTitle());
 		System.out.println("Priority: " + getPriority());
 		System.out.println("Description: " + getDescription());
@@ -99,6 +104,12 @@ public class Item implements Comparator<Item>{
 
 	@Override
 	public int compare(Item item1, Item item2) {
+		if(item2 == null){
+			return 1;
+		}
+		if(item1 == null){
+			return -1;
+		}
 		if(item1.getEndDate().compareTo(item2.getEndDate())> 0){
 			return 1;
 		}else if(item1.getEndDate().compareTo(item2.getEndDate())< 0){

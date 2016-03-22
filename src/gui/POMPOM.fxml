@@ -29,7 +29,7 @@
                         <Image url="@images/dashboardClicked.png" />
                      </image>
                   </ImageView>
-                  <ImageView fx:id="calendar" fitHeight="33.0" fitWidth="200.0" layoutY="60.0">
+                  <ImageView fitHeight="33.0" fitWidth="200.0" layoutY="60.0">
                      <image>
                         <Image url="@images/Calendar.png" />
                      </image>
@@ -48,63 +48,60 @@
             <Image url="@images/logo.png" />
          </image>
       </ImageView>
-      <Pane fx:id="content" layoutX="200.0" prefHeight="566.0" prefWidth="604.0" styleClass="content">
+      <Pane fx:id="content" layoutX="200.0" prefHeight="566.0" prefWidth="598.0" styleClass="content">
          <children>
-            <Pane prefHeight="566.0" prefWidth="598.0" styleClass="content">
+            <Label fx:id="label" layoutX="14.0" layoutY="21.0" text="Dashboard">
+               <font>
+                  <Font name="Tw Cen MT Bold" size="24.0" />
+               </font></Label>
+            <AnchorPane layoutY="46.0" prefHeight="515.0" prefWidth="598.0">
                <children>
-                  <Label fx:id="label" layoutX="14.0" layoutY="21.0" text="Dashboard">
+                  <TabPane fx:id="tabViews" layoutX="8.0" prefHeight="200.0" prefWidth="349.0" tabClosingPolicy="UNAVAILABLE">
+                    <tabs>
+                      <Tab fx:id="taskTab" onSelectionChanged="#taskTabAction" text="Task" />
+                      <Tab fx:id="completedTaskTab" onSelectionChanged="#completedTaskTabAction" text="CompletedTask" />
+                        <Tab fx:id="eventTab" onSelectionChanged="#eventTabAction" text="Events" />
+                        <Tab fx:id="completedEventTab" onSelectionChanged="#completedEventTabAction" text="CompletedEvents" />
+                        <Tab fx:id="searchTab" onSelectionChanged="#searchTabAction" text="Search">
+                          <content>
+                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                          </content>
+                        </Tab>
+                    </tabs>
+                  </TabPane>
+                  <TableView fx:id="table" layoutX="14.0" layoutY="32.0" prefHeight="397.0" prefWidth="564.0">
+                    <columns>
+                        <TableColumn fx:id="checkBox" prefWidth="19.0" />
+                      <TableColumn fx:id="taskID" prefWidth="41.0" text="ID" />
+                      <TableColumn fx:id="taskName" prefWidth="69.0" text="Task" />
+                        <TableColumn fx:id="taskStartDateTime" prefWidth="122.0" text="Start Date / Time" />
+                        <TableColumn fx:id="taskEndDateTime" prefWidth="102.0" text="End Date/Time" />
+                        <TableColumn fx:id="taskLabel" prefWidth="63.0" text="Label" />
+                        <TableColumn fx:id="taskPriority" maxWidth="83.0" prefWidth="60.0" text="Priority" />
+                        <TableColumn fx:id="taskStatus" prefWidth="87.0" text="Status" />
+                    </columns>
+                  </TableView>
+                  <TextField fx:id="inputCommand" layoutX="14.0" layoutY="442.0" onKeyPressed="#enterCommandKey" prefHeight="22.0" prefWidth="501.0" promptText="Command:">
                      <font>
-                        <Font name="Tw Cen MT Bold" size="24.0" />
+                        <Font name="Tw Cen MT" size="14.0" />
+                     </font>
+                  </TextField>
+                  <HBox id="HBox" alignment="CENTER" layoutX="367.0" layoutY="-13.0" prefHeight="26.0" prefWidth="217.0" spacing="15.0">
+                     <children>
+                        <Button id="button1" fx:id="newTask" onAction="#newTaskFired" text="New" />
+                        <Button id="button1" fx:id="editTask" text="Edit" />
+                        <Button id="button1" fx:id="deleteTask" text="Delete" />
+                     </children>
+                  </HBox>
+                  <Button fx:id="enterCommand" layoutX="526.0" layoutY="441.0" mnemonicParsing="false" onAction="#enterCommandFired" text="Enter" />
+                  <Label fx:id="returnMsg" layoutX="14.0" layoutY="476.0" prefHeight="15.0" prefWidth="526.0">
+                     <font>
+                        <Font name="Andale Mono" size="10.0" />
                      </font>
                   </Label>
-                  <AnchorPane fx:id="content1" layoutY="46.0" prefHeight="515.0" prefWidth="598.0">
-                     <children>
-                        <TabPane layoutX="8.0" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE">
-                           <tabs>
-                              <Tab text="All" />
-                              <Tab text="Pending" />
-                              <Tab text="Finished">
-                                 <content>
-                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-                                 </content>
-                              </Tab>
-                           </tabs>
-                        </TabPane>
-                        <TableView fx:id="table" layoutX="14.0" layoutY="32.0" prefHeight="397.0" prefWidth="564.0">
-                           <columns>
-                              <TableColumn fx:id="checkBox" prefWidth="35.0" />
-                              <TableColumn fx:id="taskID" prefWidth="47.0" text="ID" />
-                              <TableColumn fx:id="taskName" prefWidth="61.0" text="Task" />
-                              <TableColumn fx:id="taskStartDateTime" prefWidth="122.0" text="Start Date / Time" />
-                              <TableColumn fx:id="taskEndDateTime" prefWidth="102.0" text="End Date/Time" />
-                              <TableColumn fx:id="taskLabel" prefWidth="59.0" text="Label" />
-                              <TableColumn fx:id="taskPriority" maxWidth="83.0" prefWidth="60.0" text="Priority" />
-                              <TableColumn fx:id="taskStatus" prefWidth="77.0" text="Status" />
-                           </columns>
-                        </TableView>
-                        <TextField fx:id="inputCommand" layoutX="14.0" layoutY="442.0" onKeyPressed="#enterCommandKey" prefHeight="22.0" prefWidth="501.0" promptText="Command:">
-                           <font>
-                              <Font name="Tw Cen MT" size="14.0" />
-                           </font>
-                        </TextField>
-                        <HBox id="HBox" alignment="CENTER" layoutX="213.0" layoutY="-13.0" prefHeight="26.0" prefWidth="371.0" spacing="15.0">
-                           <children>
-                              <Button id="button1" fx:id="newTask" onAction="#newTaskFired" text="New" />
-                              <Button id="button1" fx:id="editTask" text="Edit" />
-                              <Button id="button1" fx:id="deleteTask" text="Delete" />
-                              <TextField prefHeight="23.0" prefWidth="170.0" promptText="Search:" />
-                           </children>
-                        </HBox>
-                        <Button fx:id="enterCommand" layoutX="526.0" layoutY="441.0" mnemonicParsing="false" onAction="#enterCommandFired" text="Enter" />
-                        <Label fx:id="returnMsg" layoutX="14.0" layoutY="476.0" prefHeight="11.0" prefWidth="8.0">
-                           <font>
-                              <Font name="Andale Mono" size="10.0" />
-                           </font>
-                        </Label>
-                     </children>
-                  </AnchorPane>
                </children>
-            </Pane>
-         </children></Pane>
+            </AnchorPane>
+         </children>
+      </Pane>
    </children>
 </Pane>

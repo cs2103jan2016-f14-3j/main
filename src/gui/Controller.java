@@ -1,11 +1,13 @@
 package gui;
 
+import java.awt.Desktop.Action;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.ResourceBundle;
 
+import main.POMPOM;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
@@ -16,9 +18,14 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.SingleSelectionModel;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -32,22 +39,16 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import main.POMPOM;
 import utils.Item;
+import utils.ListClassifier;
 
 public class Controller implements Initializable {
-
-	@FXML
-	ImageView dashBoard;
-	@FXML
-	ImageView calendar;
-	@FXML
-	ImageView settings;
-	@FXML
-	Pane content;
-	
 	@FXML
 	Pane mainContent;
+	@FXML
+	Pane content;
+	@FXML
+	ImageView settings;
 	@FXML
 	Button settingBtn;
 	@FXML
@@ -63,11 +64,11 @@ public class Controller implements Initializable {
 	@FXML
 	TableView<Item> table;
 	@FXML
-	TableColumn<Item, Boolean> checkBox;
-	@FXML
 	TableColumn<Item, Number> taskID;
 	@FXML
 	TableColumn<Item, String> taskName;
+	@FXML
+	TableColumn<Item, Boolean> checkBox;
 	@FXML
 	TableColumn<Item, Date> taskStartDateTime;
 	@FXML
@@ -86,30 +87,42 @@ public class Controller implements Initializable {
 	Label returnMsg;
 	@FXML
 	Label label;
+	@FXML
+	TabPane tabViews;
+	@FXML
+	private Tab taskTab;
+	@FXML
+	private Tab eventTab;
+	@FXML
+	private Tab searchTab;
 
 	String msg;
 	Stage stage;
 	private Main main = new Main();
+	private boolean initialized = false;
 
-	ArrayList<Item> temp;
+	ArrayList<Item> displayList;
+	
+	Node node;
+
 
 	ObservableList<String> taskView = FXCollections.observableArrayList();
 	static ObservableList<Item> tableContent;
 	POMPOM pompom = new POMPOM();
-	
-	Node node;
 
 	public static ObservableList<Item> getTableContent() {
 		return tableContent;
 	}
+	public ArrayList<Item> getDisplayList() {
+		return displayList;
+	}
+
+	public void setDisplayList(ArrayList<Item> displayList) {
+		this.displayList = displayList;
+	}
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		assert dashBoard != null : "fx:id=\"dashboard\" was not injected: check your FXML file 'POMPOM.fxml'.";
-		assert calendar != null : "fx:id=\"calendar\" was not injected: check your FXML file 'POMPOM.fxml'.";	
-		assert settings != null : "fx:id=\"settings\" was not injected: check your FXML file 'POMPOM.fxml'.";		
-		assert content != null : "fx:id=\"content\" was not injected: check your FXML file 'POMPOM.fxml'.";		
-	
 		assert newTask != null : "fx:id=\"newTask\" was not injected: check your FXML file 'POMPOM.fxml'.";
 		assert editTask != null : "fx:id=\"editTask\" was not injected: check your FXML file 'POMPOM.fxml'.";
 		assert saveTask != null : "fx:id=\"saveTask\" was not injected: check your FXML file 'POMPOM.fxml'.";
@@ -127,22 +140,14 @@ public class Controller implements Initializable {
 		assert inputCommand != null : "fx:id=\"inputCommand\" was not injected: check your FXML file 'POMPOM.fxml'.";
 
 		System.out.println(this.getClass().getSimpleName() + ".initialize");
-
+		POMPOM.setCurrentTab(POMPOM.LABEL_TASK);
+		displayList = ListClassifier.getTaskList(POMPOM.getStorage().getTaskList());
 		configureButtons();
 		configureTable();
+		initialized = true;
 
 	}
-	
-	public void toSettingsView(MouseEvent event) throws IOException {
-		node = (Node) FXMLLoader.load(getClass().getResource("Settings.fxml"));
-		content.getChildren().setAll(node);
-	}
 
-	public void toDashBoardView(MouseEvent event) throws IOException {
-		node = (Node) FXMLLoader.load(getClass().getResource("Dashboard.fxml"));
-		content.getChildren().setAll(node);
-	}
-	
 	private void configureButtons() {
 		if (newTask != null) {
 			newTask.setDisable(false);
@@ -163,10 +168,10 @@ public class Controller implements Initializable {
 
 	void configureTable() {
 		table.setEditable(true);
-		checkBox.setCellFactory(CheckBoxTableCell.forTableColumn(checkBox));
 		taskID.setCellValueFactory(new PropertyValueFactory<Item, Number>("id"));
 		taskName.setCellValueFactory(new PropertyValueFactory<Item, String>(
 				"title"));
+		checkBox.setCellFactory(CheckBoxTableCell.forTableColumn(checkBox));
 		taskStartDateTime
 				.setCellValueFactory(new PropertyValueFactory<Item, Date>(
 						"startDate"));
@@ -180,20 +185,106 @@ public class Controller implements Initializable {
 						"priority"));
 		taskStatus.setCellValueFactory(new PropertyValueFactory<Item, String>(
 				"status"));
-
-		temp = POMPOM.getStorage().getTaskList();
-		tableContent = FXCollections.observableArrayList(temp);
-
+		tableContent = FXCollections.observableArrayList(displayList);
 		table.setItems(tableContent);
 		table.refresh();
 
 	}
+	
+	public void newTaskFired(ActionEvent event) {
+		main.newTaskDialog();
+	}
 
+	public void toSettingsView(MouseEvent event) throws IOException {
+		node = (Node) FXMLLoader.load(getClass().getResource("Settings.fxml"));
+		content.getChildren().setAll(node);
+	}
+
+	public void toDashBoardView(MouseEvent event) throws IOException {
+		node = (Node) FXMLLoader.load(getClass().getResource("Dashboard.fxml"));
+		content.getChildren().setAll(node);
+	}
+
+
+	// New methods by wei lip
+
+	
+	
+	
+	public void switchToTab(String type) {
+		SingleSelectionModel<Tab> selectionModel = tabViews.getSelectionModel();
+		if (type.equals(POMPOM.LABEL_TASK.toLowerCase())) {
+			selectionModel.select(taskTab);
+			taskTabAction();
+		} else if (type.equals(POMPOM.LABEL_COMPLETED_TASK.toLowerCase())) {
+			selectionModel.select(taskTab);
+			completedTaskTabAction();
+		} else if (type.equals(POMPOM.LABEL_EVENT.toLowerCase())) {
+			selectionModel.select(eventTab);
+			eventTabAction();
+		} else if (type.equals(POMPOM.LABEL_COMPLETED_EVENT.toLowerCase())) {
+			selectionModel.select(eventTab);
+			completedEventTabAction();
+		}else if (type.equals(POMPOM.LABEL_SEARCH.toLowerCase())) {
+			System.out.println("SEARCH TESET");
+			selectionModel.select(searchTab);
+			searchTabAction();
+		}
+		return;
+	}
+
+	public void taskTabAction() {
+		if (!initialized)
+			return;
+		displayList = ListClassifier.getTaskList(POMPOM.getStorage().getTaskList());
+		configureTable();
+		POMPOM.setCurrentTab(POMPOM.LABEL_TASK);
+	}
+
+	public void completedTaskTabAction() {
+		if (!initialized){
+			return;
+		}
+		displayList = ListClassifier
+				.getDoneTaskList(POMPOM.getStorage().getTaskList());
+		configureTable();
+		POMPOM.setCurrentTab(POMPOM.LABEL_COMPLETED_TASK);
+	}
+
+	public void eventTabAction() {
+		displayList = ListClassifier.getEventList(POMPOM.getStorage().getTaskList());
+		configureTable();
+		POMPOM.setCurrentTab(POMPOM.LABEL_EVENT);
+	}
+
+	public void completedEventTabAction() {
+		displayList = ListClassifier.getDoneEventList(POMPOM.getStorage()
+				.getTaskList());
+		configureTable();
+		POMPOM.setCurrentTab(POMPOM.LABEL_COMPLETED_EVENT);
+	}
+	public void searchTabAction(){
+		if(POMPOM.getSearchList() != null){
+			displayList = POMPOM.getSearchList();
+		}
+		configureTable();
+		POMPOM.setCurrentTab(POMPOM.LABEL_SEARCH);
+	}
+	
+	
+	
+	
+	
+
+	// //////////           Wei LIP             ////////////
+	
 	public void enterCommandFired(ActionEvent event) throws IOException {
 		Timeline timeline = new Timeline();
 		String input = inputCommand.getText();
 		inputCommand.clear();
 		msg = pompom.execute(input);
+		switchToTab(POMPOM.currentTab.toLowerCase());
+		
 		timeline.getKeyFrames().add(
 				new KeyFrame(Duration.seconds(0), new KeyValue(returnMsg
 						.textProperty(), msg)));
@@ -205,20 +296,18 @@ public class Controller implements Initializable {
 		POMPOM.getStorage().saveStorage();
 		inputCommand.setPromptText("Command:");
 	}
-
+	
 	public void enterCommandKey(KeyEvent event) throws IOException {
 		Timeline timeline = new Timeline();
 		if (event.getCode().equals(KeyCode.ENTER)) {
 			String input = inputCommand.getText();
 			msg = pompom.execute(input);
-			timeline.getKeyFrames().add(
-					new KeyFrame(Duration.seconds(0), new KeyValue(returnMsg
-							.textProperty(), msg)));
+			switchToTab(POMPOM.currentTab.toLowerCase());
 			timeline.getKeyFrames().add(
 					new KeyFrame(Duration.seconds(2), new KeyValue(returnMsg
-							.textProperty(), " ")));
+							.textProperty(), msg)));
 			timeline.play();
-			configureTable();
+			returnMsg.setText("");
 			POMPOM.getStorage().saveStorage();
 			inputCommand.clear();
 			inputCommand.setPromptText("Command:");
@@ -226,8 +315,9 @@ public class Controller implements Initializable {
 		}
 
 	}
+	
+	
 
-	public void newTaskFired(ActionEvent event) {
-		main.newTaskDialog();
-	}
+	
+
 }

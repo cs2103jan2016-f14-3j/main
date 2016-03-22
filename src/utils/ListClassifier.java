@@ -12,6 +12,67 @@ public class ListClassifier {
 		this.taskArrayList = POMPOM.getStorage().getTaskList();
 	}
 	
+	
+	
+	// 
+	public static ArrayList<Item> getDoneTaskList(ArrayList<Item> lst){
+		ArrayList<Item> result = new ArrayList<Item>();		
+		for (int i = 0; i < lst.size(); i++) {
+			Item currentTask = lst.get(i);
+			//Remove this line after proper init of task and evetns
+			if(currentTask.getType() == null) continue;
+			if (currentTask.getType().toLowerCase().equals("task") &&
+					currentTask.getStatus().toLowerCase().equals("overdue")) {
+				result.add(currentTask);
+			}
+		}		
+		return result;		
+	}
+	public static ArrayList<Item> getTaskList(ArrayList<Item> lst){
+		ArrayList<Item> result = new ArrayList<Item>();		
+		for (int i = 0; i < lst.size(); i++) {
+			Item currentTask = lst.get(i);
+			//Remove this line after proper init of task and evetns
+			if(currentTask.getType() == null ) continue;
+			if (currentTask.getType().toLowerCase().equals("task") &&
+					!currentTask.getStatus().toLowerCase().equals("overdue")) {
+				result.add(currentTask);
+			}
+		}		
+		return result;		
+	}
+	// 
+	public static ArrayList<Item> getEventList(ArrayList<Item> lst){
+		ArrayList<Item> result = new ArrayList<Item>();		
+		for (int i = 0; i < lst.size(); i++) {
+			Item currentTask = lst.get(i);	
+			if(currentTask.getType() == null) continue;
+			if (currentTask.getType().toLowerCase().equals("event")
+					&& !currentTask.getStatus().equals("overdue")){
+				result.add(currentTask);
+			}
+		}		
+		return result;		
+	}
+	public static ArrayList<Item> getDoneEventList(ArrayList<Item> lst){
+		ArrayList<Item> result = new ArrayList<Item>();		
+		for (int i = 0; i < lst.size(); i++) {
+			Item currentTask = lst.get(i);	
+			if(currentTask.getType() == null) continue;
+			if (currentTask.getType().toLowerCase().equals("event")
+					&& currentTask.getStatus().equals("overdue")){
+				result.add(currentTask);
+			}
+		}		
+		return result;		
+	}
+	
+	
+	
+	
+	
+	
+	
 	public ArrayList<Item> getPendingList() {		
 		ArrayList<Item> result = new ArrayList<Item>();		
 		for (int i = 0; i < taskArrayList.size(); i++) {

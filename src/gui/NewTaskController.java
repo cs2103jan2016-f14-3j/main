@@ -77,10 +77,10 @@ public class NewTaskController implements Initializable{
 	}
 	
 	public void setDialogStage(Stage dialogStage) {
-		this.dialogStage = dialogStage;
-	}
-
-
+		this.dialogStage = dialogStage;					
+	}	
+	
+	
 	@FXML
 	private void handleSave() throws IOException, ParseException{
 		controller = new Controller();

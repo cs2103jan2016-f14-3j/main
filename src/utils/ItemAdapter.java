@@ -14,13 +14,12 @@ import com.google.gson.stream.JsonWriter;
  *
  */
 
-public class ItemAdapter extends TypeAdapter<UserTaskList> {
+public class ItemAdapter extends TypeAdapter<UserItemList> {
 
 	@Override
-	public UserTaskList read(JsonReader in) throws IOException {
-		final UserTaskList userTaskList = new UserTaskList();
-		SimpleDateFormat formatter = new SimpleDateFormat(
-				"EEE MMM d HH:mm:ss z yyyy");
+	public UserItemList read(JsonReader in) throws IOException {
+		final UserItemList userTaskList = new UserItemList();
+		SimpleDateFormat formatter = new SimpleDateFormat("EEE MMM d HH:mm:ss z yyyy");
 		in.beginObject();
 		while (in.hasNext()) {
 			switch (in.nextName()) {
@@ -41,6 +40,9 @@ public class ItemAdapter extends TypeAdapter<UserTaskList> {
 						case "Id":
 							task.setId(in.nextLong());
 							break;
+						case "Type":
+							task.setType(in.nextString());
+							break;
 						case "Title":
 							task.setTitle(in.nextString());
 							break;
@@ -58,8 +60,7 @@ public class ItemAdapter extends TypeAdapter<UserTaskList> {
 							break;
 						case "StartDate":
 							try {
-								task.setStartDate(formatter.parse(in
-										.nextString()));
+								task.setStartDate(formatter.parse(in.nextString()));
 							} catch (ParseException e) {
 								e.printStackTrace();
 							}
@@ -87,8 +88,7 @@ public class ItemAdapter extends TypeAdapter<UserTaskList> {
 	}
 
 	@Override
-	public void write(JsonWriter out, UserTaskList userTaskList)
-			throws IOException {
+	public void write(JsonWriter out, UserItemList userTaskList) throws IOException {
 		out.beginObject();
 		out.name("Username").value(userTaskList.getUserName());
 		out.name("IdCounter").value(userTaskList.getIdCounter());
@@ -100,14 +100,18 @@ public class ItemAdapter extends TypeAdapter<UserTaskList> {
 			for (final Item task : taskList) {
 				out.beginObject();
 				out.name("Id").value(task.getId());
+				out.name("Type").value(task.getType());
 				out.name("Title").value(task.getTitle());
 				out.name("Priority").value(task.getPriority());
 				out.name("Description").value(task.getDescription());
 				out.name("Label").value(task.getLabel());
 				out.name("Status").value(task.getStatus());
-				out.name("StartDate").value(task.getStartDate().toString());
-
-				out.name("EndDate").value(task.getEndDate().toString());
+				if (task.getStartDate() != null) {
+					out.name("StartDate").value(task.getStartDate().toString());
+				}
+				if (task.getEndDate() != null) {
+					out.name("EndDate").value(task.getEndDate().toString());
+				}
 				out.endObject();
 
 			}

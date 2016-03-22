@@ -1,13 +1,15 @@
 package parser;
 
+
 import java.util.Date;
-import java.util.List;
+
+import org.ocpsoft.prettytime.nlp.parse.DateGroup;
+
+import static org.junit.Assert.assertNotNull;
 
 import command.Command;
-import command.InvalidCommand;
+import main.POMPOM;
 import command.AddCommand;
-import org.ocpsoft.prettytime.nlp.PrettyTimeParser;
-import org.ocpsoft.prettytime.nlp.parse.DateGroup;
 
 
 public class AddParser extends ArgsParser{
@@ -29,96 +31,229 @@ public class AddParser extends ArgsParser{
 	private String itemLabel = null;
 	private Date itemStartDate = null;
 	private Date itemEndDate = null;
+	private DateGroup itemRecurringDateGroup = null;
+	private Long itemRecurringPeriod = null;
+	private boolean itemIsRecurring = false;
+	private String itemEndDateTitle=""; //for use if title is empty.
 	
-	private PrettyTimeParser timeParser = new PrettyTimeParser();
+	private static final int INDEX_INVALID = -1;
+	private static final int INDEX_COMMAND_BEGIN = 0;
+	
+
+	private final String COMMAND_PREFIX_LABEL = "l:";
+	private final String COMMAND_PREFIX_STATUS = "s:";
+	private final String COMMAND_PREFIX_PRIORITY = "p:";
+	private final String COMMAND_PREFIX_DESCRIPTION = ":";
+	private final String STRING_SPACE = " ";
+	
 	
 	public AddParser(String userCommand){
 		super(userCommand);	
-		if (this.noArgs){
+		if (this.hasNoArguments){
 			invalidArgs();
 			return;
-		} else {		
-			extractStartDate();
-			extractEndDate();
+		} else {			
 			extractPriority();
 			extractStatus();
 			extractLabel();
-			extractDescription();
+			extractRecurring();
+			extractStartDate();
+			extractEndDate();	
+			//extractRecurring();	
+			extractDescription();	
+			extractTitle();
+		}
+	}
+	
+
+	private void extractTitle() {
+		if (commandArgumentsString.trim().equals("")){
+			itemTitle=itemEndDateTitle;
+			//itemEndDate=new Date();
+		} else{
 			itemTitle = commandArgumentsString.trim();
 		}
 	}
 	
-	public Command executeCommand(){
-		if (itemTitle==""){
-			return new InvalidCommand(commandArgumentsString);
-		}
-		if (itemDescription==null && itemPriority==null && itemStatus==null && itemLabel==null && itemStartDate==null && itemEndDate==null){
-			return new AddCommand(itemTitle);
-		} else if (itemDescription==null && itemPriority==null && itemStatus==null && itemLabel==null && itemStartDate==null){
-			return new AddCommand(itemTitle, itemEndDate);
-		} else{
-			return new AddCommand(itemTitle, itemDescription, itemPriority, itemStatus, itemLabel, itemStartDate, itemEndDate);
+	protected Command executeCommand(){
+		Date currentDate = new Date();
+		
+		if(hasCommandTitleOnly()){
+			return new AddCommand(POMPOM.LABEL_TASK, itemTitle, null, null, POMPOM.STATUS_FLOATING, 
+					null, null, null);
+		} else if (hasCommandTitleAndEndDateOnly()){
+			return new AddCommand(POMPOM.LABEL_TASK, itemTitle, null, null, POMPOM.STATUS_ONGOING, 
+					null, currentDate, itemEndDate);
+		} else if (hasCommandTitleAndStartDateOnly()){
+			return new AddCommand(POMPOM.LABEL_TASK, itemTitle, null, null, POMPOM.STATUS_ONGOING, 
+					null, itemStartDate, null);	
+		} else {
+			return new AddCommand(POMPOM.LABEL_EVENT, itemTitle, itemDescription, itemPriority, POMPOM.STATUS_ONGOING,
+					itemLabel, itemStartDate, itemEndDate);
 		}
 	}
-	
+
 	private void extractDescription(){
-		int index = commandArgumentsString.indexOf(":");
-		if (index>0){
-			itemDescription = commandArgumentsString.substring(index+1);
-			commandArgumentsString = commandArgumentsString.substring(0, index);
+		int indexOfPrefix = commandArgumentsString.indexOf(COMMAND_PREFIX_DESCRIPTION);
+		if (isValidIndex(indexOfPrefix)){
+			itemDescription = commandArgumentsString.substring(indexOfPrefix+1);
+			commandArgumentsString = commandArgumentsString.substring(0, indexOfPrefix);
 		}
 	}
 	
 	public void extractPriority(){
-		int index = commandArgumentsString.indexOf("p:");
-		int indexSpace = commandArgumentsString.indexOf(" ",index);
-		if (index>0){
-			itemPriority = commandArgumentsString.substring(index+2, indexSpace);
-			commandArgumentsString = commandArgumentsString.substring(0, index)+commandArgumentsString.substring(indexSpace);
+		int indexOfPrefix = commandArgumentsString.indexOf(COMMAND_PREFIX_PRIORITY);
+		int indexSpace = commandArgumentsString.indexOf(" ",indexOfPrefix);
+		if (isValidIndex(indexOfPrefix)){
+			itemPriority = extractFieldData(indexOfPrefix, indexSpace);
+			commandArgumentsString = removeFieldFromArgument(indexOfPrefix, indexSpace);
 		}
-
 	}
 	
 	public void extractStatus(){
-		int index = commandArgumentsString.indexOf("s:");
-		int indexSpace = commandArgumentsString.indexOf(" ",index);
-		if (index>0){
-			itemStatus = commandArgumentsString.substring(index+2, indexSpace);
-			commandArgumentsString = commandArgumentsString.substring(0, index)+commandArgumentsString.substring(indexSpace);
+		int indexOfPrefix = commandArgumentsString.indexOf(COMMAND_PREFIX_STATUS); 
+		int indexSpace = commandArgumentsString.indexOf(STRING_SPACE,indexOfPrefix);
+		if (isValidIndex(indexOfPrefix)){
+			itemStatus = extractFieldData(indexOfPrefix, indexSpace);
+			commandArgumentsString = removeFieldFromArgument(indexOfPrefix, indexSpace);
 		}
 	}
 	
 	public void extractLabel(){
-		int index = commandArgumentsString.indexOf("l:");
-		int indexSpace = commandArgumentsString.indexOf(" ",index);
-		if (index>0){
-			itemLabel = commandArgumentsString.substring(index+2, indexSpace);
-			commandArgumentsString = commandArgumentsString.substring(0, index)+commandArgumentsString.substring(indexSpace);
+		int indexOfPrefix = commandArgumentsString.indexOf(COMMAND_PREFIX_LABEL);	
+		int indexSpace = commandArgumentsString.indexOf(STRING_SPACE,indexOfPrefix);
+		if (isValidIndex(indexOfPrefix)){
+			itemLabel = extractFieldData(indexOfPrefix, indexSpace);
+			commandArgumentsString = removeFieldFromArgument(indexOfPrefix, indexSpace);
 		}
 	}
 	
 	public void extractStartDate(){
+		DateTimeParser dp = new DateTimeParser("start",commandArgumentsString);	
+		commandArgumentsString = commandArgumentsString.replace(dp.getString(), "");
+		itemStartDate=dp.getDate();
 		
-		int index = commandArgumentsString.indexOf("f:"); //from
-		if (index>0){
-			itemLabel = commandArgumentsString.substring(index);
-			List<Date> startDateGroup = timeParser.parseSyntax(itemLabel).get(0).getDates();
-			String startDateString = timeParser.parseSyntax(itemLabel).get(0).getText();
-			
-			itemStartDate = startDateGroup.get(0);
-			commandArgumentsString = commandArgumentsString.replace(startDateString, " ");
-		} else{
-			itemStartDate = new Date();
-		}
 	}
 	
-	public void extractEndDate(){ 
-		List<DateGroup> endDateGroup = timeParser.parseSyntax(commandArgumentsString);
-		if (endDateGroup.size()>0){
-			itemEndDate=endDateGroup.get(0).getDates().get(0);
-			String endDateString = endDateGroup.get(0).getText();
-			commandArgumentsString = commandArgumentsString.replace(endDateString, " ");
+	public void extractEndDate(){
+		DateTimeParser dp = new DateTimeParser("end",commandArgumentsString);
+		commandArgumentsString = commandArgumentsString.replace(dp.getString(), "");
+		itemEndDate=dp.getDate();
+		itemEndDateTitle=dp.getString();
+	}
+	
+	public void extractRecurring(){
+		DateTimeParser dp = new DateTimeParser("recurring",commandArgumentsString);
+		commandArgumentsString = commandArgumentsString.replace(dp.getString(), "");
+		itemRecurringDateGroup=dp.getRecurringDateGroup();
+		if (itemRecurringDateGroup==null){
+			return;
 		}
+		itemRecurringPeriod = itemRecurringDateGroup.getRecurInterval();
+		itemIsRecurring = dp.getRecurring();
+	}
+	
+	private String removeFieldFromArgument(int indexPrefixBegin, int indexSpace) {
+		if (indexSpace==-1){
+			return commandArgumentsString.substring(INDEX_COMMAND_BEGIN, indexPrefixBegin);
+		}
+			return commandArgumentsString.substring(INDEX_COMMAND_BEGIN, indexPrefixBegin)
+									+commandArgumentsString.substring(indexSpace);
+	}
+	
+	private int getPrefixEndIndex(int index) {
+		return index+2;
+	}
+	
+	private String extractFieldData(int indexOfPrefix, int indexSpace) {
+		if (indexSpace==-1){
+			return  commandArgumentsString.substring(getPrefixEndIndex(indexOfPrefix));
+		}
+		return commandArgumentsString.substring(getPrefixEndIndex(indexOfPrefix), indexSpace);
+	}
+	
+	public String getTitle(){
+		return itemTitle;
+	}
+	public String getDescription(){
+		return itemDescription;
+	}
+	public String getPriority(){
+		return itemPriority;
+	}
+	public String getStatus(){
+		return itemStatus;
+	}
+	public Date getStartDate(){
+		return itemStartDate;
+	}
+	public Date getEndDate(){
+		return itemEndDate;
+	}
+	
+	public boolean getIsRecurring(){
+		return itemIsRecurring;
+	}
+	
+	public long getRecurringPeriod(){
+		return itemRecurringPeriod;
+	}
+	
+	public boolean isNullTitle(){
+		return itemTitle==null;
+	}
+	
+	public boolean isNullDescription(){
+		return itemDescription==null;
+	}
+	
+	public boolean isNullPriority(){
+		return itemPriority==null;
+	}
+	
+	public boolean isNullStatus(){
+		return itemStatus==null;
+	}
+	
+	public boolean isNullLabel(){
+		return itemLabel==null;
+	}
+	
+	public boolean isNullStartDate(){
+		return itemStartDate==null;
+	}
+	
+	public boolean isNullEndDate(){
+		return itemEndDate==null;
+	}
+
+	public boolean hasCommandTitleOnly(){
+		return (isNullDescription() 
+				&& isNullPriority()
+				&& isNullStatus()
+				&& isNullLabel()
+				&& isNullStartDate()
+				&& isNullEndDate());
+	}
+	
+	public boolean hasCommandTitleAndEndDateOnly(){
+		return (isNullDescription() 
+				&& isNullPriority()
+				&& isNullStatus()
+				&& isNullLabel()
+				&& isNullStartDate());
+	}
+	
+	public boolean hasCommandTitleAndStartDateOnly(){
+		return (isNullDescription() 
+				&& isNullPriority()
+				&& isNullStatus()
+				&& isNullLabel()
+				&& isNullEndDate());
+	}
+
+	private boolean isValidIndex(int index) {
+		return index!=INDEX_INVALID;
 	}
 	
 }

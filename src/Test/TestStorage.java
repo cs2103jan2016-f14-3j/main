@@ -13,7 +13,7 @@ import utils.FileHandler;
 import utils.Item;
 import utils.Settings;
 import utils.SettingsAdapter;
-import utils.UserTaskList;
+import utils.UserItemList;
 
 public class TestStorage {
 	
@@ -29,12 +29,13 @@ public class TestStorage {
 		File settingsFile = new File(SETTINGS_FILE_PATH);
 		
 		Storage storageTest = new Storage();
-		
+		storageTest.init();
+//		System.out.println(storageTest.getUserTaskList());
 //		storageTest.getUserTaskList().printInfo();
-		Item t1 = new Item(1L, "Title 1", "High", "Tryin to test","Done","red label", new Date(), new Date());
-		Item t2 = new Item(2L, "Title 2111", "Medium", "Tryin to test 2","Done","red label",  new Date(), new Date());
+		Item t1 = new Item(1L,"EVENT", "Title 1", "High", "Tryin to test","Done","red label", new Date(), new Date());
+		Item t2 = new Item(2L,"EVENT", "Title 2111", "Medium", "Tryin to test 2","Done","red label",  new Date(), new Date());
 		
-		UserTaskList userTaskList = new UserTaskList();
+		UserItemList userTaskList = new UserItemList();
 		userTaskList.setUserName("Wei Lip");
 		userTaskList.setIdCounter(3L);
 		ArrayList<Item> tArray = new ArrayList<>();
@@ -43,17 +44,17 @@ public class TestStorage {
 		userTaskList.setTaskArray(tArray);
 		storageTest.store(userTaskList);
 		
-		Settings s = new Settings();
-		s.setStoragePath("C:\\Users\\Josh\\Desktop\\Nus sem 4\\CS2107\\Lecture notes\\Storage.txt");
+//		Settings s = new Settings();
+//		s.setStoragePath("C:\\Users\\Josh\\Desktop\\Nus sem 4\\CS2107\\Lecture notes\\Storage.txt");
 		
-		GSON_SETTINGS_BUILDER.registerTypeAdapter(Settings.class,
-				new SettingsAdapter());
-		GSON_SETTINGS_BUILDER.setPrettyPrinting();
-		gsonSettings = GSON_ITEM_BUILDER.create();
-		
-		final String json = gsonSettings.toJson(s);
-		FileHandler.writeStringToFile(settingsFile, json);
-		
+//		GSON_SETTINGS_BUILDER.registerTypeAdapter(Settings.class,
+//				new SettingsAdapter());
+//		GSON_SETTINGS_BUILDER.setPrettyPrinting();
+//		gsonSettings = GSON_ITEM_BUILDER.create();
+//		
+//		final String json = gsonSettings.toJson(s);
+//		FileHandler.writeStringToFile(settingsFile, json);
+//		
 		
 	}
 }

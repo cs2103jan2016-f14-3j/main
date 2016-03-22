@@ -1,6 +1,7 @@
 package command;
 
 import java.util.ArrayList;
+import java.util.logging.Logger;
 
 import main.POMPOM;
 import utils.Item;
@@ -12,6 +13,8 @@ public abstract class Command {
 	protected static final String STATUS_COMPLETED = "completed";
 	protected static final String STATUS_OVERDUE = "overdue";
 	protected String returnMsg = "";
+	
+	public static Logger logger = Logger.getLogger("Command");
 	
 	public Command() {
 		
@@ -28,7 +31,7 @@ public abstract class Command {
 	}
 	
 	protected ArrayList<Item> getTaskList() {
-		return POMPOM.getStorage().getTaskList();
+		return POMPOM.getStorage().getTaskList();		
 	}
 	
 	protected boolean checkExists(long taskId) {

@@ -21,6 +21,7 @@ public class SettingsController {
 	
     public void clickSave(ActionEvent event) throws IOException {
     	String storageFilePath = storageLocationString.getText();
+    	storageLocationString.clear();
         POMPOM.saveSettings(storageFilePath);
     }  
 	
