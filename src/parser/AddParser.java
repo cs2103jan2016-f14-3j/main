@@ -1,103 +1,124 @@
 package parser;
 
 import java.util.Date;
+import java.util.List;
+
 import command.Command;
+import command.InvalidCommand;
 import command.AddCommand;
-import java.text.SimpleDateFormat;
-import java.text.ParseException;
+import org.ocpsoft.prettytime.nlp.PrettyTimeParser;
+import org.ocpsoft.prettytime.nlp.parse.DateGroup;
 
 
 public class AddParser extends ArgsParser{
 	
-	private final int INDEX_TITLE = 0;
-	private final int INDEX_DESCRIPTION = 1;
-	private final int INDEX_PRIORITY = 2;
-	private final int INDEX_STATUS = 3;
-	private final int INDEX_LABEL = 4;
-	private final int INDEX_STARTDATE = 5;
-	private final int INDEX_ENDDATE = 6;
+	/*
+	 * Possible add commands:
+	 * add title = adds title without any extra stuff
+	 * add title date = add title + date
+	 * add title:desc date = add title + desc + date
+	 * add title:desc p:high date = add title + description + priority + date
+	 * add title:desc p:high l:label date = add title + desc + priority + label + date
+	 * add title:desc p:high l:label s:startdate date = add title desc priority + label + startdate + enddate 
+	 */
 	
-	private String itemTitle;
-	private String itemDescription;
-	private String itemPriority;
-	private String itemStatus;
-	private String itemLabel;
-	private Date itemStartDate;
-	private Date itemEndDate;
+	private String itemTitle= null;
+	private String itemDescription = null;
+	private String itemPriority = null;
+	private String itemStatus = null;
+	private String itemLabel = null;
+	private Date itemStartDate = null;
+	private Date itemEndDate = null;
 	
-	private SimpleDateFormat dateFormatter;
+	private PrettyTimeParser timeParser = new PrettyTimeParser();
 	
 	public AddParser(String userCommand){
-		super(userCommand);
-		SimpleDateFormat dateFormatter = new SimpleDateFormat("dd-MM-yyyy/HH:mm");
-
-		itemTitle = getTitle();
-		itemDescription = getDescription();
-		itemPriority = getPriority();
-		itemStatus = getStatus();
-		itemLabel = getLabel();
-		itemStartDate = getStartDate();
-		itemEndDate = getEndDate();
+		super(userCommand);	
+		if (this.noArgs){
+			invalidArgs();
+			return;
+		} else {		
+			extractStartDate();
+			extractEndDate();
+			extractPriority();
+			extractStatus();
+			extractLabel();
+			extractDescription();
+			itemTitle = commandArgumentsString.trim();
+		}
 	}
 	
 	public Command executeCommand(){
-		return new AddCommand(itemTitle, itemDescription, itemPriority, itemStatus, itemLabel, itemStartDate, itemEndDate); 
-	}
-	
-	public String getTitle(){
-		return this.argsArray[INDEX_TITLE];
-	}
-	
-	public String getDescription(){
-		return this.argsArray[INDEX_DESCRIPTION];
-	}
-	
-	public String getPriority(){
-		return this.argsArray[INDEX_PRIORITY];
-	}
-	
-	public String getStatus(){
-		return this.argsArray[INDEX_STATUS];
-	}
-	
-	public String getLabel(){
-		return this.argsArray[INDEX_LABEL];
-	}
-	
-	public Date getStartDate(){ 
-		SimpleDateFormat dateFormatter = new SimpleDateFormat("dd MM yyyy HH:mm");
-		String dateString = this.argsArray[INDEX_STARTDATE];
-		dateString = dateString.replace("-", " ");
-		dateString = dateString.replace("/", " ");
-		Date parsedDate = null;
-		if (dateString==null){
-			parsedDate = new Date();
+		if (itemTitle==""){
+			return new InvalidCommand(commandArgumentsString);
+		}
+		if (itemDescription==null && itemPriority==null && itemStatus==null && itemLabel==null && itemStartDate==null && itemEndDate==null){
+			return new AddCommand(itemTitle);
+		} else if (itemDescription==null && itemPriority==null && itemStatus==null && itemLabel==null && itemStartDate==null){
+			return new AddCommand(itemTitle, itemEndDate);
 		} else{
-			try{
-				//System.out.println(dateString);
-				parsedDate = dateFormatter.parse(dateString);
-			} catch (ParseException e){
-				//do something
-			}
+			return new AddCommand(itemTitle, itemDescription, itemPriority, itemStatus, itemLabel, itemStartDate, itemEndDate);
 		}
-		return parsedDate;
 	}
 	
-	public Date getEndDate(){ 
-		SimpleDateFormat dateFormatter = new SimpleDateFormat("dd MM yyyy HH:mm");
-		String dateString = this.argsArray[INDEX_ENDDATE];
-		dateString = dateString.replace("-", " ");
-		dateString = dateString.replace("/", " ");
-		Date parsedDate = null;
-		try{
-			parsedDate = dateFormatter.parse(dateString);
-		} catch (ParseException e){
-			//do something
+	private void extractDescription(){
+		int index = commandArgumentsString.indexOf(":");
+		if (index>0){
+			itemDescription = commandArgumentsString.substring(index+1);
+			commandArgumentsString = commandArgumentsString.substring(0, index);
+		}
+	}
+	
+	public void extractPriority(){
+		int index = commandArgumentsString.indexOf("p:");
+		int indexSpace = commandArgumentsString.indexOf(" ",index);
+		if (index>0){
+			itemPriority = commandArgumentsString.substring(index+2, indexSpace);
+			commandArgumentsString = commandArgumentsString.substring(0, index)+commandArgumentsString.substring(indexSpace);
 		}
 
+	}
 	
-
-		return parsedDate;
+	public void extractStatus(){
+		int index = commandArgumentsString.indexOf("s:");
+		int indexSpace = commandArgumentsString.indexOf(" ",index);
+		if (index>0){
+			itemStatus = commandArgumentsString.substring(index+2, indexSpace);
+			commandArgumentsString = commandArgumentsString.substring(0, index)+commandArgumentsString.substring(indexSpace);
+		}
+	}
+	
+	public void extractLabel(){
+		int index = commandArgumentsString.indexOf("l:");
+		int indexSpace = commandArgumentsString.indexOf(" ",index);
+		if (index>0){
+			itemLabel = commandArgumentsString.substring(index+2, indexSpace);
+			commandArgumentsString = commandArgumentsString.substring(0, index)+commandArgumentsString.substring(indexSpace);
+		}
+	}
+	
+	public void extractStartDate(){
+		
+		int index = commandArgumentsString.indexOf("f:"); //from
+		if (index>0){
+			itemLabel = commandArgumentsString.substring(index);
+			List<Date> startDateGroup = timeParser.parseSyntax(itemLabel).get(0).getDates();
+			String startDateString = timeParser.parseSyntax(itemLabel).get(0).getText();
+			
+			itemStartDate = startDateGroup.get(0);
+			commandArgumentsString = commandArgumentsString.replace(startDateString, " ");
+		} else{
+			itemStartDate = new Date();
+		}
+	}
+	
+	public void extractEndDate(){ 
+		List<DateGroup> endDateGroup = timeParser.parseSyntax(commandArgumentsString);
+		if (endDateGroup.size()>0){
+			itemEndDate=endDateGroup.get(0).getDates().get(0);
+			String endDateString = endDateGroup.get(0).getText();
+			commandArgumentsString = commandArgumentsString.replace(endDateString, " ");
+		}
 	}
 	
 }

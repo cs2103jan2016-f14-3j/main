@@ -1,13 +1,16 @@
 package parser;
 
-//import command.Command;
-//import command.EditCommand;
+import command.Command;
+import command.InvalidCommand;
 
 public class InvalidParser {
+	
+	private String invalidCommand;
 	public InvalidParser(String userCommand){
+		invalidCommand = userCommand;
 	}
 	
-	public void executeCommand(){
-		//return new command(); 
+	public Command executeCommand(){
+		return new InvalidCommand(invalidCommand);
 	}
 }

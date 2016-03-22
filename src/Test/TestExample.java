@@ -1,5 +1,6 @@
 package Test;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 
@@ -20,23 +21,25 @@ public class TestExample {
 	    final Gson gson = gsonBuilder.create();
 	    
 	    UserTaskList taskList = new UserTaskList();
-	    final Item task1 = new Item(0,"It is a sunny day", "High", "I want to swim","Done","red label",
+	    final Item task1 = new Item(1L,"It is a sunny day", "High", "I want to swim","Done","red label",
 	    		new Date(), new Date());
 	    
-	    final Item task2 = new Item(5,"It is a rainny day", "Medium", "I want to study","Undone"
+	    final Item task2 = new Item(2L,"It is a rainny day", "Medium", "I want to study","Undone"
 	    		,"blue label", new Date(), new Date());
 	    taskList.setUserName("Wei Lip");	    
-	    taskList.setTaskArray(new Item[]{task1,task2});
 	    
-
+	    ArrayList<Item> tArray = new ArrayList<>();
+		tArray.add(task1);
+		tArray.add(task2);
+		taskList.setTaskArray(tArray);
 	    final String json = gson.toJson(taskList);
 	    System.out.println("Serialised");
 	    System.out.println(json);
 	    
 	    final UserTaskList userTaskList = gson.fromJson(json, UserTaskList.class);
 	    System.out.println("\nDeserialised");
-	    userTaskList.getTaskArray()[0].printInfo();
-	    userTaskList.getTaskArray()[1].printInfo();
+	    userTaskList.getTaskArray().get(0).printInfo();
+	    userTaskList.getTaskArray().get(1).printInfo();
 	    
 	   // Collections.sort(parsedBook.getTaskArrayList());
 	}

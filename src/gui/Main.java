@@ -6,13 +6,14 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
+import javafx.scene.Group;
+import javafx.scene.Node;
 
 
 public class Main extends Application {
-
+	
     public static void main(String[] args) {
         Application.launch(Main.class, args);
     }
@@ -20,12 +21,15 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) throws Exception {
     	getClass();
-    	Parent root = FXMLLoader.load(getClass().getResource("POMPOM.fxml"));
+    	Group root = new Group();
+    	Node nodeMenu = FXMLLoader.load(getClass().getResource("POMPOM.fxml"));
+    	Scene scene = new Scene(root, 800, 556);
+    	root.getChildren().add(nodeMenu);
         stage.setTitle("POMPOM");
-        stage.setScene(new Scene(root, 800, 556));
+        stage.setScene(scene);
         stage.show();
     }
-    
+        
     
 	public boolean newTaskDialog() {
 		try {

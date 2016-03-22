@@ -1,36 +1,36 @@
 package parser;
 
-import java.util.Date;
 import command.Command;
 import command.DelCommand;
 import java.text.SimpleDateFormat;
-import java.text.ParseException;
 
 
 public class DeleteParser extends ArgsParser{
 	
-	//Array contents:
-	//[0: Item ID]
-	
-	private final int INDEX_ITEM_ID = 0;
-
-	
-	private String itemID;
-
-	
-	private SimpleDateFormat dateFormatter;
+	private int itemID;
+	private Command outputCommand = null;
 	
 	public DeleteParser(String userCommand){
 		super(userCommand);
-		itemID = getItemID();
+		getItemId();
 	}
 	
 	public Command executeCommand(){
-		return new DelCommand(Integer.parseInt(itemID)); 
+		if (outputCommand == null){
+			System.out.println(commandArgumentsString + "lol");
+			return new DelCommand(itemID);
+		} else{
+			return outputCommand;
+		}
 		
 	}
 	
-	public String getItemID(){
-		return this.argsArray[INDEX_ITEM_ID];
+	public void getItemId(){
+		try{
+			itemID = Integer.parseInt(commandArgumentsString);
+		} catch (Exception e){
+			InvalidParser InvalidArgumentParser = new InvalidParser(commandArgumentsString);
+			outputCommand = InvalidArgumentParser.executeCommand();
+		}
 	}	
 }

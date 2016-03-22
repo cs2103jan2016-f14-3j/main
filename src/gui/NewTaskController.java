@@ -1,7 +1,11 @@
 package gui;
 
+import java.io.IOException;
 import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.ResourceBundle;
 
 import javafx.fxml.FXML;
@@ -13,7 +17,9 @@ import javafx.scene.control.SplitMenuButton;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import main.POMPOM;
+import gui.Controller;
 import utils.Item;
+import gui.Controller;
 
 public class NewTaskController implements Initializable{
 
@@ -43,21 +49,18 @@ public class NewTaskController implements Initializable{
 	Button newTaskCancel;
 	
 	private Stage dialogStage;
-	private Item item;
-	private boolean okClicked = false;
+	Controller control = new Controller();
     POMPOM pompom = new POMPOM();
+	private Controller controller;
+	private boolean okClicked = false;
     String title;
     LocalDate startDate;
-    String formattedStartDate;
     String startTime;
     LocalDate endDate;
-    String formattedEndDate;
     String endTime;
     String label;
     String priority;
-	
-
-	
+    	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
         assert newTaskTitle != null : "fx:id=\"newTaskTitle\" was not injected: check your FXML file 'POMPOM.fxml'.";
@@ -77,24 +80,18 @@ public class NewTaskController implements Initializable{
 		this.dialogStage = dialogStage;
 	}
 
-	public void setItem(Item item) {
-		this.item = item;
-		
+
+	@FXML
+	private void handleSave() throws IOException, ParseException{
+		controller = new Controller();
 		title = newTaskTitle.getText();
 		startDate = newStartDate.getValue();
 		startTime = newStartTime.getText();
 		endDate = newEndDate.getValue();
-		formattedEndDate = endDate.toString();
 		endTime = newEndTime.getText();
 		label = newLabel.getText();
 		priority = newPriority.getText();
-		System.out.println(title);
-	}
-
-	@FXML
-	private void handleSave(){
-		setItem(new Item());
-		String input = "add " + title + " null " + priority + " Upcoming " + label  + " " + formattedStartDate + "/" + startTime + " " + formattedEndDate + "/" + endTime;
+		String input = "add " + title + " null " + priority + " Upcoming " + label  + " " + startDate + "/" + startTime + " " + endDate + "/" + endTime;
 		System.out.println(input);
 		pompom.execute(input);
 		okClicked = true;
