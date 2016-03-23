@@ -1,86 +1,294 @@
 {
   "Username": "Not Set",
-  "IdCounter": 8,
+  "IdCounter": 50,
   "TaskList": [
     {
-      "Id": 1,
-      "Title": "do cs2103",
-      "Priority": "high",
-      "Description": "finish v0.1    f:next    ",
-      "Label": "hw",
-      "Status": "open",
-      "StartDate": "Mon Mar 21 23:40:00 SGT 2016",
-      "EndDate": "Tue Mar 22 23:40:00 SGT 2016"
-    },
-    {
-      "Id": 2,
-      "Title": "do cs2103",
-      "Priority": "high",
-      "Description": "finish v0.1    f:next    ",
-      "Label": "hw",
-      "Status": "open",
-      "StartDate": "Mon Mar 21 23:40:04 SGT 2016",
-      "EndDate": "Tue Mar 22 23:40:04 SGT 2016"
-    },
-    {
-      "Id": 3,
-      "Title": "do cs2103",
-      "Priority": "high",
-      "Description": "finish v0.1    f:next    ",
-      "Label": "hw",
-      "Status": "open",
-      "StartDate": "Mon Mar 21 23:40:21 SGT 2016",
-      "EndDate": "Wed Mar 23 23:40:21 SGT 2016"
-    },
-    {
-      "Id": 4,
-      "Title": "do cs2103",
-      "Priority": "high",
-      "Description": "finish v0.1    f:next    ",
-      "Label": "hw",
-      "Status": "open",
-      "StartDate": "Mon Mar 21 01:53:23 SGT 2016",
-      "EndDate": "Tue Mar 22 01:53:23 SGT 2016"
-    },
-    {
       "Id": 5,
-      "Title": "do cs2103",
-      "Priority": "high",
-      "Description": "finish v0.1    f:next    ",
-      "Label": "hw",
-      "Status": "open",
-      "StartDate": "Mon Mar 21 01:53:25 SGT 2016",
-      "EndDate": "Tue Mar 22 01:53:25 SGT 2016"
+      "Type": "event",
+      "Title": "lol",
+      "Priority": "",
+      "Description": "",
+      "Label": "",
+      "Status": "overdue",
+      "StartDate": "Mon Mar 21 02:46:02 SGT 2016",
+      "EndDate": "Mon Mar 21 02:46:02 SGT 2016"
     },
     {
       "Id": 6,
-      "Title": "do cs2103",
-      "Priority": "high",
-      "Description": "finish v0.1    f:next    ",
-      "Label": "hw",
-      "Status": "open",
-      "StartDate": "Mon Mar 21 01:53:27 SGT 2016",
-      "EndDate": "Tue Mar 22 01:53:27 SGT 2016"
+      "Type": "task",
+      "Title": "new title",
+      "Priority": "",
+      "Description": "",
+      "Label": "",
+      "Status": "overdue",
+      "StartDate": "Mon Mar 21 02:47:40 SGT 2016",
+      "EndDate": "Mon Mar 21 02:47:40 SGT 2016"
     },
     {
       "Id": 7,
-      "Title": "do cs2103",
-      "Priority": "high",
-      "Description": "finish v0.1    f:next    ",
-      "Label": "hw",
-      "Status": "open",
-      "StartDate": "Mon Mar 21 11:35:30 SGT 2016",
-      "EndDate": "Tue Mar 22 11:35:30 SGT 2016"
+      "Title": "point",
+      "Priority": "",
+      "Description": "",
+      "Label": "",
+      "Status": "overdue",
+      "StartDate": "Mon Mar 21 02:49:06 SGT 2016",
+      "EndDate": "Mon Mar 21 02:49:07 SGT 2016"
     },
     {
-      "Id": 8,
-      "Title": "do cs2103",
-      "Priority": "high",
-      "Description": "finish v0.1    f:next    ",
-      "Label": "hw",
-      "Status": "open",
-      "StartDate": "Mon Mar 21 11:35:47 SGT 2016",
-      "EndDate": "Tue Mar 22 11:35:47 SGT 2016"
+      "Id": 9,
+      "Type": "event",
+      "Title": "test",
+      "Priority": "",
+      "Description": "",
+      "Label": "",
+      "Status": "overdue",
+      "StartDate": "Mon Mar 21 17:15:31 SGT 2016",
+      "EndDate": "Mon Mar 21 17:15:31 SGT 2016"
+    },
+    {
+      "Id": 12,
+      "Title": "sleep zzz",
+      "Priority": "",
+      "Description": "",
+      "Label": "",
+      "Status": "overdue",
+      "StartDate": "Mon Mar 21 17:29:31 SGT 2016",
+      "EndDate": "Mon Mar 21 17:29:31 SGT 2016"
+    },
+    {
+      "Id": 13,
+      "Title": "lol",
+      "Priority": "",
+      "Description": "",
+      "Label": "",
+      "Status": "overdue",
+      "StartDate": "Mon Mar 21 17:29:41 SGT 2016",
+      "EndDate": "Mon Mar 21 17:29:41 SGT 2016"
+    },
+    {
+      "Id": 14,
+      "Title": "lol",
+      "Priority": "",
+      "Description": "",
+      "Label": "",
+      "Status": "overdue",
+      "StartDate": "Mon Mar 21 20:32:54 SGT 2016",
+      "EndDate": "Mon Mar 21 20:32:54 SGT 2016"
+    },
+    {
+      "Id": 16,
+      "Type": "event",
+      "Title": "fight",
+      "Priority": "",
+      "Description": "",
+      "Label": "",
+      "Status": "ongoing",
+      "StartDate": "Tue Mar 22 14:31:43 SGT 2016",
+      "EndDate": "Tue Mar 29 14:31:43 SGT 2016"
+    },
+    {
+      "Id": 17,
+      "Type": "event",
+      "Title": "swim",
+      "Priority": "",
+      "Description": "",
+      "Label": "",
+      "Status": "ongoing",
+      "StartDate": "Tue Mar 22 14:33:39 SGT 2016",
+      "EndDate": "Tue Mar 29 14:33:39 SGT 2016"
+    },
+    {
+      "Id": 18,
+      "Type": "event",
+      "Title": "fight",
+      "Priority": "",
+      "Description": "",
+      "Label": "",
+      "Status": "ongoing",
+      "StartDate": "Tue Mar 22 14:36:54 SGT 2016",
+      "EndDate": "Mon Mar 28 14:36:54 SGT 2016"
+    },
+    {
+      "Id": 19,
+      "Type": "event",
+      "Title": "haha",
+      "Priority": "",
+      "Description": "",
+      "Label": "",
+      "Status": "ongoing",
+      "StartDate": "Tue Mar 22 14:37:48 SGT 2016",
+      "EndDate": "Mon Mar 28 14:37:48 SGT 2016"
+    },
+    {
+      "Id": 23,
+      "Type": "event",
+      "Title": "fighter",
+      "Priority": "",
+      "Description": "",
+      "Label": "",
+      "Status": "overdue",
+      "StartDate": "Tue Mar 22 14:55:23 SGT 2016",
+      "EndDate": "Tue Mar 22 14:55:23 SGT 2016"
+    },
+    {
+      "Id": 24,
+      "Type": "event",
+      "Title": "fighter",
+      "Priority": "",
+      "Description": "",
+      "Label": "",
+      "Status": "ongoing",
+      "StartDate": "Tue Mar 22 14:55:30 SGT 2016",
+      "EndDate": "Tue Mar 29 14:55:30 SGT 2016"
+    },
+    {
+      "Id": 33,
+      "Type": "event",
+      "Title": "killeres",
+      "Priority": "",
+      "Description": "",
+      "Label": "",
+      "Status": "overdue",
+      "StartDate": "Tue Mar 22 16:28:17 SGT 2016",
+      "EndDate": "Tue Mar 22 16:28:17 SGT 2016"
+    },
+    {
+      "Id": 34,
+      "Type": "event",
+      "Title": "lol",
+      "Priority": "",
+      "Description": "",
+      "Label": "",
+      "Status": "ongoing",
+      "StartDate": "Tue Mar 22 17:18:21 SGT 2016",
+      "EndDate": "Mon Mar 28 17:18:21 SGT 2016"
+    },
+    {
+      "Id": 35,
+      "Type": "event",
+      "Title": "tester",
+      "Priority": "",
+      "Description": "",
+      "Label": "",
+      "Status": "overdue",
+      "StartDate": "Tue Mar 22 17:21:08 SGT 2016",
+      "EndDate": "Tue Mar 22 17:21:08 SGT 2016"
+    },
+    {
+      "Id": 36,
+      "Type": "event",
+      "Title": "lol",
+      "Priority": "",
+      "Description": "",
+      "Label": "",
+      "Status": "ongoing",
+      "StartDate": "Tue Mar 22 17:21:18 SGT 2016",
+      "EndDate": "Tue Mar 29 17:21:18 SGT 2016"
+    },
+    {
+      "Id": 37,
+      "Type": "Task",
+      "Title": "asd",
+      "Status": "ongoing",
+      "EndDate": "Tue Mar 29 17:29:28 SGT 2016"
+    },
+    {
+      "Id": 38,
+      "Type": "Event",
+      "Title": "pusher",
+      "Status": "ongoing",
+      "StartDate": "Tue Mar 22 17:29:48 SGT 2016",
+      "EndDate": "Fri Apr 01 17:29:48 SGT 2016"
+    },
+    {
+      "Id": 39,
+      "Type": "Task",
+      "Title": "asd",
+      "Priority": "",
+      "Description": "",
+      "Label": "sasf",
+      "Status": "pending",
+      "StartDate": "Fri Mar 25 00:00:00 SGT 2016",
+      "EndDate": "Fri Mar 25 00:00:00 SGT 2016"
+    },
+    {
+      "Id": 40,
+      "Type": "Task",
+      "Title": "fdsgrs",
+      "Priority": "",
+      "Description": "",
+      "Label": "saad",
+      "Status": "pending",
+      "StartDate": "Sat Mar 26 00:00:00 SGT 2016",
+      "EndDate": "Sat Mar 26 00:00:00 SGT 2016"
+    },
+    {
+      "Id": 41,
+      "Type": "Event",
+      "Title": "sleep",
+      "Status": "ongoing",
+      "StartDate": "Wed Mar 16 21:00:29 SGT 2016"
+    },
+    {
+      "Id": 42,
+      "Type": "Task",
+      "Title": "pone",
+      "Status": "floating"
+    },
+    {
+      "Id": 43,
+      "Type": "Task",
+      "Title": "poke tmr",
+      "Status": "floating"
+    },
+    {
+      "Id": 44,
+      "Type": "Task",
+      "Title": "poke",
+      "Status": "ongoing",
+      "EndDate": "Wed Mar 30 21:01:26 SGT 2016"
+    },
+    {
+      "Id": 45,
+      "Type": "Event",
+      "Title": "testing",
+      "Status": "pending",
+      "StartDate": "Mon Mar 28 21:10:59 SGT 2016"
+    },
+    {
+      "Id": 46,
+      "Type": "Event",
+      "Title": "hifive",
+      "Status": "pending",
+      "StartDate": "Tue Mar 29 21:11:42 SGT 2016"
+    },
+    {
+      "Id": 47,
+      "Type": "Event",
+      "Title": "killers",
+      "Status": "pending",
+      "StartDate": "Wed Mar 30 21:12:34 SGT 2016"
+    },
+    {
+      "Id": 48,
+      "Type": "Event",
+      "Title": "fighting",
+      "Status": "pending",
+      "StartDate": "Thu Mar 31 21:12:49 SGT 2016"
+    },
+    {
+      "Id": 49,
+      "Type": "Task",
+      "Title": "lol",
+      "Status": "floating"
+    },
+    {
+      "Id": 50,
+      "Type": "Event",
+      "Title": "tet",
+      "Status": "pending",
+      "StartDate": "Mon Mar 28 13:53:42 SGT 2016",
+      "EndDate": "Fri Apr 01 13:53:42 SGT 2016"
     }
   ]
 }

@@ -9,14 +9,14 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="321.0" prefWidth="409.0" styleClass="content" stylesheets="@application.css" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.NewTaskController">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="461.0" prefWidth="409.0" styleClass="content" stylesheets="@application.css" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.NewTaskController">
    <children>
       <Label layoutX="14.0" layoutY="21.0" text="Task:">
          <font>
             <Font name="Tw Cen MT Bold" size="18.0" />
          </font>
       </Label>
-      <TextField fx:id="newTaskTitle" layoutX="101.0" layoutY="18.0" prefHeight="26.0" prefWidth="237.0" />
+      <TextField fx:id="newType" layoutX="100.0" layoutY="265.0" prefHeight="26.0" prefWidth="237.0" />
       <Label layoutX="14.0" layoutY="59.0" text="Start Date:">
          <font>
             <Font name="Tw Cen MT Bold" size="18.0" />
@@ -28,27 +28,26 @@
             <Font name="Tw Cen MT Bold" size="18.0" />
          </font>
       </Label>
-      <TextField fx:id="newStartTime" layoutX="100.0" layoutY="96.0" prefHeight="26.0" prefWidth="237.0" promptText="HH:MM" />
       <Label layoutX="14.0" layoutY="219.0" text="Label:">
          <font>
             <Font name="Tw Cen MT Bold" size="18.0" />
          </font>
       </Label>
       <TextField fx:id="newLabel" layoutX="100.0" layoutY="216.0" prefHeight="26.0" prefWidth="237.0" />
-      <Label layoutX="11.0" layoutY="259.0" text="Priority:">
+      <Label layoutX="19.0" layoutY="315.0" text="Priority:">
          <font>
             <Font name="Tw Cen MT Bold" size="18.0" />
          </font>
       </Label>
-      <Button fx:id="newTaskSave" layoutX="258.0" layoutY="278.0" mnemonicParsing="false" onAction="#handleSave" text="Save" />
-      <SplitMenuButton fx:id="newPriority" layoutX="102.0" layoutY="256.0" mnemonicParsing="false" text="Select One">
+      <Button fx:id="newTaskSave" layoutX="264.0" layoutY="393.0" mnemonicParsing="false" onAction="#handleSave" text="Save" />
+      <SplitMenuButton fx:id="newPriority" layoutX="101.0" layoutY="312.0" mnemonicParsing="false" text="Select One">
         <items>
           <MenuItem fx:id="highSelected" mnemonicParsing="false" text="High" />
           <MenuItem fx:id="mediumSelected" mnemonicParsing="false" text="Medium" />
             <MenuItem fx:id="lowSelected" mnemonicParsing="false" text="Low" />
         </items>
       </SplitMenuButton>
-      <Button fx:id="newTaskCancel" layoutX="326.0" layoutY="278.0" mnemonicParsing="false" onAction="#handleCancel" text="Cancel" />
+      <Button fx:id="newTaskCancel" layoutX="327.0" layoutY="393.0" mnemonicParsing="false" onAction="#handleCancel" text="Cancel" />
       <Label layoutX="13.0" layoutY="141.0" text="End Date:">
          <font>
             <Font name="Tw Cen MT Bold" size="18.0" />
@@ -61,5 +60,12 @@
       </Label>
       <DatePicker fx:id="newEndDate" layoutX="101.0" layoutY="141.0" prefHeight="22.0" prefWidth="237.0" />
       <TextField fx:id="newEndTime" layoutX="100.0" layoutY="179.0" prefHeight="26.0" prefWidth="237.0" promptText="HH:MM" />
+      <Label layoutX="14.0" layoutY="268.0" text="Type">
+         <font>
+            <Font name="Tw Cen MT Bold" size="18.0" />
+         </font>
+      </Label>
+      <TextField fx:id="newStartTime" layoutX="100.0" layoutY="96.0" prefHeight="26.0" prefWidth="237.0" promptText="HH:MM" />
+      <TextField fx:id="newTaskTitle" layoutX="100.0" layoutY="18.0" prefHeight="26.0" prefWidth="237.0" />
    </children>
 </Pane>

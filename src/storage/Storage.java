@@ -26,7 +26,7 @@ import utils.Item;
 import utils.ItemAdapter;
 import utils.Settings;
 import utils.SettingsAdapter;
-import utils.UserTaskList;
+import utils.UserItemList;
 
 /**
  * @author A0121628L
@@ -51,9 +51,15 @@ public class Storage {
 	private Settings settings;
 
 	// The main data that is being extracted to this objects
-	private UserTaskList userTaskList;
+	private UserItemList userTaskList;
 	private ArrayList<Item> taskList;
+	
+	public String getStorageFilePath() {
+		return storageFilePath;
+	}
+
 	private long idCounter;
+	public static PrettyTimeParser timeParser;
 
 	// Gson Library objects to read settings and storage file in json format
 	final GsonBuilder GSON_ITEM_BUILDER = new GsonBuilder();
@@ -64,25 +70,37 @@ public class Storage {
 	private static Logger logger = Logger.getLogger("Storage");
 
 	public Storage() throws IOException {
-
+		
 	}
+	
+//	1. add <task>
+//	2. add <task> <mmm dd>
+//	3. add <task> <dd/mm/yyyy>
+//	4. add <task> <f:mmm dd> <mmm dd>
+//	5. add <task> <f:dd/mm/yyyy> <mmm dd>
+//	6. add <task> <f:mmm dd> <dd/mm/yyyy>
+//	7. add <task> <today/tomorrow/this week/month/year/ next week/month/year>
+//	8. add <task> <today/tomorrow/this week/month/year/ next week/month/year> <f:today/tomorrow/this week/month/year/ next week/month/year>
+//	9. add <task> <dd/mm/yyyy> <f:today/tomorrow/this week/month/year/ next week/month/year>
+//	10. add <task> <dd mmm> <f:today/tomorrow/this week/month/year/ next week/month/year>
+//	11. add <task> <today/tomorrow/this week/month/year/ next week/month/year><f:dd mmm>
+//	12.add <task> <today/tomorrow/this week/month/year/ next week/month/year><f:dd/mm/yyyy>
 
 	public void init() throws IOException {
 		initializeGsonObjects();
-		initializeSettings();		
+		initializeSettings();
 		initializeStorage();
-
+		logger.log(Level.INFO, "Initialized Storage");
 		// Loading NLP library for parser for quick access
-		PrettyTimeParser timeParser = new PrettyTimeParser();
-		timeParser.parseSyntax("next year");
+		
 	}
 
 	// Getters and Setters
-	public UserTaskList getUserTaskList() {
+	public UserItemList getUserTaskList() {
 		return userTaskList;
 	}
 
-	public void setUserTaskList(UserTaskList userTaskList) {
+	public void setUserTaskList(UserItemList userTaskList) {
 		this.userTaskList = userTaskList;
 	}
 
@@ -113,7 +131,7 @@ public class Storage {
 
 	// Initializing the GSON objects to read the storage text data file in JSON
 	private void initializeGsonObjects() {
-		GSON_ITEM_BUILDER.registerTypeAdapter(UserTaskList.class,
+		GSON_ITEM_BUILDER.registerTypeAdapter(UserItemList.class,
 				new ItemAdapter());
 		GSON_ITEM_BUILDER.setPrettyPrinting();
 		gsonItem = GSON_ITEM_BUILDER.create();
@@ -123,21 +141,23 @@ public class Storage {
 		GSON_SETTINGS_BUILDER.setPrettyPrinting();
 		gsonSettings = GSON_ITEM_BUILDER.create();
 	}
-	
+
 	private void initializeSettings() {
-		//Check set directory folder exisit a not if not create folder
+		// Check set directory folder exisit a not if not create folder
 		checkDirectoryFolder();
 		try {
-			//Check Settings file exist a not if not create folder
+			// Check Settings file exist a not if not create file
 			checkSettingsFile();
 		} catch (IOException e) {
-			logger.log(Level.SEVERE, "Failure Settings Path: " + SETTINGS_FILE_PATH);
+			logger.log(Level.SEVERE, "Failure Settings Path: "
+					+ SETTINGS_FILE_PATH);
 			e.printStackTrace();
 		}
 		String settingsString = null;
 		try {
-			settingsString = FileHandler.getStringFromFile(
-					SETTINGS_FILE_PATH, StandardCharsets.UTF_8);
+
+			settingsString = FileHandler.getStringFromFile(SETTINGS_FILE_PATH,
+					StandardCharsets.UTF_8);
 		} catch (IOException e) {
 			logger.log(Level.SEVERE, "Failure Reading Settings ");
 			e.printStackTrace();
@@ -147,10 +167,12 @@ public class Storage {
 	}
 
 	private void initializeStorage() throws IOException {
+		// Check for user set directory. If exist use directory
 		if (hasStoragePath()) {
 			setStorageFile(new File(settings.getStoragePath()));
 			setStorageFilePath(settings.getStoragePath());
 		}
+		// Check for storage file if do not exist create file
 		checkStorageFile();
 		String storageString = FileHandler.getStringFromFile(storageFilePath,
 				StandardCharsets.UTF_8);
@@ -162,6 +184,7 @@ public class Storage {
 	private boolean hasStoragePath() {
 		return settings.getStoragePath() != null;
 	}
+
 	// If do not exist make directory
 	private boolean checkDirectoryFolder() {
 		if (!DEFAULT_DIRECTORY_FILE.exists()) {
@@ -170,6 +193,7 @@ public class Storage {
 		}
 		return true;
 	}
+
 	// If Storage file do not exist make file
 	private boolean checkStorageFile() throws IOException {
 		if (!storageFile.exists()) {
@@ -178,6 +202,7 @@ public class Storage {
 		}
 		return true;
 	}
+
 	// If settings file do not exist make file
 	private boolean checkSettingsFile() throws IOException {
 		if (!settingsFile.exists()) {
@@ -185,47 +210,47 @@ public class Storage {
 		}
 		return true;
 	}
-	private boolean checkEmptyString(String string){
-		if (string.equals("")|| string.equals(null)){
+
+	private boolean checkEmptyString(String string) {
+		if (string.equals("") || string.equals(null)) {
 			return true;
-		}else{
+		} else {
 			return false;
 		}
-		
-		
+
 	}
-	
-	private UserTaskList deserializeStorageString(String jsonString) {
+
+	// Use the Gson library to get a Storage object from String
+	private UserItemList deserializeStorageString(String jsonString) {
 		if (checkEmptyString(jsonString)) {
-			UserTaskList utl = new UserTaskList("Not Set",
+			UserItemList utl = new UserItemList("Not Set",
 					new ArrayList<Item>());
 			utl.setIdCounter(0);
 			taskList = new ArrayList<Item>();
 			return utl;
 		}
-		UserTaskList userTaskList = gsonItem.fromJson(jsonString,
-				UserTaskList.class);
+		UserItemList userTaskList = gsonItem.fromJson(jsonString,
+				UserItemList.class);
 
 		return userTaskList;
 	}
 
+	// Use the Gson library to get a Settings object from String
 	private Settings deserializeSettingsString(String jsonString) {
 		if (jsonString.equals("")) {
 			Settings newSettings = new Settings();
 			return newSettings;
 		}
-
 		return gsonSettings.fromJson(jsonString, Settings.class);
-
 	}
 
 	// Obsolete method for now
-	// public void store(UserTaskList lst) throws IOException {
-	// final String json = gsonItem.toJson(lst);
-	// FileHandler.writeStringToFile(storageFile, json);
-	//
-	// }
-	
+	public void store(UserItemList lst) throws IOException {
+		final String json = gsonItem.toJson(lst);
+		FileHandler.writeStringToFile(storageFile, json);
+
+	}
+
 	public void saveStorage() throws IOException {
 		userTaskList.setTaskArray(taskList);
 		userTaskList.setIdCounter(idCounter);
@@ -233,11 +258,16 @@ public class Storage {
 		FileHandler.writeStringToFile(storageFile, json);
 	}
 
+	public void setStoragePath(String storageFilePath) {
+		assert storageFilePath != null : "storageFilePath is invalid";
+
+		settings.setStoragePath(storageFilePath);
+	}
 
 	public void saveSettings() throws IOException {
+		assert settings != null : "Settings not set";
 		settings.setStoragePath(storageFilePath);
 		final String json = gsonSettings.toJson(settings);
 		FileHandler.writeStringToFile(settingsFile, json);
 	}
-
 }

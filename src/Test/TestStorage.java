@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 
+import org.junit.Test;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -13,47 +15,48 @@ import utils.FileHandler;
 import utils.Item;
 import utils.Settings;
 import utils.SettingsAdapter;
-import utils.UserTaskList;
-
+import utils.UserItemList;
+import static org.junit.Assert.assertEquals;
 public class TestStorage {
-	
-	public static void main(String[] args) throws IOException {
-		final GsonBuilder GSON_ITEM_BUILDER = new GsonBuilder();
-		final GsonBuilder GSON_SETTINGS_BUILDER = new GsonBuilder();
-		
-		final String DEFAULT_FILE_DIRECTORY = "PomPom Storage & Settings";
-		final String SETTINGS_FILE_NAME = "settings.txt";
-		final String SETTINGS_FILE_PATH = DEFAULT_FILE_DIRECTORY
-				+ "/" + SETTINGS_FILE_NAME;
-		Gson gsonSettings;
-		File settingsFile = new File(SETTINGS_FILE_PATH);
-		
-		Storage storageTest = new Storage();
-		
-//		storageTest.getUserTaskList().printInfo();
-		Item t1 = new Item(1L, "Title 1", "High", "Tryin to test","Done","red label", new Date(), new Date());
-		Item t2 = new Item(2L, "Title 2111", "Medium", "Tryin to test 2","Done","red label",  new Date(), new Date());
-		
-		UserTaskList userTaskList = new UserTaskList();
-		userTaskList.setUserName("Wei Lip");
-		userTaskList.setIdCounter(3L);
-		ArrayList<Item> tArray = new ArrayList<>();
-		tArray.add(t1);
-		tArray.add(t2);
-		userTaskList.setTaskArray(tArray);
-		storageTest.store(userTaskList);
-		
-		Settings s = new Settings();
-		s.setStoragePath("C:\\Users\\Josh\\Desktop\\Nus sem 4\\CS2107\\Lecture notes\\Storage.txt");
-		
-		GSON_SETTINGS_BUILDER.registerTypeAdapter(Settings.class,
-				new SettingsAdapter());
-		GSON_SETTINGS_BUILDER.setPrettyPrinting();
-		gsonSettings = GSON_ITEM_BUILDER.create();
-		
-		final String json = gsonSettings.toJson(s);
-		FileHandler.writeStringToFile(settingsFile, json);
-		
-		
+	// Initialized Gson items to test storage. 
+//	final GsonBuilder GSON_ITEM_BUILDER = new GsonBuilder();
+//	final GsonBuilder GSON_SETTINGS_BUILDER = new GsonBuilder();
+//	
+//	final String DEFAULT_FILE_DIRECTORY = "PomPom Storage & Settings";
+//	final String SETTINGS_FILE_NAME = "settings.txt";
+//	final String SETTINGS_FILE_PATH = DEFAULT_FILE_DIRECTORY
+//			+ "/" + SETTINGS_FILE_NAME;
+//	Gson gsonSettings;
+//	File settingsFile = new File(SETTINGS_FILE_PATH);
+//	Storage storageTest;
+//	
+//	Item t1 = new Item(1L,"EVENT", "Title 1", "High", "Tryin to test","Done","red label", new Date(), new Date());
+//	Item t2 = new Item(2L,"EVENT", "Title 2111", "Medium", "Tryin to test 2","Done","red label",  new Date(), new Date());
+//	
+//
+//	public void init() throws IOException{
+//		storageTest = new Storage();
+//		storageTest.init();
+//	}
+	// Test whether getIdCounter increments itself a not
+	@Test
+	public void correctIdRead() throws IOException{
+		Storage testStorage = new Storage();
+		testStorage.init();
+		assertEquals(testStorage.getUserTaskList().getIdCounter() + 1, testStorage.getIdCounter());
 	}
+	// Check whether we can write the correct storage file path to storage a not
+	@Test
+	public void testWriteToProperties() throws SecurityException, IOException {
+		Storage testStorage = new Storage();
+		testStorage.init();
+		final String TEST_FILE_PATH = "test/Testing";
+		testStorage.setStorageFilePath(TEST_FILE_PATH);
+		//testStorage.saveSettings();
+		assertEquals(testStorage.getStorageFilePath(), TEST_FILE_PATH);
+	}
+	
+
+	
+
 }

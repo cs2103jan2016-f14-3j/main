@@ -7,17 +7,17 @@ import java.util.Arrays;
  * @author A0121628L
  *
  */
-public class UserTaskList {
+public class UserItemList {
 	private String userName;
 	private long IdCounter;
 	private ArrayList<Item> taskArray;
 	
-	public UserTaskList(String userName, ArrayList<Item> taskArray) {
+	public UserItemList(String userName, ArrayList<Item> taskArray) {
 		this.userName = userName;
 		this.taskArray = taskArray;
 	}
 
-	public UserTaskList() {
+	public UserItemList() {
 	}
 	
 	public String getUserName() {
