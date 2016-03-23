@@ -12,6 +12,8 @@ public class DateTimeParserTest {
 
 	PrettyTimeParser timeParser = new PrettyTimeParser();
 	
+	
+	
 	@Test
 	public void testEveryWeek() {
 		DateTimeParser dp = new DateTimeParser("end","shopping every monday");
@@ -130,8 +132,7 @@ public class DateTimeParserTest {
 	@Test
 	public void testCalculateInterval(){
 		long testOutput = DateTimeParser.calculateInterval("friday");
-		assertEquals(testOutput,1000*60*60*24*7);
-		
+		assertEquals(testOutput,1000*60*60*24*7);	
 	}
 	
 	//confirms that the recurring option for DateTimeParser gives back the upcoming day specified

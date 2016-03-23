@@ -13,7 +13,7 @@ public class EditParserTest {
 	}
 	
 	/*
-	 * New data field has the name of the title inside
+	 * New data field has the name of the title inside.
 	 */
 	@Test
 	public void testGetNewData() {
