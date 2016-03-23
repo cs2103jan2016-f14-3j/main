@@ -37,6 +37,8 @@ public class AddParser extends ArgsParser{
 	private Long itemRecurringPeriod = null;
 	private boolean itemIsRecurring = false;
 	private String itemEndDateTitle=""; //for use if title is empty.
+	private Date exceptStartDate;
+	private Date exceptEndDate;
 	
 	private static final int INDEX_INVALID = -1;
 	private static final int INDEX_COMMAND_BEGIN = 0;
@@ -162,6 +164,12 @@ public class AddParser extends ArgsParser{
 			return;
 		}
 		itemIsRecurring = dp.getRecurring();
+		DateTimeParser dp2 = new DateTimeParser("except",commandArgumentsString);
+		commandArgumentsString=commandArgumentsString.replace(dp.getString(), "");
+		if (dp.getExceptEndDateGroup()!=null && dp.getExceptStartDateGroup()!=null){
+			exceptStartDate=dp2.getExceptStartDateGroup().getDates().get(0);
+			exceptEndDate=dp2.getExceptEndDateGroup().getDates().get(0);
+		}
 	}
 	
 	private ArrayList<AddCommand> executeRecurring(){

@@ -14,6 +14,7 @@ public class ParserTest{
 
 	Parser parser = Parser.getInstance();
 	PrettyTimeParser timeParser = new PrettyTimeParser();
+	
 	@Test
 	public void testPrettyTime(){
 		List<DateGroup> dgl = timeParser.parseSyntax("16 mar");		
