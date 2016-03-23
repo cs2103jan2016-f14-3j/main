@@ -15,18 +15,17 @@ public class ParserTest{
 	Parser parser = Parser.getInstance();
 	PrettyTimeParser timeParser = new PrettyTimeParser();
 	
-	@Test
-	public void testPrettyTime(){
-		List<DateGroup> dgl = timeParser.parseSyntax("16 mar");		
-		assertEquals("16 mar",dgl.get(0).getText());
-	}
-	
+	/*
+	 * Tests if can add floating tasks
+	 */
 	@Test
 	public void testAddCommand1(){
 		AddParser add = new AddParser("do project");
 		assertEquals("do project",add.getTitle());
 	}
-	
+	/*
+	 * Tests if can add tasks with end date
+	 */
 	@Test
 	public void testAddCommand2(){
 		AddParser add = new AddParser("do project 28 march");
@@ -35,6 +34,9 @@ public class ParserTest{
 		assertEquals(endDate.compareTo(add.getEndDate()),1);	
 	}
 	
+	/*
+	 * Tests if can add tasks with start and end date.
+	 */
 	@Test
 	public void testAddCommand3(){
 		AddParser add = new AddParser("do project e:28 march f:16 march");
@@ -45,6 +47,9 @@ public class ParserTest{
 		assertEquals(startDate.compareTo(add.getStartDate()),1);	
 	}
 	
+	/*
+	 * Tests if can switch the order of the title and end date
+	 */
 	@Test
 	public void testAddCommand4(){
 		AddParser add = new AddParser("28 march do project");
@@ -53,6 +58,9 @@ public class ParserTest{
 		assertEquals(endDate.compareTo(add.getEndDate()),1);	
 	}
 	
+	/*
+	 * Tests if can switch the order of the start date, end date and title. 
+	 */
 	@Test
 	public void testAddCommand5(){
 		AddParser add = new AddParser("e:28 march f:16 march do project");
@@ -61,6 +69,9 @@ public class ParserTest{
 		assertEquals(endDate.compareTo(add.getEndDate()),1);	
 	}
 	
+	/*
+	 * Tests if can switch the order of the start date, end date and title.
+	 */
 	@Test
 	public void testAddCommand6(){
 		AddParser add = new AddParser("f:16 march e:28 march do project");
@@ -68,6 +79,10 @@ public class ParserTest{
 		Date endDate= timeParser.parseSyntax("28 march").get(0).getDates().get(0);
 		assertEquals(endDate.compareTo(add.getEndDate()),1);	
 	}
+	
+	/*
+	 * Tests if can add in recurring tasks with end date
+	 */
 	
 	@Test
 	public void testAddCommand7(){
@@ -77,6 +92,10 @@ public class ParserTest{
 		assertEquals(endDate.compareTo(add.getEndDate()),1);	
 	}
 	
+	/*
+	 * tests if can switch the order of the fields for adding recurring tasks with
+	 * end date.
+	 */
 	@Test
 	public void testAddCommand8(){
 		AddParser add = new AddParser("do cs2103 e:28 march every friday");
@@ -84,20 +103,13 @@ public class ParserTest{
 		Date endDate= timeParser.parseSyntax("28 march").get(0).getDates().get(0);
 		assertEquals(endDate.compareTo(add.getEndDate()),1);	
 		assertTrue(add.getIsRecurring());
-		
 	}	
 	
+	/*
+	 * Tests if can add in a task with only a parsable title 
+	 */
 	@Test
 	public void testAddCommand9(){
-		AddParser add = new AddParser("do cs2103 e:28 march every friday");
-		assertEquals("do cs2103",add.getTitle());
-		Date endDate= timeParser.parseSyntax("28 march").get(0).getDates().get(0);
-		assertEquals(endDate.compareTo(add.getEndDate()),1);
-		add.executeCommand();
-	}
-	
-	@Test
-	public void testAddCommand10(){
 		AddParser add = new AddParser("2103");
 		assertEquals("2103",add.getTitle());
 		Date endDate= new Date();

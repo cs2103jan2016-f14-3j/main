@@ -16,16 +16,6 @@ import command.AddRecurringCommand;
 
 public class AddParser extends ArgsParser{
 	
-	/*
-	 * Possible add commands:
-	 * add title = adds title without any extra stuff
-	 * add title date = add title + date
-	 * add title:desc date = add title + desc + date
-	 * add title:desc p:high date = add title + description + priority + date
-	 * add title:desc p:high l:label date = add title + desc + priority + label + date
-	 * add title:desc p:high l:label s:startdate date = add title desc priority + label + startdate + enddate 
-	 */
-	
 	private String itemTitle= null;
 	private String itemDescription = null;
 	private String itemPriority = null;
