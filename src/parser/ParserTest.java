@@ -24,14 +24,12 @@ public class ParserTest{
 	@Test
 	public void testAddCommand1(){
 		AddParser add = new AddParser("do project");
-		System.out.println(add.getTitle());
 		assertEquals("do project",add.getTitle());
 	}
 	
 	@Test
 	public void testAddCommand2(){
 		AddParser add = new AddParser("do project 28 march");
-		System.out.println(add.getTitle());
 		assertEquals("do project",add.getTitle());
 		Date endDate= timeParser.parseSyntax("28 march").get(0).getDates().get(0);
 		assertEquals(endDate.compareTo(add.getEndDate()),1);	
@@ -40,7 +38,6 @@ public class ParserTest{
 	@Test
 	public void testAddCommand3(){
 		AddParser add = new AddParser("do project e:28 march f:16 march");
-		System.out.println(add.getTitle());
 		assertEquals("do project",add.getTitle());
 		Date endDate= timeParser.parseSyntax("28 march").get(0).getDates().get(0);
 		Date startDate= timeParser.parseSyntax("16 march").get(0).getDates().get(0);
@@ -51,7 +48,6 @@ public class ParserTest{
 	@Test
 	public void testAddCommand4(){
 		AddParser add = new AddParser("28 march do project");
-		System.out.println(add.getTitle());
 		assertEquals("do project",add.getTitle());
 		Date endDate= timeParser.parseSyntax("28 march").get(0).getDates().get(0);
 		assertEquals(endDate.compareTo(add.getEndDate()),1);	
@@ -60,7 +56,6 @@ public class ParserTest{
 	@Test
 	public void testAddCommand5(){
 		AddParser add = new AddParser("e:28 march f:16 march do project");
-		System.out.println(add.getTitle());
 		assertEquals("do project",add.getTitle());
 		Date endDate= timeParser.parseSyntax("28 march").get(0).getDates().get(0);
 		assertEquals(endDate.compareTo(add.getEndDate()),1);	
@@ -69,7 +64,6 @@ public class ParserTest{
 	@Test
 	public void testAddCommand6(){
 		AddParser add = new AddParser("f:16 march e:28 march do project");
-		System.out.println(add.getTitle());
 		assertEquals("do project",add.getTitle());
 		Date endDate= timeParser.parseSyntax("28 march").get(0).getDates().get(0);
 		assertEquals(endDate.compareTo(add.getEndDate()),1);	
@@ -78,7 +72,6 @@ public class ParserTest{
 	@Test
 	public void testAddCommand7(){
 		AddParser add = new AddParser("do cs2103 every friday e:28 march");
-		System.out.println(add.getTitle());
 		assertEquals("do cs2103",add.getTitle());
 		Date endDate= timeParser.parseSyntax("28 march").get(0).getDates().get(0);
 		assertEquals(endDate.compareTo(add.getEndDate()),1);	

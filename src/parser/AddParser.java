@@ -166,7 +166,7 @@ public class AddParser extends ArgsParser{
 		itemIsRecurring = dp.getRecurring();
 		DateTimeParser dp2 = new DateTimeParser("except",commandArgumentsString);
 		commandArgumentsString=commandArgumentsString.replace(dp.getString(), "");
-		if (dp.getExceptEndDateGroup()!=null && dp.getExceptStartDateGroup()!=null){
+		if (dp2.getExceptEndDateGroup()!=null && dp2.getExceptStartDateGroup()!=null){
 			exceptStartDate=dp2.getExceptStartDateGroup().getDates().get(0);
 			exceptEndDate=dp2.getExceptEndDateGroup().getDates().get(0);
 		}
@@ -187,7 +187,15 @@ public class AddParser extends ArgsParser{
 		Date mostRecentEnd=new Date(recurInterval+currentTime);
 
 		while (mostRecentEnd.before(itemEndDate)){
-			System.out.println("mostRecent: " + mostRecent.toString());
+			if(exceptEndDate!=null && exceptStartDate!=null 
+					&& mostRecent.before(exceptEndDate)
+					&& mostRecent.after(exceptStartDate)){
+				recurInterval+= newRecurInterval;
+				mostRecent= mostRecentEnd;
+				mostRecentEnd=new Date(recurInterval+currentTime);
+				continue;
+			} 
+			
 			if (hasCommandTitleAndEndDateOnly()){
 				 defaultAddCommandFormat = new AddCommand(POMPOM.LABEL_TASK, itemTitle, null, null, POMPOM.STATUS_ONGOING, 
 						null, mostRecent, mostRecentEnd);

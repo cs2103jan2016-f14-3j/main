@@ -208,7 +208,6 @@ public class DateTimeParser{
 		}
 		String[] rawStringArray = stringWithDate.split(" ");
 		String[] parsedStringArray = initialParsedString.split(" ");
-		System.out.println(Arrays.toString(rawStringArray)+" "+(Arrays.toString(parsedStringArray)));
 		if (Arrays.equals(rawStringArray, parsedStringArray)){
 			dateTimeString=stringWithDate;
 			return timeParser.parseSyntax(stringWithDate);
@@ -227,7 +226,7 @@ public class DateTimeParser{
 						return parseAndCheckDate(output.trim());
 					 	
 						} else{ 
-						//System.out.println("trys: lol");
+							//do nothing
 					}
 				} 
 			}
@@ -346,8 +345,6 @@ public class DateTimeParser{
 	public static long calculateInterval(String day){
 		Date dateone=timeParser.parseSyntax("last " + day).get(0).getDates().get(0);
 		Date datetwo=timeParser.parseSyntax("next " +day).get(0).getDates().get(0);
-		System.out.println(dateone.toString());
-		System.out.println(datetwo.toString());
 		long interval = datetwo.getTime()-dateone.getTime();
 		long output = 1000*60*60*24*7;
 		return (interval)/10*10/2;
