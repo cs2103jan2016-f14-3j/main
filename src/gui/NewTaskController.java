@@ -27,6 +27,10 @@ import utils.Item;
 import utils.ListClassifier;
 import gui.Controller;
 
+/**
+ * @@author Jorel
+ *
+ */
 public class NewTaskController implements Initializable{
 
 	@FXML

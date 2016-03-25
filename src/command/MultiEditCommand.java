@@ -1,5 +1,8 @@
 package command;
-
+/**
+ * @@author wen hao
+ *
+ */
 import java.util.ArrayList;
 
 public class MultiEditCommand extends Command {

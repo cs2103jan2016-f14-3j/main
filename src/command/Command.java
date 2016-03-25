@@ -5,7 +5,10 @@ import java.util.logging.Logger;
 
 import main.POMPOM;
 import utils.Item;
-
+/**
+ * @@author wen hao
+ *
+ */
 public abstract class Command {
 
 	protected static final String STATUS_PENDING = "pending";

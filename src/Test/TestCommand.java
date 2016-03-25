@@ -16,6 +16,10 @@ import command.UndoCommand;
 import main.POMPOM;
 import utils.Item;
 
+/**
+ * @@author wen hao
+ *
+ */
 public class TestCommand {
 
 	Date currentDate = new Date();
@@ -29,7 +33,7 @@ public class TestCommand {
 		ArrayList<Item> taskList = POMPOM.getStorage().getTaskList();
 		taskList.clear();
 
-		// check if the “add” command returns the right status message
+		// check if the â€œaddâ€� command returns the right status message
 		assertEquals("Task added", command.execute());
 
 		// check if the taskList contain the added task

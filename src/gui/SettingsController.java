@@ -9,8 +9,13 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.stage.DirectoryChooser;
+import javafx.stage.FileChooser;
 import main.POMPOM;
 
+/**
+ * @@author Jorel
+ **
+ */
 public class SettingsController {
 	@FXML
 	Button saveFile;
@@ -27,8 +32,8 @@ public class SettingsController {
 	
 
 	public void showSingleFileChooser() {
-        DirectoryChooser directoryChooser = new DirectoryChooser(); 
-		File selectedPath = directoryChooser.showDialog(null);
+		FileChooser fileChooser = new FileChooser(); 
+		File selectedPath = fileChooser.showOpenDialog(null);
 		storageLocationString.setText(selectedPath.getPath());
 	}
 

@@ -4,14 +4,19 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
+/**
+ * @@author William
+ *
+ */
+
+
 public class EditParserTest {
 
 	@Test
 	public void testGetFields() {
 		EditParser editParser = new EditParser("1 title new title");
 		assertEquals(editParser.getField(),"title");
-	}
-	
+	}	
 	/*
 	 * New data field has the name of the title inside.
 	 */

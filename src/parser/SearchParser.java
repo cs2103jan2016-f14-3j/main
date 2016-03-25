@@ -4,6 +4,11 @@ import command.Command;
 import command.DelCommand;
 import command.SearchCommand;
 
+/**
+ * @@author William
+ *
+ */
+
 public class SearchParser extends ArgsParser{
 	String keyWord;
 	public SearchParser(String commandArguments) {

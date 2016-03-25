@@ -6,7 +6,10 @@ import java.util.logging.Level;
 
 import main.POMPOM;
 import utils.Item;
-
+/**
+ * @@author wen hao
+ *
+ */
 public class EditCommand extends Command {
 	
 	private static final String MESSAGE_TASK_EDITED = "%s. was successfully edited";	

@@ -5,6 +5,10 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 import main.POMPOM;
 
+/**
+ * @@author Jorel
+ *
+ */
 public class TestSomething {
 	/**
 	 * This operation test return responds for correct input task add

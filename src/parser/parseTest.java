@@ -11,6 +11,12 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import org.junit.Test;
 
+
+/**
+ * @@author William
+ *
+ */
+
 public class parseTest{
 
 	Parser parser = new Parser();

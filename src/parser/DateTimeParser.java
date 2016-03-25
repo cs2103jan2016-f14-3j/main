@@ -14,6 +14,11 @@ import java.util.logging.Logger;
 import org.ocpsoft.prettytime.nlp.PrettyTimeParser;
 import org.ocpsoft.prettytime.nlp.parse.DateGroup;
 
+/**
+ * @@author William
+ *
+ */
+
 public class DateTimeParser{
 	
 	private String originalString="";

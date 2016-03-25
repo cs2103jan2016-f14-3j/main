@@ -1,54 +1,6 @@
-package gui;
-
-import java.awt.Desktop.Action;
-import java.io.IOException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.ResourceBundle;
-
-import command.DelCommand;
-import main.POMPOM;
-import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
-import javafx.animation.Timeline;
-import javafx.beans.property.BooleanProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.SingleSelectionModel;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
-import javafx.scene.control.cell.CheckBoxTableCell;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Pane;
-import javafx.stage.Stage;
-import javafx.util.Callback;
-import javafx.util.Duration;
-import utils.Item;
-import utils.ListClassifier;
-
-/**
- * @@author Jorel
+# Jorel
+###### gui\Controller.java
+``` java
  *
  */
 public class Controller implements Initializable {
@@ -194,9 +146,16 @@ public class Controller implements Initializable {
 				POMPOM.executeCommand(delCommand);
 			}
 		}
+		System.out.println(POMPOM.getCurrentTab());
 		switchToTab(POMPOM.getCurrentTab().toLowerCase());
 	}
 
+	/**
+	 * 
+	 */
+	/**
+	 * 
+	 */
 	void configureTable() {
 		table.setEditable(true);
 		taskID.setCellValueFactory(new PropertyValueFactory<Item, Number>("id"));
@@ -243,29 +202,28 @@ public class Controller implements Initializable {
 
 	// New methods by wei lip
 
-	public void switchToTab(String inputTab) {
-		String tabName = inputTab.toLowerCase();
+	public void switchToTab(String type) {
 		SingleSelectionModel<Tab> selectionModel = tabViews.getSelectionModel();
-		
-		if (tabName.equals(POMPOM.LABEL_TASK.toLowerCase())) {
-			System.out.println("Teasdat :" + tabName);
+		if (type.equals(POMPOM.LABEL_TASK.toLowerCase())) {
+			System.out.println("Teasdat :" + type);
 			selectionModel.select(taskTab);
 			taskTabAction();
-		} else if (tabName.equals(POMPOM.LABEL_COMPLETED_TASK.toLowerCase())) {
+		} else if (type.equals(POMPOM.LABEL_COMPLETED_TASK.toLowerCase())) {
 			selectionModel.select(taskTab);
 			completedTaskTabAction();
-		} else if (tabName.equals(POMPOM.LABEL_EVENT.toLowerCase())) {
+		} else if (type.equals(POMPOM.LABEL_EVENT.toLowerCase())) {
 			System.out.println("evenets");
 			selectionModel.select(eventTab);
 			eventTabAction();
-		} else if (tabName.equals(POMPOM.LABEL_COMPLETED_EVENT.toLowerCase())) {
+		} else if (type.equals(POMPOM.LABEL_COMPLETED_EVENT.toLowerCase())) {
 			selectionModel.select(eventTab);
 			completedEventTabAction();
-		} else if (tabName.equals(POMPOM.LABEL_SEARCH.toLowerCase())) {
+		} else if (type.equals(POMPOM.LABEL_SEARCH.toLowerCase())) {
 			System.out.println("SEARCH TESET");
 			selectionModel.select(searchTab);
 			searchTabAction();
 		}
+		return;
 	}
 	@FXML
 	public void taskTabAction() {
@@ -353,3 +311,233 @@ public class Controller implements Initializable {
 	}
 
 }
+```
+###### gui\Main.java
+``` java
+ *
+ */
+public class Main extends Application {
+	
+	
+	@FXML
+	Pane content;
+	public static void main(String[] args) {
+		Application.launch(Main.class, args);
+	}
+
+	@Override
+	public void start(Stage stage) throws Exception {
+		getClass();
+		FXMLLoader loader = new FXMLLoader(getClass()
+				.getResource("POMPOM.fxml"));
+		Parent root = FXMLLoader.load(getClass().getResource("POMPOM.fxml"));
+		stage.setTitle("POMPOM");
+		stage.setScene(new Scene(root, 800, 556));
+		
+		stage.show();
+	}
+
+	public boolean newTaskDialog() {
+		try {
+			FXMLLoader loader = new FXMLLoader(
+					Main.class.getResource("NewTask.fxml"));
+			Pane page = (Pane) loader.load();
+
+			Stage dialogStage = new Stage();
+			dialogStage.setTitle("New Task");
+			dialogStage.initModality(Modality.WINDOW_MODAL);
+			Scene scene = new Scene(page);
+			dialogStage.setScene(scene);
+
+			NewTaskController newTaskController = loader.getController();
+			newTaskController.setDialogStage(dialogStage);
+
+			dialogStage.showAndWait();
+
+			return newTaskController.isOkClicked();
+
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+}
+```
+###### gui\NewTaskController.java
+``` java
+ *
+ */
+public class NewTaskController implements Initializable{
+
+	@FXML
+	TextField newTaskTitle;
+	@FXML
+	DatePicker newStartDate;
+	@FXML
+	TextField newStartTime;
+	@FXML
+	TextField newLabel;
+	@FXML
+	DatePicker newEndDate;
+	@FXML
+	TextField newEndTime;
+	@FXML
+	SplitMenuButton newPriority;
+	@FXML
+	MenuItem highSelected;
+	@FXML
+	MenuItem mediumSelected;
+	@FXML
+	MenuItem lowSelected;
+	@FXML
+	Button newTaskSave;
+	@FXML
+	Button newTaskCancel;
+	@FXML
+	TextField newType;
+	
+	private Stage dialogStage;
+	Controller control = new Controller();
+    POMPOM pompom = new POMPOM();
+	private Controller controller;
+	private boolean okClicked = false;
+    String title;
+    LocalDate startDate;
+    String startTime;
+    LocalDate endDate;
+    String endTime;
+    String label;
+    String priority;
+    String type;
+	@Override
+	public void initialize(URL location, ResourceBundle resources) {
+        assert newTaskTitle != null : "fx:id=\"newTaskTitle\" was not injected: check your FXML file 'POMPOM.fxml'.";
+        assert newStartDate != null : "fx:id=\"newDate\" was not injected: check your FXML file 'POMPOM.fxml'.";
+        assert newStartTime != null : "fx:id=\"newTime\" was not injected: check your FXML file 'POMPOM.fxml'.";
+        assert newLabel != null : "fx:id=\"newLabel\" was not injected: check your FXML file 'POMPOM.fxml'.";
+        assert newPriority != null : "fx:id=\"newPriority\" was not injected: check your FXML file 'POMPOM.fxml'.";
+        assert highSelected != null : "fx:id=\"highSelected\" was not injected: check your FXML file 'POMPOM.fxml'.";
+        assert mediumSelected != null : "fx:id=\"mediumSelected\" was not injected: check your FXML file 'POMPOM.fxml'.";
+        assert lowSelected != null : "fx:id=\"lowSelected\" was not injected: check your FXML file 'POMPOM.fxml'.";
+        assert newTaskCancel != null : "fx:id=\"newTaskCancel\" was not injected: check your FXML file 'POMPOM.fxml'.";
+        assert newTaskSave != null : "fx:id=\"newTaskSave\" was not injected: check your FXML file 'POMPOM.fxml'.";
+        System.out.println(this.getClass().getSimpleName() + ".initialize");
+	}
+	
+	public void setDialogStage(Stage dialogStage) {
+		
+		this.dialogStage = dialogStage;					
+	}	
+	
+//	1. add <task>
+//	2. add <task> <mmm dd>
+//	3. add <task> <dd/mm/yyyy>
+//	4. add <task> <f:mmm dd> <mmm dd>
+//	5. add <task> <f:dd/mm/yyyy> <mmm dd>
+//	6. add <task> <f:mmm dd> <dd/mm/yyyy>
+//	7. add <task> <today/tomorrow/this week/month/year/ next week/month/year>
+//	8. add <task> <today/tomorrow/this week/month/year/ next week/month/year> <f:today/tomorrow/this week/month/year/ next week/month/year>
+//	9. add <task> <dd/mm/yyyy> <f:today/tomorrow/this week/month/year/ next week/month/year>
+//	10. add <task> <dd mmm> <f:today/tomorrow/this week/month/year/ next week/month/year>
+//	11. add <task> <today/tomorrow/this week/month/year/ next week/month/year><f:dd mmm>
+//	12.add <task> <today/tomorrow/this week/month/year/ next week/month/year><f:dd/mm/yyyy>
+	@FXML
+	private void handleSave() throws IOException, ParseException{
+		controller = new Controller();
+		title = newTaskTitle.getText();
+		startDate = newStartDate.getValue();
+		startTime = newStartTime.getText();
+		endDate = newEndDate.getValue();
+		endTime = newEndTime.getText();
+		label = newLabel.getText();
+		priority = newPriority.getText();
+		type = newType.getText();
+		System.out.println(startDate);
+		
+		Instant instantSD = startDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant();
+		Date sDate = Date.from(instantSD);
+		
+		Instant instantED = startDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant();
+		Date eDate = Date.from(instantED);
+		
+		AddCommand addCommand = new AddCommand(type, title, "", "", "", label, sDate, eDate);
+		POMPOM.executeCommand(addCommand);
+		
+//		String input = "add " + "f:";
+//		String input = "add " + title + " null " + priority + " Upcoming " + label  + " " + startDate + "/" + startTime + " " + endDate + "/" + endTime;
+//		System.out.println(input);
+//		pompom.execute(input);
+		okClicked = true;
+		
+		POMPOM.getStorage().saveStorage();
+		dialogStage.close();
+	}
+	
+	@FXML
+	private void handleCancel() {
+		dialogStage.close();
+	}
+
+	public boolean isOkClicked() {
+		return false;
+	}
+	
+
+
+
+	
+}
+```
+###### gui\SettingsController.java
+``` java
+ **
+ */
+public class SettingsController {
+	@FXML
+	Button saveFile;
+	@FXML
+	Button selectFile;
+	@FXML
+	TextField storageLocationString;
+	
+    public void clickSave(ActionEvent event) throws IOException {
+    	String storageFilePath = storageLocationString.getText();
+    	storageLocationString.clear();
+        POMPOM.saveSettings(storageFilePath);
+    }  
+	
+
+	public void showSingleFileChooser() {
+		FileChooser fileChooser = new FileChooser(); 
+		File selectedPath = fileChooser.showOpenDialog(null);
+		storageLocationString.setText(selectedPath.getPath());
+	}
+
+}
+```
+###### Test\TestSomething.java
+``` java
+ *
+ */
+public class TestSomething {
+	/**
+	 * This operation test return responds for correct input task add
+	 */
+	@Test
+	public void test() {
+		POMPOM pompom = new POMPOM();
+		assertEquals("Task added", pompom.execute("add hello"));
+	}
+	
+	/**
+	 * This operation test return responds for invalid input
+	 */
+	@Test
+	public void testTwo() {
+		POMPOM pompom = new POMPOM();
+		assertEquals("hello", pompom.execute("hello"));
+	}
+
+}
+```

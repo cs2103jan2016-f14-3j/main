@@ -1,7 +1,10 @@
 package command;
 
 import java.util.ArrayList;
-
+/**
+ * @@author wen hao
+ *
+ */
 public class AddRecurringCommand extends Command {
 
 	private static final String MESSAGE_RECURRING = "A recurring task has been added";

@@ -6,6 +6,11 @@ import java.util.logging.LoggingPermission;
 import command.Command;
 import command.PathCommand;
 
+/**
+ * @@author William
+ *
+ */
+
 public class Parser{
 	
 	/** List of Command types */
