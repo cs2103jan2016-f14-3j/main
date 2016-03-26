@@ -33,12 +33,17 @@ public class AddParser extends ArgsParser{
 	private static final int INDEX_INVALID = -1;
 	private static final int INDEX_COMMAND_BEGIN = 0;
 	
-
+	
 	private final String COMMAND_PREFIX_LABEL = "l:";
 	private final String COMMAND_PREFIX_STATUS = "s:";
 	private final String COMMAND_PREFIX_PRIORITY = "p:";
 	private final String COMMAND_PREFIX_DESCRIPTION = ":";
 	private final String STRING_SPACE = " ";
+	private final String STRING_EMPTY="";
+	private final String DATETIMEPARSER_INDICATOR_START = "start";
+	private final String DATETIMEPARSER_INDICATOR_END = "end";
+	private final String DATETIMEPARSER_INDICATOR_RECURRING = "recurring";
+	private final String DATETIMEPARSER_INDICATOR_EXCEPT = "except";
 	
 	
 	public AddParser(String userCommand){
@@ -47,56 +52,146 @@ public class AddParser extends ArgsParser{
 			invalidArgs();
 			return;
 		} else {			
-			extractPriority();
-			extractStatus();
-			extractLabel();
-			extractRecurring();
-			extractStartDate();
-			extractEndDate();	
-			extractDescription();	
-			extractTitle();
+			extractDataFromArguments();
 		}
 	}
 	
-
+	/*
+	 * This method extracts all data from commandArgumentsString.
+	 * commandArgumentsString is always modified every time some
+	 * data is extracted from it. 	
+	 * 
+	 * The order which each argument is extracted is important and
+	 * must not be reordered. extractTitle must always be last.
+	 * extractRecurring must always be before extractEndDate.
+	 * extractPriority, extractStatus and extractLabel must always
+	 * be extracted first.
+	 * 
+	 */
+	private void extractDataFromArguments() {
+		extractPriority();
+		extractStatus();
+		extractLabel();
+		extractRecurring();
+		extractStartDate();
+		extractEndDate();	
+		extractDescription();	
+		extractTitle();
+	}
+	
+	/*
+	 * This method extracts the title from commandArgumentsString.
+	 * It simply sets whatever that is left in commandArgumentsString
+	 * as the title.
+	 * 
+	 * If commandArgumentsString is empty by this time, then it must
+	 * have been extracted by extractEndDate. itemEndDateTitle is created
+	 * just for the purpose of getting the title in case the parser extracted
+	 * the date wrongly.
+	 * 
+	 */
 	private void extractTitle() {
-		if (commandArgumentsString.trim().equals("")){
+		if (hasNoTitleToExtract()){
 			itemTitle=itemEndDateTitle;
-			itemEndDate=new Date();
 		} else{
 			itemTitle = commandArgumentsString.trim();
 		}
 	}
+
 	
-	protected Command executeCommand(){
+	/*
+	 * This method creates the AddCommand() object with the relevant
+	 * fields passed into the AddCommand() constructor and then returns
+	 * the newly created AddCommand() object.
+	 */
+	protected Command getCommand(){
 		if (itemIsRecurring){
 			ArrayList<AddCommand> addCommandList= executeRecurring();
-			if (addCommandList==null){
-				return new InvalidCommand(commandArgumentsString);
-			}
-			return new AddRecurringCommand(addCommandList);
+			return checkAndReturnAddRecurringCommand(addCommandList);
 		} else{
-			return executeNormal();
+			return getNonRecurringCommand();
 		}
 	}
 	
-	protected Command executeNormal(){
+	private ArrayList<AddCommand> executeRecurring(){
+		
+		String recurDateString = itemRecurringDateGroup.getText();
+		long newRecurInterval=DateTimeParser.calculateInterval(recurDateString);
+		long currentTime = (new Date().getTime());
+		long recurInterval=itemRecurringDateGroup.getRecurInterval();
+
+		return getAddCommandArrayList(newRecurInterval, currentTime, recurInterval);
+	}
+	
+	/*
+	 * This method returns non-recurring addCommands. It determines which
+	 * fields are empty and then determines whether it should be a task
+	 * or event and whether it is a floating task or not.
+	 */
+	protected Command getNonRecurringCommand(){
 		Date currentDate = new Date();
+		
 		if(hasCommandTitleOnly()){
-			return new AddCommand(POMPOM.LABEL_TASK, itemTitle, null, null, POMPOM.STATUS_FLOATING, 
-					null, null, null);
+			return new AddCommand(POMPOM.LABEL_TASK, itemTitle, null, null, 
+									POMPOM.STATUS_FLOATING, null, null, null);
 		} else if (hasCommandTitleAndEndDateOnly()){
-			return new AddCommand(POMPOM.LABEL_TASK, itemTitle, null, null, POMPOM.STATUS_ONGOING, 
-					null, currentDate, itemEndDate);
+			return new AddCommand(POMPOM.LABEL_TASK, itemTitle, null, null, 
+									POMPOM.STATUS_ONGOING, null, currentDate, itemEndDate);
 		} else if (hasCommandTitleAndStartDateOnly()){
-			return new AddCommand(POMPOM.LABEL_TASK, itemTitle, null, null, POMPOM.STATUS_ONGOING, 
-					null, itemStartDate, null);	
+			return new AddCommand(POMPOM.LABEL_TASK, itemTitle, null, null, 
+									POMPOM.STATUS_ONGOING, null, itemStartDate, null);	
 		} else {
-			return new AddCommand(POMPOM.LABEL_EVENT, itemTitle, itemDescription, itemPriority, POMPOM.STATUS_ONGOING,
-					itemLabel, itemStartDate, itemEndDate);
+			return new AddCommand(POMPOM.LABEL_EVENT, itemTitle, itemDescription, itemPriority, 
+									POMPOM.STATUS_ONGOING, itemLabel, itemStartDate, itemEndDate);
 		}
 	}
+	
 
+	private ArrayList<AddCommand> getAddCommandArrayList(long newRecurInterval, long currentTime,
+															long recurInterval) {
+		ArrayList<AddCommand> addCommandArrayList = new ArrayList<AddCommand>();
+		Date mostRecentEnd=new Date(recurInterval+currentTime);
+		while (mostRecentEnd.before(itemEndDate)){
+			Date mostRecent= mostRecentEnd;
+			recurInterval+= newRecurInterval;
+			mostRecentEnd=new Date(recurInterval+currentTime);			
+			if(!isSkippableDate(mostRecent)){
+				addCommandArrayList.add(getRecurringAddCommand(mostRecent, mostRecentEnd));
+			} 
+		}
+		return addCommandArrayList;
+	}
+
+	private AddCommand getRecurringAddCommand(Date mostRecent, Date mostRecentEnd) {
+		AddCommand defaultAddCommandFormat=null;
+		
+		//Take note of the "only". hasCommandTitleAndEndDateONLY() means that all other fields are empty.
+		if (hasCommandTitleAndEndDateOnly()){
+			 defaultAddCommandFormat = new AddCommand(POMPOM.LABEL_TASK, itemTitle, 
+					 									null, null, POMPOM.STATUS_ONGOING, 
+					 									null, mostRecent, mostRecentEnd);
+		} else if (hasCommandTitleAndEndDate()) {
+			defaultAddCommandFormat = new AddCommand(POMPOM.LABEL_EVENT, itemTitle, itemDescription, 
+														itemPriority, POMPOM.STATUS_ONGOING,
+														itemLabel, mostRecent, mostRecentEnd);
+		} else{
+			return null;
+		}
+		return defaultAddCommandFormat;
+	}
+
+	private boolean hasCommandTitleAndEndDate() {
+		return !isNullTitle() && !isNullEndDate();
+	}
+	
+	private Command checkAndReturnAddRecurringCommand(ArrayList<AddCommand> addCommandList) {
+		if (isEmptyAddCommandList(addCommandList)){
+			return new InvalidCommand(commandArgumentsString);
+		} else{ 
+			return new AddRecurringCommand(addCommandList);
+		}
+	}
+	
 	private void extractDescription(){
 		int indexOfPrefix = commandArgumentsString.indexOf(COMMAND_PREFIX_DESCRIPTION);
 		if (isValidIndex(indexOfPrefix)){
@@ -107,9 +202,9 @@ public class AddParser extends ArgsParser{
 	
 	public void extractPriority(){
 		int indexOfPrefix = commandArgumentsString.indexOf(COMMAND_PREFIX_PRIORITY);
-		int indexSpace = commandArgumentsString.indexOf(" ",indexOfPrefix);
+		int indexSpace = commandArgumentsString.indexOf(STRING_SPACE,indexOfPrefix);
 		if (isValidIndex(indexOfPrefix)){
-			itemPriority = extractFieldData(indexOfPrefix, indexSpace);
+			itemPriority = extractFieldData(indexOfPrefix, indexSpace, COMMAND_PREFIX_PRIORITY);
 			commandArgumentsString = removeFieldFromArgument(indexOfPrefix, indexSpace);
 		}
 	}
@@ -118,7 +213,7 @@ public class AddParser extends ArgsParser{
 		int indexOfPrefix = commandArgumentsString.indexOf(COMMAND_PREFIX_STATUS); 
 		int indexSpace = commandArgumentsString.indexOf(STRING_SPACE,indexOfPrefix);
 		if (isValidIndex(indexOfPrefix)){
-			itemStatus = extractFieldData(indexOfPrefix, indexSpace);
+			itemStatus = extractFieldData(indexOfPrefix, indexSpace, COMMAND_PREFIX_STATUS);
 			commandArgumentsString = removeFieldFromArgument(indexOfPrefix, indexSpace);
 		}
 	}
@@ -127,99 +222,68 @@ public class AddParser extends ArgsParser{
 		int indexOfPrefix = commandArgumentsString.indexOf(COMMAND_PREFIX_LABEL);	
 		int indexSpace = commandArgumentsString.indexOf(STRING_SPACE,indexOfPrefix);
 		if (isValidIndex(indexOfPrefix)){
-			itemLabel = extractFieldData(indexOfPrefix, indexSpace);
+			itemLabel = extractFieldData(indexOfPrefix, indexSpace, COMMAND_PREFIX_LABEL);
 			commandArgumentsString = removeFieldFromArgument(indexOfPrefix, indexSpace);
 		}
 	}
 	
 	public void extractStartDate(){
-		DateTimeParser dp = new DateTimeParser("start",commandArgumentsString);	
-		commandArgumentsString = commandArgumentsString.replace(dp.getString(), "");
-		itemStartDate=dp.getDate();
+		DateTimeParser startDateTimeParser = new DateTimeParser(DATETIMEPARSER_INDICATOR_START,commandArgumentsString);	
+		commandArgumentsString = commandArgumentsString.replace(startDateTimeParser.getString(), STRING_EMPTY);
+		itemStartDate=startDateTimeParser.getDate();
 		
 	}
 	
 	public void extractEndDate(){
-		DateTimeParser dp = new DateTimeParser("end",commandArgumentsString);
-		commandArgumentsString = commandArgumentsString.replace(dp.getString(), "");
-		itemEndDate=dp.getDate();
-		itemEndDateTitle=dp.getString();
+		DateTimeParser endDateTimeParser = new DateTimeParser(DATETIMEPARSER_INDICATOR_END,commandArgumentsString);
+		commandArgumentsString = commandArgumentsString.replace(endDateTimeParser.getString(), STRING_EMPTY);
+		itemEndDate = endDateTimeParser.getDate();
+		itemEndDateTitle= endDateTimeParser.getString();
 	}
 	
 	public void extractRecurring(){
-		DateTimeParser dp = new DateTimeParser("recurring",commandArgumentsString);
-		commandArgumentsString = commandArgumentsString.replace(dp.getString(), "");
-		itemRecurringDateGroup=dp.getRecurringDateGroup();
+		DateTimeParser recurringTimeParser = new DateTimeParser(DATETIMEPARSER_INDICATOR_RECURRING,commandArgumentsString);
+		commandArgumentsString = commandArgumentsString.replace(recurringTimeParser.getString(), STRING_EMPTY);
+		itemRecurringDateGroup = recurringTimeParser.getRecurringDateGroup();
 		if (itemRecurringDateGroup==null){
 			return;
 		}
-		itemIsRecurring = dp.getRecurring();
-		DateTimeParser dp2 = new DateTimeParser("except",commandArgumentsString);
-		commandArgumentsString=commandArgumentsString.replace(dp.getString(), "");
-		if (dp2.getExceptEndDateGroup()!=null && dp2.getExceptStartDateGroup()!=null){
-			exceptStartDate=dp2.getExceptStartDateGroup().getDates().get(0);
-			exceptEndDate=dp2.getExceptEndDateGroup().getDates().get(0);
-		}
+		itemIsRecurring = recurringTimeParser.getRecurring();
+		extractExcept(recurringTimeParser);
 	}
-	
-	private ArrayList<AddCommand> executeRecurring(){
-		Date currentDate = new Date();
-		ArrayList<AddCommand> output=new ArrayList<AddCommand>();
-		AddCommand defaultAddCommandFormat;
-		Date mostRecent = itemRecurringDateGroup.getDates().get(0);
-		String recurDateString = itemRecurringDateGroup.getText();
-		long newRecurInterval=DateTimeParser.calculateInterval(recurDateString);
-		
-		long currentTime = (new Date().getTime());
-		long recurInterval=itemRecurringDateGroup.getRecurInterval();
-		mostRecent= new Date(recurInterval+currentTime);
-		recurInterval+=newRecurInterval;
-		Date mostRecentEnd=new Date(recurInterval+currentTime);
 
-		while (mostRecentEnd.before(itemEndDate)){
-			if(exceptEndDate!=null && exceptStartDate!=null 
-					&& mostRecent.before(exceptEndDate)
-					&& mostRecent.after(exceptStartDate)){
-				recurInterval+= newRecurInterval;
-				mostRecent= mostRecentEnd;
-				mostRecentEnd=new Date(recurInterval+currentTime);
-				continue;
-			} 
-			
-			if (hasCommandTitleAndEndDateOnly()){
-				 defaultAddCommandFormat = new AddCommand(POMPOM.LABEL_TASK, itemTitle, null, null, POMPOM.STATUS_ONGOING, 
-						null, mostRecent, mostRecentEnd);
-			} else if (!isNullTitle() && ! isNullEndDate()) {
-				defaultAddCommandFormat = new AddCommand(POMPOM.LABEL_EVENT, itemTitle, itemDescription, itemPriority, POMPOM.STATUS_ONGOING,
-						itemLabel, mostRecent, mostRecentEnd);
-			} else{
-				return null; //wrong format!
-			}
-			output.add(defaultAddCommandFormat);
-			recurInterval+= newRecurInterval;
-			mostRecent= mostRecentEnd;
-			mostRecentEnd=new Date(recurInterval+currentTime);
+	private void extractExcept(DateTimeParser recurringTimeParser) {
+		commandArgumentsString=commandArgumentsString.replace(recurringTimeParser.getString(), STRING_EMPTY);
+		DateTimeParser exceptTimeParser = new DateTimeParser(DATETIMEPARSER_INDICATOR_EXCEPT,commandArgumentsString);
+		if (canGetExceptDateGroups(exceptTimeParser)){
+			exceptStartDate=exceptTimeParser.getExceptStartDateGroup().getDates().get(0);
+			exceptEndDate=exceptTimeParser.getExceptEndDateGroup().getDates().get(0);
 		}
-		return output;
+	}
+
+	private boolean canGetExceptDateGroups(DateTimeParser exceptDateTimeParser) {
+		return exceptDateTimeParser.getExceptEndDateGroup()!=null &&
+				exceptDateTimeParser.getExceptStartDateGroup()!=null;
 	}
 	
+		
 	private String removeFieldFromArgument(int indexPrefixBegin, int indexSpace) {
-		if (indexSpace==-1){
+		if (isValidIndex(indexSpace)){
 			return commandArgumentsString.substring(INDEX_COMMAND_BEGIN, indexPrefixBegin);
 		}
 			return commandArgumentsString.substring(INDEX_COMMAND_BEGIN, indexPrefixBegin)
 									+commandArgumentsString.substring(indexSpace);
 	}
 	
-	private int getPrefixEndIndex(int index) {
-		return index+2;
+	private int getPrefixEndIndex(int index, String prefix) {
+		return index+prefix.length();
 	}
 	
-	private String extractFieldData(int indexOfPrefix, int indexSpace) {
-		if (indexSpace==-1){
-			return  commandArgumentsString.substring(getPrefixEndIndex(indexOfPrefix));
+	private String extractFieldData(int indexOfPrefix, int indexSpace, String prefix) {
+		if (isValidIndex(indexSpace)){
+			return  commandArgumentsString.substring(getPrefixEndIndex(indexOfPrefix, prefix));
 		}
-		return commandArgumentsString.substring(getPrefixEndIndex(indexOfPrefix), indexSpace);
+		return commandArgumentsString.substring(getPrefixEndIndex(indexOfPrefix, prefix), indexSpace);
 	}
 	
 	public String getTitle(){
@@ -306,4 +370,25 @@ public class AddParser extends ArgsParser{
 		return index!=INDEX_INVALID;
 	}
 	
+
+	private boolean hasNoTitleToExtract() {
+		return commandArgumentsString.trim().equals(STRING_EMPTY);
+	}
+	
+	private boolean isEmptyAddCommandList(ArrayList<AddCommand> addCommandList) {
+		return addCommandList==null;
+	}
+	
+	private boolean isSkippableDate(Date mostRecent) {
+		return hasExceptDates() && isBetweenExceptDates(mostRecent);
+	}
+	
+	private boolean isBetweenExceptDates(Date checkDate){
+		return checkDate.before(exceptEndDate)
+				&& checkDate.after(exceptStartDate);
+	}
+
+	private boolean hasExceptDates() {
+		return exceptEndDate!=null && exceptStartDate!=null;
+	}
 }
