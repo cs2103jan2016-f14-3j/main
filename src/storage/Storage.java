@@ -29,7 +29,7 @@ import utils.SettingsAdapter;
 import utils.UserItemList;
 
 /**
- * @author A0121628L
+ * @@author A0121628L
  *
  */
 public class Storage {
@@ -53,8 +53,11 @@ public class Storage {
 	// The main data that is being extracted to this objects
 	private UserItemList userTaskList;
 	private ArrayList<Item> taskList;
+	
+
+
 	private long idCounter;
-	public static PrettyTimeParser timeParser;
+	public PrettyTimeParser timeParser;
 
 	// Gson Library objects to read settings and storage file in json format
 	final GsonBuilder GSON_ITEM_BUILDER = new GsonBuilder();
@@ -62,11 +65,24 @@ public class Storage {
 	private Gson gsonItem;
 	private Gson gsonSettings;
 
-	private static Logger logger = Logger.getLogger("Storage");
+	private Logger logger = Logger.getLogger("Storage");
 
 	public Storage() throws IOException {
 		
 	}
+	
+//	1. add <task>
+//	2. add <task> <mmm dd>
+//	3. add <task> <dd/mm/yyyy>
+//	4. add <task> <f:mmm dd> <mmm dd>
+//	5. add <task> <f:dd/mm/yyyy> <mmm dd>
+//	6. add <task> <f:mmm dd> <dd/mm/yyyy>
+//	7. add <task> <today/tomorrow/this week/month/year/ next week/month/year>
+//	8. add <task> <today/tomorrow/this week/month/year/ next week/month/year> <f:today/tomorrow/this week/month/year/ next week/month/year>
+//	9. add <task> <dd/mm/yyyy> <f:today/tomorrow/this week/month/year/ next week/month/year>
+//	10. add <task> <dd mmm> <f:today/tomorrow/this week/month/year/ next week/month/year>
+//	11. add <task> <today/tomorrow/this week/month/year/ next week/month/year><f:dd mmm>
+//	12.add <task> <today/tomorrow/this week/month/year/ next week/month/year><f:dd/mm/yyyy>
 
 	public void init() throws IOException {
 		initializeGsonObjects();
@@ -110,6 +126,9 @@ public class Storage {
 	public void setStorageFilePath(String storageFilePath) {
 		this.storageFilePath = storageFilePath;
 	}
+	public String getStorageFilePath() {
+		return storageFilePath;
+	}
 
 	// Initializing the GSON objects to read the storage text data file in JSON
 	private void initializeGsonObjects() {
@@ -121,7 +140,7 @@ public class Storage {
 		GSON_SETTINGS_BUILDER.registerTypeAdapter(Settings.class,
 				new SettingsAdapter());
 		GSON_SETTINGS_BUILDER.setPrettyPrinting();
-		gsonSettings = GSON_ITEM_BUILDER.create();
+		gsonSettings = GSON_SETTINGS_BUILDER.create();
 	}
 
 	private void initializeSettings() {
@@ -155,6 +174,7 @@ public class Storage {
 			setStorageFilePath(settings.getStoragePath());
 		}
 		// Check for storage file if do not exist create file
+		
 		checkStorageFile();
 		String storageString = FileHandler.getStringFromFile(storageFilePath,
 				StandardCharsets.UTF_8);
@@ -179,6 +199,7 @@ public class Storage {
 	// If Storage file do not exist make file
 	private boolean checkStorageFile() throws IOException {
 		if (!storageFile.exists()) {
+			storageFile.getParentFile().mkdirs();
 			storageFile.createNewFile();
 			return false;
 		}
@@ -189,6 +210,10 @@ public class Storage {
 	private boolean checkSettingsFile() throws IOException {
 		if (!settingsFile.exists()) {
 			settingsFile.createNewFile();
+			Settings defaultSettings = new Settings();
+			defaultSettings.setStoragePath(DEFAULT_STORAGE_FILE_PATH);
+			final String json = gsonSettings.toJson(defaultSettings);
+			FileHandler.writeStringToFile(settingsFile, json);
 		}
 		return true;
 	}
@@ -240,11 +265,7 @@ public class Storage {
 		FileHandler.writeStringToFile(storageFile, json);
 	}
 
-	public void setStoragePath(String storageFilePath) {
-		assert storageFilePath != null : "storageFilePath is not set";
 
-		settings.setStoragePath(storageFilePath);
-	}
 
 	public void saveSettings() throws IOException {
 		assert settings != null : "Settings not set";

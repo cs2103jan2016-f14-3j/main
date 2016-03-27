@@ -12,6 +12,10 @@ import parser.Parser;
 import storage.Storage;
 import utils.Item;
 
+/**
+ * @@author wen hao
+ *
+ */
 public class POMPOM {
 
 	public static final String STATUS_PENDING = "pending";
@@ -54,7 +58,7 @@ public class POMPOM {
 		}
 	}
 
-	public void refreshStatus() {
+	public static void refreshStatus() {
 		ArrayList<Item> taskList = storage.getTaskList();
 		Date currentDate = new Date();
 
@@ -107,6 +111,7 @@ public class POMPOM {
 
 	public static String executeCommand(Command executable) {
 		String returnMsg = executable.execute();
+		refreshStatus();
 		return returnMsg;
 	}
 	
@@ -138,7 +143,7 @@ public class POMPOM {
 	}
 
 	public static String getCurrentTab() {
-		return currentTab;
+		return POMPOM.currentTab;
 	}
 
 	public static void setCurrentTab(String setTab) {

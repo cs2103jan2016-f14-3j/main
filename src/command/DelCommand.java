@@ -6,7 +6,10 @@ import java.util.logging.Logger;
 
 import main.POMPOM;
 import utils.Item;
-
+/**
+ * @@author wen hao
+ *
+ */
 public class DelCommand extends Command {
 
 	private static final String MESSAGE_TASK_DELETED = "%1s has been deleted from %2s";
@@ -61,7 +64,7 @@ public class DelCommand extends Command {
 				updateUndoStack();
 				returnMsg = String.format(MESSAGE_TASK_DELETED, (taskId + "."), toDelete.getType());
 
-				if (toDelete.getType().equals(POMPOM.LABEL_EVENT)) {
+				if (toDelete.getType().equals(POMPOM.LABEL_EVENT.toLowerCase())) {
 					POMPOM.setCurrentTab(POMPOM.LABEL_EVENT);
 				} else {
 					POMPOM.setCurrentTab(POMPOM.LABEL_TASK);

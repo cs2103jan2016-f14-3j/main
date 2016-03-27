@@ -1,7 +1,5 @@
 package Test;
 
-import static org.junit.Assert.assertEquals;
-
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -16,6 +14,12 @@ import command.UndoCommand;
 import main.POMPOM;
 import utils.Item;
 
+import static org.junit.Assert.assertEquals;
+
+/**
+ * @@author wen hao
+ *
+ */
 public class TestCommand {
 
 	Date currentDate = new Date();
@@ -29,7 +33,7 @@ public class TestCommand {
 		ArrayList<Item> taskList = POMPOM.getStorage().getTaskList();
 		taskList.clear();
 
-		// check if the “add” command returns the right status message
+		// check if the add command returns the right status message
 		assertEquals("Task added", command.execute());
 
 		// check if the taskList contain the added task

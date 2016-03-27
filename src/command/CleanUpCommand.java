@@ -3,7 +3,10 @@ package command;
 import java.util.ArrayList;
 
 import utils.Item;
-
+/**
+ * @@author wen hao
+ *
+ */
 public class CleanUpCommand extends Command {
 
 	private static final String MESSAGE_CLEAN_UP = "The task list has been cleaned up; "

@@ -1,7 +1,15 @@
 package parser;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.logging.LoggingPermission;
 import command.Command;
 import command.PathCommand;
+
+/**
+ * @@author William
+ *
+ */
 
 public class Parser{
 	
@@ -19,6 +27,22 @@ public class Parser{
 	private static final int COMMAND_ARRAY_SIZE = 2; 
 	private static final int COMMAND_TYPE_INDEX = 0;
 	private static final int COMMAND_ARGUMENT_INDEX = 1;
+	
+	private static Parser parserInstance;
+		
+	private static Logger logger = Logger.getLogger("Parser");
+	
+	public static Parser getInstance()
+	{
+		if (parserInstance == null)
+			parserInstance = new Parser();
+
+		return parserInstance;
+	}
+	
+	public Parser(){
+
+	}
 	
 	/**
 	 * This operation takes in the command specified by the

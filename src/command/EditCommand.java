@@ -6,7 +6,10 @@ import java.util.logging.Level;
 
 import main.POMPOM;
 import utils.Item;
-
+/**
+ * @@author wen hao
+ *
+ */
 public class EditCommand extends Command {
 	
 	private static final String MESSAGE_TASK_EDITED = "%s. was successfully edited";	
@@ -36,7 +39,7 @@ public class EditCommand extends Command {
 		this.newData = newData;
 		isUndo = false;
 		
-		logger.log(Level.INFO, "EditCommand initialized");
+		//logger.log(Level.INFO, "EditCommand initialized");
 	}
 	
 	public EditCommand(long taskId, String field, Date newDate) {
@@ -46,7 +49,7 @@ public class EditCommand extends Command {
 		this.newDate = newDate;
 		isUndo = false;
 		
-		logger.log(Level.INFO, "EditCommand initialized");
+		//logger.log(Level.INFO, "EditCommand initialized");
 	}
 	
 	public EditCommand(long taskId, String field, String newData, boolean isUndo) {
@@ -56,7 +59,7 @@ public class EditCommand extends Command {
 		this.newData = newData;
 		this.isUndo = isUndo;
 		
-		logger.log(Level.INFO, "Counter action EditCommand initialized");
+		//logger.log(Level.INFO, "Counter action EditCommand initialized");
 	}
 	
 	public EditCommand(long taskId, String field, Date newDate, boolean isUndo) {
@@ -66,7 +69,7 @@ public class EditCommand extends Command {
 		this.newDate = newDate;
 		this.isUndo = isUndo;
 		
-		logger.log(Level.INFO, "Counter action EditCommand initialized");
+	//	logger.log(Level.INFO, "Counter action EditCommand initialized");
 	}
 	
 	private void updateChanges() {		
