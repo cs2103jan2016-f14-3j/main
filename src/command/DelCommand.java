@@ -64,15 +64,24 @@ public class DelCommand extends Command {
 				updateUndoStack();
 				returnMsg = String.format(MESSAGE_TASK_DELETED, (taskId + "."), toDelete.getType());
 
-				if (toDelete.getType().equals(POMPOM.LABEL_EVENT.toLowerCase())) {
-					POMPOM.setCurrentTab(POMPOM.LABEL_EVENT);
+				if (toDelete.getType().equals(POMPOM.LABEL_EVENT)) {
+					if (toDelete.getStatus().equals(POMPOM.STATUS_OVERDUE)) {
+						POMPOM.setCurrentTab(POMPOM.LABEL_COMPLETED_EVENT);
+					} else {
+						POMPOM.setCurrentTab(POMPOM.LABEL_EVENT);
+					}
 				} else {
-					POMPOM.setCurrentTab(POMPOM.LABEL_TASK);
+					if (toDelete.getStatus().equals(POMPOM.STATUS_OVERDUE)) {
+						POMPOM.setCurrentTab(POMPOM.LABEL_COMPLETED_TASK);
+					} else {
+						POMPOM.setCurrentTab(POMPOM.LABEL_TASK);
+					}
 				}
 			}
 
 			removeTask();
-
+			logger.log(Level.INFO, "DelCommand has be executed");
+			
 		} else {
 			returnMsg = String.format(MESSAGE_TASK_ERROR, taskId);
 		}

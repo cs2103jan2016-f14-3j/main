@@ -155,6 +155,8 @@ public class EditCommand extends Command {
 		} else {
 			returnMsg = MESSAGE_TASK_ERROR;
 		}
+		
+		logger.log(Level.INFO, "EditCommand has be executed");
 		return returnMsg;
 	}
 	

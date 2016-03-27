@@ -1,6 +1,7 @@
 package command;
 
 import java.util.ArrayList;
+import java.util.logging.Level;
 /**
  * @@author wen hao
  *
@@ -20,6 +21,7 @@ public class AddRecurringCommand extends Command {
 			addList.get(i).execute();
 		}
 		
+		logger.log(Level.INFO, "AddRecurringCommand has be executed");
 		returnMsg = MESSAGE_RECURRING;
 		return returnMsg;
 	}

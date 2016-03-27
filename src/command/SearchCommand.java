@@ -4,6 +4,7 @@ package command;
  *
  */
 import java.util.ArrayList;
+import java.util.logging.Level;
 
 import main.POMPOM;
 import utils.Item;
@@ -35,10 +36,13 @@ public class SearchCommand extends Command {
 	}
 	
 	public String execute() {
+		
 		POMPOM.setSearchList(search());
 		POMPOM.setCurrentTab(POMPOM.LABEL_SEARCH);
+		logger.log(Level.INFO, "SearchCommand has be executed");
 		returnMsg = String.format(MESSAGE_SEARCH, searchResults.size());
 		return returnMsg;
+		
 	}
 
 }
