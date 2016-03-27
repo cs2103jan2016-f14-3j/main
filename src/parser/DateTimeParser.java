@@ -9,49 +9,62 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static org.junit.Assert.assertNotNull;
 
 
 import org.ocpsoft.prettytime.nlp.PrettyTimeParser;
 import org.ocpsoft.prettytime.nlp.parse.DateGroup;
 
+/**
+ * @@author William
+ *
+ */
+
 public class DateTimeParser{
 	
 	private String originalString="";
 	private String dateTimeString="";
+	private String exceptString="";
 	private Date dateTime=null;
 	private static PrettyTimeParser timeParser=new PrettyTimeParser();
 	private boolean isRecurring = false;
+	private DateGroup exceptStartDateGroup=null;
+	private DateGroup exceptEndDateGroup=null;
 	
 	private boolean isFlippedDate=false;
 	
 	private static final String COMMAND_PREFIX_STARTDATE = "f:";
 	private static final String COMMAND_PREFIX_ENDDATE = "e:";
 	private static final String COMMAND_PREFIX_RECURRING = "every";
+	private static final String COMMAND_PREFIX_EXCEPT = "except";
 
 	private static final String INDICATOR_START = "start";
 	private static final String INDICATOR_END = "end";
 	private static final String INDICATOR_RECURRING = "recurring";	
+	private static final String INDICATOR_EXCEPT = "except";
 	
 	private static DateGroup recurringDateGroup=null;
 	
 	private static Logger logger = Logger.getLogger("Parser");
-	public DateTimeParser(String startOrEndOrRecurring, String commandArgumentsString){
+	public DateTimeParser(String parseType, String commandArgumentsString){
 		
-		if(startOrEndOrRecurring.equals("recurring")){
-			commandArgumentsString=breakUpRecurringAndEndDates(startOrEndOrRecurring, commandArgumentsString);
+		if(parseType.equals(INDICATOR_RECURRING)){
+			commandArgumentsString=extractRecurringString(commandArgumentsString);
+			commandArgumentsString=extractExceptDates(commandArgumentsString);
+		} else if (parseType.equals(INDICATOR_EXCEPT)){
+			commandArgumentsString=extractExceptDates(commandArgumentsString);
 		} else{
-			System.out.println(startOrEndOrRecurring);
-			commandArgumentsString=breakUpStartAndEndDates(startOrEndOrRecurring, commandArgumentsString);			
+			commandArgumentsString=breakUpStartAndEndDates(parseType, commandArgumentsString);			
 		}
 		originalString=correctDateFormat(commandArgumentsString);
-		if(startOrEndOrRecurring.equals(INDICATOR_START)){
+		if(parseType.equals(INDICATOR_START)){
 				processStartDate();
-		} else if (startOrEndOrRecurring.equals(INDICATOR_END)){
+		} else if (parseType.equals(INDICATOR_END)){
 				processEndDate();	
-		} else if (startOrEndOrRecurring.equals(INDICATOR_RECURRING)){
+		} else if (parseType.equals(INDICATOR_RECURRING)){
 				processRecurring();	
-		}else{
+		}else if (parseType.equals(INDICATOR_EXCEPT)){
+				processExcept();
+		} else{
 			logger.log(Level.SEVERE,"programming error here. never specify date is end date or start date processing");
 			return;
 		}
@@ -93,7 +106,7 @@ public class DateTimeParser{
 		}
 	}
 	
-	static String breakUpRecurringAndEndDates(String endOrRecurring, String rawString){
+	static String extractRecurringString(String rawString){
 		String firstPortion ="";
 		String restOfTheString="";
 		int endIndex = rawString.indexOf(COMMAND_PREFIX_ENDDATE);
@@ -107,12 +120,34 @@ public class DateTimeParser{
 			firstPortion= rawString.substring(minIndex,maxIndex);
 			restOfTheString=rawString.replace(firstPortion,"");
 		}
-		if (firstPortion.contains("e:")){
-			return restOfTheString;
-		} else{
+		if (firstPortion.contains(COMMAND_PREFIX_RECURRING)){
 			return firstPortion;
+		} else{
+			return restOfTheString;
 		}
 	}
+	
+	static String extractExceptDates(String rawString){
+		String firstPortion ="";
+		String restOfTheString="";
+		int endIndex = rawString.indexOf(COMMAND_PREFIX_ENDDATE);
+		int exceptIndex = rawString.indexOf(COMMAND_PREFIX_EXCEPT);
+		int minIndex=Math.min(endIndex, exceptIndex);
+		int maxIndex=Math.max(endIndex, exceptIndex);
+		
+		if (endIndex<0 || exceptIndex<0){
+			return rawString;
+		} else{
+			firstPortion= rawString.substring(minIndex,maxIndex);
+			restOfTheString=rawString.replace(firstPortion,"");
+		}
+		if (firstPortion.contains(COMMAND_PREFIX_EXCEPT)){
+			return firstPortion;
+		} else{
+			return restOfTheString;
+		}
+	}
+	
 	private void processStartDate(){
 		//unique feature of start date: f:
 		if (!hasStartPrefix(originalString)){
@@ -148,6 +183,20 @@ public class DateTimeParser{
 		recurringDateGroup=dateGroup.get(0);
 	}
 	
+	private void processExcept(){
+		
+		if (!originalString.contains(COMMAND_PREFIX_EXCEPT)){
+			return;
+		} 
+		String[] datesSplit = originalString.split("to");
+		
+		if (datesSplit.length!=2){
+			return;
+		}
+		exceptStartDateGroup=parseAndCheckDate(datesSplit[0]).get(0);
+		exceptEndDateGroup=parseAndCheckDate(datesSplit[1]).get(0);
+	}
+	
 	public boolean isEmptyDateGroup(List<DateGroup> dateGroup){
 		return dateGroup.size()<=0;
 	}
@@ -164,7 +213,6 @@ public class DateTimeParser{
 		}
 		String[] rawStringArray = stringWithDate.split(" ");
 		String[] parsedStringArray = initialParsedString.split(" ");
-
 		if (Arrays.equals(rawStringArray, parsedStringArray)){
 			dateTimeString=stringWithDate;
 			return timeParser.parseSyntax(stringWithDate);
@@ -183,7 +231,7 @@ public class DateTimeParser{
 						return parseAndCheckDate(output.trim());
 					 	
 						} else{ 
-						//System.out.println("trys: lol");
+							//do nothing
 					}
 				} 
 			}
@@ -298,6 +346,14 @@ public class DateTimeParser{
 			return false;
 		}
 	}
+	
+	public static long calculateInterval(String day){
+		Date dateone=timeParser.parseSyntax("last " + day).get(0).getDates().get(0);
+		Date datetwo=timeParser.parseSyntax("next " +day).get(0).getDates().get(0);
+		long interval = datetwo.getTime()-dateone.getTime();
+		long output = 1000*60*60*24*7;
+		return (interval)/10*10/2;
+	}
 
 	private static boolean isValidSubstring(String toCheck, String substring) {
 		return toCheck.contains(substring);
@@ -318,6 +374,14 @@ public class DateTimeParser{
 	
 	public boolean getRecurring(){
 		return isRecurring;
+	}
+	
+	public DateGroup getExceptStartDateGroup(){
+		return exceptStartDateGroup;
+	}
+	
+	public DateGroup getExceptEndDateGroup(){
+		return exceptEndDateGroup;
 	}
 	
 

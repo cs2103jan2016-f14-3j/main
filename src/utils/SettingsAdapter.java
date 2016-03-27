@@ -7,7 +7,7 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 
 /**
- * @author A0121628L
+ * @@author A0121628L
  *
  */
 public class SettingsAdapter extends TypeAdapter<Settings>{
@@ -22,7 +22,7 @@ public class SettingsAdapter extends TypeAdapter<Settings>{
 				settings.setStoragePath(in.nextString());
 			}
 		}
-		in.close();
+		in.endObject();
 		return settings;
 	}
 
@@ -30,6 +30,7 @@ public class SettingsAdapter extends TypeAdapter<Settings>{
 	public void write(JsonWriter out, Settings settings) throws IOException {
 		out.beginObject();
 		out.name("StoragePath").value(settings.getStoragePath());
+		out.endObject();
 		out.close();
 	}
 

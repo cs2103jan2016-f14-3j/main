@@ -4,10 +4,15 @@ import java.io.IOException;
 import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.ResourceBundle;
 
+import command.AddCommand;
+import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -19,8 +24,13 @@ import javafx.stage.Stage;
 import main.POMPOM;
 import gui.Controller;
 import utils.Item;
+import utils.ListClassifier;
 import gui.Controller;
 
+/**
+ * @@author Jorel
+ *
+ */
 public class NewTaskController implements Initializable{
 
 	@FXML
@@ -47,6 +57,8 @@ public class NewTaskController implements Initializable{
 	Button newTaskSave;
 	@FXML
 	Button newTaskCancel;
+	@FXML
+	TextField newType;
 	
 	private Stage dialogStage;
 	Controller control = new Controller();
@@ -60,7 +72,7 @@ public class NewTaskController implements Initializable{
     String endTime;
     String label;
     String priority;
-    	
+    String type;
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
         assert newTaskTitle != null : "fx:id=\"newTaskTitle\" was not injected: check your FXML file 'POMPOM.fxml'.";
@@ -77,10 +89,22 @@ public class NewTaskController implements Initializable{
 	}
 	
 	public void setDialogStage(Stage dialogStage) {
+		
 		this.dialogStage = dialogStage;					
 	}	
 	
-	
+//	1. add <task>
+//	2. add <task> <mmm dd>
+//	3. add <task> <dd/mm/yyyy>
+//	4. add <task> <f:mmm dd> <mmm dd>
+//	5. add <task> <f:dd/mm/yyyy> <mmm dd>
+//	6. add <task> <f:mmm dd> <dd/mm/yyyy>
+//	7. add <task> <today/tomorrow/this week/month/year/ next week/month/year>
+//	8. add <task> <today/tomorrow/this week/month/year/ next week/month/year> <f:today/tomorrow/this week/month/year/ next week/month/year>
+//	9. add <task> <dd/mm/yyyy> <f:today/tomorrow/this week/month/year/ next week/month/year>
+//	10. add <task> <dd mmm> <f:today/tomorrow/this week/month/year/ next week/month/year>
+//	11. add <task> <today/tomorrow/this week/month/year/ next week/month/year><f:dd mmm>
+//	12.add <task> <today/tomorrow/this week/month/year/ next week/month/year><f:dd/mm/yyyy>
 	@FXML
 	private void handleSave() throws IOException, ParseException{
 		controller = new Controller();
@@ -91,10 +115,25 @@ public class NewTaskController implements Initializable{
 		endTime = newEndTime.getText();
 		label = newLabel.getText();
 		priority = newPriority.getText();
-		String input = "add " + title + " null " + priority + " Upcoming " + label  + " " + startDate + "/" + startTime + " " + endDate + "/" + endTime;
-		System.out.println(input);
-		pompom.execute(input);
+		type = newType.getText();
+		System.out.println(startDate);
+		
+		Instant instantSD = startDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant();
+		Date sDate = Date.from(instantSD);
+		
+		Instant instantED = startDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant();
+		Date eDate = Date.from(instantED);
+		
+		AddCommand addCommand = new AddCommand(type, title, "", "", "", label, sDate, eDate);
+		POMPOM.executeCommand(addCommand);
+		
+//		String input = "add " + "f:";
+//		String input = "add " + title + " null " + priority + " Upcoming " + label  + " " + startDate + "/" + startTime + " " + endDate + "/" + endTime;
+//		System.out.println(input);
+//		pompom.execute(input);
 		okClicked = true;
+		
+		POMPOM.getStorage().saveStorage();
 		dialogStage.close();
 	}
 	
@@ -106,6 +145,8 @@ public class NewTaskController implements Initializable{
 	public boolean isOkClicked() {
 		return false;
 	}
+	
+
 
 
 	

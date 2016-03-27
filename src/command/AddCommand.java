@@ -8,6 +8,10 @@ import static org.junit.Assert.*;
 import main.POMPOM;
 import utils.Item;
 
+/**
+ * @@author wen hao
+ *
+ */
 public class AddCommand extends Command {
 	
 	private static final String MESSAGE_TASK_ADDED = "%s added";	

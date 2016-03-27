@@ -1,28 +1,24 @@
 package parser;
 
 
+import java.util.ArrayList;
 import java.util.Date;
-
+import command.InvalidCommand;
 import org.ocpsoft.prettytime.nlp.parse.DateGroup;
 
 import static org.junit.Assert.assertNotNull;
-
+import static org.junit.Assert.assertFalse;
 import command.Command;
 import main.POMPOM;
 import command.AddCommand;
+import command.AddRecurringCommand;
 
 
+/**
+ * @@author William
+ *
+ */
 public class AddParser extends ArgsParser{
-	
-	/*
-	 * Possible add commands:
-	 * add title = adds title without any extra stuff
-	 * add title date = add title + date
-	 * add title:desc date = add title + desc + date
-	 * add title:desc p:high date = add title + description + priority + date
-	 * add title:desc p:high l:label date = add title + desc + priority + label + date
-	 * add title:desc p:high l:label s:startdate date = add title desc priority + label + startdate + enddate 
-	 */
 	
 	private String itemTitle= null;
 	private String itemDescription = null;
@@ -35,6 +31,8 @@ public class AddParser extends ArgsParser{
 	private Long itemRecurringPeriod = null;
 	private boolean itemIsRecurring = false;
 	private String itemEndDateTitle=""; //for use if title is empty.
+	private Date exceptStartDate;
+	private Date exceptEndDate;
 	
 	private static final int INDEX_INVALID = -1;
 	private static final int INDEX_COMMAND_BEGIN = 0;
@@ -59,7 +57,6 @@ public class AddParser extends ArgsParser{
 			extractRecurring();
 			extractStartDate();
 			extractEndDate();	
-			//extractRecurring();	
 			extractDescription();	
 			extractTitle();
 		}
@@ -69,15 +66,26 @@ public class AddParser extends ArgsParser{
 	private void extractTitle() {
 		if (commandArgumentsString.trim().equals("")){
 			itemTitle=itemEndDateTitle;
-			//itemEndDate=new Date();
+			itemEndDate=new Date();
 		} else{
 			itemTitle = commandArgumentsString.trim();
 		}
 	}
 	
 	protected Command executeCommand(){
+		if (itemIsRecurring){
+			ArrayList<AddCommand> addCommandList= executeRecurring();
+			if (addCommandList==null){
+				return new InvalidCommand(commandArgumentsString);
+			}
+			return new AddRecurringCommand(addCommandList);
+		} else{
+			return executeNormal();
+		}
+	}
+	
+	protected Command executeNormal(){
 		Date currentDate = new Date();
-		
 		if(hasCommandTitleOnly()){
 			return new AddCommand(POMPOM.LABEL_TASK, itemTitle, null, null, POMPOM.STATUS_FLOATING, 
 					null, null, null);
@@ -149,8 +157,54 @@ public class AddParser extends ArgsParser{
 		if (itemRecurringDateGroup==null){
 			return;
 		}
-		itemRecurringPeriod = itemRecurringDateGroup.getRecurInterval();
 		itemIsRecurring = dp.getRecurring();
+		DateTimeParser dp2 = new DateTimeParser("except",commandArgumentsString);
+		commandArgumentsString=commandArgumentsString.replace(dp.getString(), "");
+		if (dp2.getExceptEndDateGroup()!=null && dp2.getExceptStartDateGroup()!=null){
+			exceptStartDate=dp2.getExceptStartDateGroup().getDates().get(0);
+			exceptEndDate=dp2.getExceptEndDateGroup().getDates().get(0);
+		}
+	}
+	
+	private ArrayList<AddCommand> executeRecurring(){
+		Date currentDate = new Date();
+		ArrayList<AddCommand> output=new ArrayList<AddCommand>();
+		AddCommand defaultAddCommandFormat;
+		Date mostRecent = itemRecurringDateGroup.getDates().get(0);
+		String recurDateString = itemRecurringDateGroup.getText();
+		long newRecurInterval=DateTimeParser.calculateInterval(recurDateString);
+		
+		long currentTime = (new Date().getTime());
+		long recurInterval=itemRecurringDateGroup.getRecurInterval();
+		mostRecent= new Date(recurInterval+currentTime);
+		recurInterval+=newRecurInterval;
+		Date mostRecentEnd=new Date(recurInterval+currentTime);
+
+		while (mostRecentEnd.before(itemEndDate)){
+			if(exceptEndDate!=null && exceptStartDate!=null 
+					&& mostRecent.before(exceptEndDate)
+					&& mostRecent.after(exceptStartDate)){
+				recurInterval+= newRecurInterval;
+				mostRecent= mostRecentEnd;
+				mostRecentEnd=new Date(recurInterval+currentTime);
+				continue;
+			} 
+			
+			if (hasCommandTitleAndEndDateOnly()){
+				 defaultAddCommandFormat = new AddCommand(POMPOM.LABEL_TASK, itemTitle, null, null, POMPOM.STATUS_ONGOING, 
+						null, mostRecent, mostRecentEnd);
+			} else if (!isNullTitle() && ! isNullEndDate()) {
+				defaultAddCommandFormat = new AddCommand(POMPOM.LABEL_EVENT, itemTitle, itemDescription, itemPriority, POMPOM.STATUS_ONGOING,
+						itemLabel, mostRecent, mostRecentEnd);
+			} else{
+				return null; //wrong format!
+			}
+			output.add(defaultAddCommandFormat);
+			recurInterval+= newRecurInterval;
+			mostRecent= mostRecentEnd;
+			mostRecentEnd=new Date(recurInterval+currentTime);
+		}
+		return output;
 	}
 	
 	private String removeFieldFromArgument(int indexPrefixBegin, int indexSpace) {

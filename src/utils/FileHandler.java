@@ -8,7 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 /**
- * @author A0121628L
+ * @@author A0121628L
  *
  */
 public class FileHandler {

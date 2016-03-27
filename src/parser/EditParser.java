@@ -1,7 +1,17 @@
 package parser;
 
+import java.util.ArrayList;
+
+import org.ocpsoft.prettytime.shade.edu.emory.mathcs.backport.java.util.Arrays;
+
 import command.Command;
 import command.EditCommand;
+
+/**
+ * @@author William
+ *
+ */
+
 
 public class EditParser extends ArgsParser{
 	
@@ -10,48 +20,49 @@ public class EditParser extends ArgsParser{
 	private final int INDEX_NEW_DATAS = 2; 
 	
 	private int taskID;
-	private String unparsedFields;
-	private String unparsedData;
+	private String field;
+	private String newData;
 	
-	private String[] fieldsArray;
-	private String[] newDataArray;
-	private String[] argsArray;
+	private ArrayList<String> argsArray;
 	
 	
 	public EditParser(String userCommand){
 		super(userCommand);
 		
-		argsArray = commandArgumentsString.split(" ");
-		taskID = getTaskID();
-		unparsedFields = getFields();
-		unparsedData = getNewData();
-		
-		fieldsArray = unparsedFields.split(",");
-		newDataArray = unparsedData.split(",");
+		argsArray = new ArrayList<String>(Arrays.asList(commandArgumentsString.split(" ")));
+		extractTaskID();
+		System.out.println(argsArray.toString());
+		extractFields();
+		System.out.println(argsArray.toString());
+		extractNewData();
 	}
 	
 	public Command executeCommand(){
-		return new EditCommand(taskID, fieldsArray[0], newDataArray[0]); 
+		return new EditCommand(taskID, field, newData); 
 	}
 	
-	public int getTaskID(){
-		return Integer.parseInt(argsArray[INDEX_TASK_ID]);
+	public void extractTaskID(){
+		try{
+			taskID = Integer.parseInt(argsArray.remove(0));
+		} catch (Exception e){
+			taskID = -1;
+		}
 	}
 	
-	public String getFields(){
-		return argsArray[INDEX_FIELDS];
+	public void extractFields(){
+		field = argsArray.remove(0);
+	}
+	
+	public void extractNewData(){
+		newData = String.join(" ",argsArray);
+	}
+	
+	public String getField(){
+		return field;
 	}
 	
 	public String getNewData(){
-		return argsArray[INDEX_NEW_DATAS];
-	}
-	
-	public String[] parseFields(String input){
-		return input.split(",");
-	}
-	
-	public String[] parseNewData(String input){
-		return input.split(",");
+		return newData;
 	}
 	
 }

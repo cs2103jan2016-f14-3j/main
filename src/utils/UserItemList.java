@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
- * @author A0121628L
+ * @@author A0121628L
  *
  */
 public class UserItemList {
@@ -35,6 +35,7 @@ public class UserItemList {
 	public void setTaskArray(ArrayList<Item> taskArray) {
 		this.taskArray = taskArray;
 	}
+	
 	public long getIdCounter() {
 		return IdCounter;
 	}

@@ -1,5 +1,8 @@
 package command;
-
+/**
+ * @@author wen hao
+ *
+ */
 public class InvalidCommand extends Command{
 
 	private String error;

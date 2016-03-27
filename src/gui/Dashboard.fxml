@@ -63,7 +63,7 @@
                <children>
                   <Button id="button1" fx:id="newTask" onAction="#newTaskFired" text="New" />
                   <Button id="button1" fx:id="editTask" text="Edit" />
-                  <Button id="button1" fx:id="deleteTask" text="Delete" />
+                  <Button id="button1" fx:id="deleteTask" onAction="#deleteItems" text="Delete" />
                </children>
             </HBox>
             <Button fx:id="enterCommand" layoutX="526.0" layoutY="441.0" mnemonicParsing="false" onAction="#enterCommandFired" text="Enter" />
