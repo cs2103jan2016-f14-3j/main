@@ -1,0 +1,3 @@
+{
+  "StoragePath": "/Users/JorelTay/Desktop/NUS/Year 2/Sem 2/CS2103/POMPOM/PomPom Storage \u0026 Settings/Storage.txt"
+}

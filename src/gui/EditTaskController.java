@@ -5,11 +5,13 @@ import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.ResourceBundle;
 
 import command.AddCommand;
+import command.EditCommand;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -20,13 +22,14 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import main.POMPOM;
+import utils.Item;
 import gui.Controller;
 
 /**
  * @@author Jorel
  *
  */
-public class NewTaskController implements Initializable{
+public class EditTaskController implements Initializable{
 
 	@FXML
 	TextField newTaskTitle;
@@ -66,10 +69,12 @@ public class NewTaskController implements Initializable{
     String label;
     String priority;
     String type;
-    
+    Long taskId;
     boolean okClicked;
     
     ObservableList<String> options = FXCollections.observableArrayList("High", "Medium", "Low");
+    
+    private Item item;
     
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -88,7 +93,17 @@ public class NewTaskController implements Initializable{
 	public void setDialogStage(Stage dialogStage) {
 		
 		this.dialogStage = dialogStage;					
-	}	
+	}
+	
+	public void setItem(Item item) {
+		this.item = item;
+		newTaskTitle.setText(item.getTitle());	
+		newLabel.setText(item.getLabel());
+		newPriority.setValue(item.getPriority());
+		newType.setText(item.getStatus());
+		taskId = item.getId();
+	}
+
 	
 //	1. add <task>
 //	2. add <task> <mmm dd>
@@ -116,23 +131,29 @@ public class NewTaskController implements Initializable{
 		priority = newPriority.getValue();
 		type = newType.getText();
 		
-	      Calendar sc =  Calendar.getInstance();
-	      sc.set(startDate.getYear(), startDate.getMonthValue(), startDate.getDayOfMonth());
-	      Date sd = sc.getTime();
-	      SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-	      SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm");
-	      String sDateTime = sdf.format(sd) + " " + startHour + ":" + startMin;
-	      Date sDate = dateFormat.parse(sDateTime);
-		
-	      Calendar ec =  Calendar.getInstance();
-	      ec.set(endDate.getYear(), endDate.getMonthValue(), endDate.getDayOfMonth());
-	      Date ed = ec.getTime();
-	      String eDateTime = sdf.format(ed) + " " + endHour + ":" + endMin;
-	      Date eDate = dateFormat.parse(eDateTime);
+//	      Calendar sc =  Calendar.getInstance();
+//	      sc.set(startDate.getYear(), startDate.getMonthValue(), startDate.getDayOfMonth());
+//	      Date sd = sc.getTime();
+//	      SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+//	      SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+//	      String sDateTime = sdf.format(sd) + " " + startHour + ":" + startMin;
+//	      Date sDate = dateFormat.parse(sDateTime);
+//		
+//	      Calendar ec =  Calendar.getInstance();
+//	      ec.set(endDate.getYear(), endDate.getMonthValue(), endDate.getDayOfMonth());
+//	      Date ed = ec.getTime();
+//	      String eDateTime = sdf.format(ed) + " " + endHour + ":" + endMin;
+//	      Date eDate = dateFormat.parse(eDateTime);
 
+		EditCommand editTitle = new EditCommand(taskId, "title", title);
+		EditCommand editPriority = new EditCommand(taskId, "priority", priority);
+		EditCommand editLabel= new EditCommand(taskId, "label", label);
+		EditCommand editStatus = new EditCommand(taskId, "type", type);
 		
-		AddCommand addCommand = new AddCommand(type, title, "", priority, "", label, sDate, eDate);
-		POMPOM.executeCommand(addCommand);
+		POMPOM.executeCommand(editTitle);
+		POMPOM.executeCommand(editPriority);
+		POMPOM.executeCommand(editLabel);
+		POMPOM.executeCommand(editStatus);
 		
 //		String input = "add " + "f:";
 //		String input = "add " + title + " null " + priority + " Upcoming " + label  + " " + startDate + "/" + startTime + " " + endDate + "/" + endTime;
@@ -152,8 +173,6 @@ public class NewTaskController implements Initializable{
 	public boolean isOkClicked() {
 		return okClicked;
 	}
-	
-
 
 
 	

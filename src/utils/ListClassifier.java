@@ -69,8 +69,7 @@ public class ListClassifier {
 		}		
 		return result;		
 	}
-	
-	
+		
 	
 	
 	
@@ -123,6 +122,5 @@ public class ListClassifier {
 		return result;
 		
 	}
-	
 	
 }
