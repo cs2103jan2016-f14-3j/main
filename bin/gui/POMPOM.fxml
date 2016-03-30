@@ -13,6 +13,8 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+<?import utils.CheckBoxCellFactory?>
 
 <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="566.0" prefWidth="800.0" stylesheets="@application.css" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.Controller">
 	<children>
@@ -40,28 +42,14 @@
 								<Image url="@images/Settings.png" />
 							</image>
 						</ImageView>
-                  <Label layoutX="14.0" layoutY="139.0" text="Priority" textFill="#d9d9d9">
-                     <font>
-                        <Font name="Microsoft Yi Baiti" size="18.0" />
-                     </font>
-                  </Label>
-                  <ImageView fx:id="highPBtn" fitHeight="150.0" fitWidth="200.0" layoutY="161.0" pickOnBounds="true" preserveRatio="true" onMouseClicked="#toHighPriorityView">
-                     <image>
-                        <Image url="@images/high.png" />
-                     </image>
-                  </ImageView>
-                  <ImageView fx:id="mediumPBtn" fitHeight="150.0" fitWidth="200.0" layoutY="195.0" pickOnBounds="true" preserveRatio="true" onMouseClicked="#toMediumPriorityView">
-                     <image>
-                        <Image url="@images/medium.png" />
-                     </image>
-                  </ImageView>
-                  <ImageView fx:id="lowPBtn" fitHeight="150.0" fitWidth="200.0" layoutY="229.0" pickOnBounds="true" preserveRatio="true" onMouseClicked="#toLowPriorityView">
-                     <image>
-                        <Image url="@images/low.png" />
-                     </image>
-                  </ImageView>
 					</children>
 				</Pane>
+            <ImageView fitHeight="22.0" fitWidth="20.0" layoutX="4.0" layoutY="532.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@images/help.png" />
+               </image>
+            </ImageView>
+            <Button fx:id="help" layoutX="5.0" layoutY="529.0" mnemonicParsing="false" onAction="#helpFired" opacity="0.0" />
 			</children>
 		</Pane>
 		<ImageView fitHeight="66.0" fitWidth="185.0" layoutX="3.0">
@@ -78,7 +66,7 @@
 				</Label>
 				<AnchorPane layoutY="46.0" prefHeight="515.0" prefWidth="598.0">
 					<children>
-						<TabPane fx:id="tabViews" layoutX="8.0" prefHeight="200.0" prefWidth="349.0" tabClosingPolicy="UNAVAILABLE">
+						<TabPane fx:id="tabViews" layoutX="8.0" prefHeight="200.0" prefWidth="570.0" tabClosingPolicy="UNAVAILABLE">
 							<tabs>
 								<Tab fx:id="taskTab" onSelectionChanged="#taskTabAction" text="Task" />
 								<Tab fx:id="completedTaskTab" onSelectionChanged="#completedTaskTabAction" text="CompletedTask" />
@@ -93,7 +81,9 @@
 						</TabPane>
             <TableView fx:id="table" layoutX="14.0" layoutY="32.0" prefHeight="397.0" prefWidth="564.0">
                <columns>
-                  <TableColumn fx:id="checkBox" prefWidth="37.0" />
+				 <TableColumn fx:id="checkBox" prefWidth="27.0" >
+				 <cellValueFactory> <PropertyValueFactory property="checked"/> </cellValueFactory> <cellFactory> <utils.CheckBoxCellFactory /> </cellFactory> 
+				</TableColumn> 
                   <TableColumn fx:id="taskID" prefWidth="38.0" text="ID" />
                   <TableColumn fx:id="taskName" prefWidth="61.0" text="Task" />
                   <TableColumn fx:id="taskStartDateTime" prefWidth="116.0" text="Start Date / Time" />
@@ -108,22 +98,23 @@
 								<Font name="Tw Cen MT" size="14.0" />
 							</font>
 						</TextField>
-						<HBox id="HBox" alignment="CENTER" layoutX="367.0" layoutY="-13.0" prefHeight="26.0" prefWidth="217.0" spacing="15.0">
-							<children>
-								<Button id="button1" fx:id="newTask" onAction="#newTaskFired" text="New" />
-								<Button id="button1" fx:id="editTask" text="Edit" />
-								<Button id="button1" fx:id="deleteTask" onAction="#deleteItems" text="Delete" />
-							</children>
-						</HBox>
 						<Button fx:id="enterCommand" layoutX="526.0" layoutY="441.0" mnemonicParsing="false" onAction="#enterCommandFired" text="Enter" />
-						<Label fx:id="returnMsg" layoutX="14.0" layoutY="476.0" prefHeight="15.0" prefWidth="526.0">
+						<Label fx:id="returnMsg" alignment="CENTER" contentDisplay="CENTER" layoutX="14.0" layoutY="476.0" prefHeight="15.0" prefWidth="526.0" textAlignment="CENTER" textFill="#ff0101">
 							<font>
 								<Font name="Andale Mono" size="10.0" />
 							</font>
 						</Label>
 					</children>
 				</AnchorPane>
+						<HBox id="HBox" alignment="CENTER" layoutX="367.0" layoutY="22.0" prefHeight="26.0" prefWidth="217.0" spacing="15.0">
+							<children>
+      								<Button id="button1" fx:id="newTask" onAction="#newTaskFired" text="New" />
+								<Button id="button1" fx:id="editTask" text="Edit" />
+								<Button id="button1" fx:id="deleteTask" onAction="#deleteItems" text="Delete" />
+							</children>
+						</HBox>
 			</children>
 		</Pane>
+      <ImageView fitHeight="66.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
 	</children>
 </Pane>
