@@ -26,6 +26,7 @@ public class AddParser extends ArgsParser{
 	private DateGroup itemRecurringDateGroup = null;
 	private Long itemRecurringPeriod = null;
 	private boolean itemIsRecurring = false;
+	private boolean itemIsEvent = false;
 	private String itemEndDateTitle=""; //for use if title is empty.
 	private Date exceptStartDate;
 	private Date exceptEndDate;
@@ -45,16 +46,23 @@ public class AddParser extends ArgsParser{
 	private final String DATETIMEPARSER_INDICATOR_RECURRING = "recurring";
 	private final String DATETIMEPARSER_INDICATOR_EXCEPT = "except";
 	
-	
-	public AddParser(String userCommand){
+	//Task Constructor
+	public AddParser(String userCommand, String eventMarker){
 		super(userCommand);	
 		if (this.hasNoArguments){
 			invalidArgs();
 			return;
-		} else {			
-			extractDataFromArguments();
+		} else {
+			switch (eventMarker){
+				case POMPOM.LABEL_EVENT:
+					itemIsEvent=true;
+				case POMPOM.LABEL_TASK:
+	
+					extractDataFromArguments();
+			}
 		}
 	}
+	
 	
 	/*
 	 * This method extracts all data from commandArgumentsString.
@@ -70,20 +78,14 @@ public class AddParser extends ArgsParser{
 	 */
 	private void extractDataFromArguments() {
 		extractPriority();
-		System.out.println(commandArgumentsString);
 		extractStatus();
-		System.out.println(commandArgumentsString);
 		extractLabel();
-		System.out.println(commandArgumentsString);
 		extractRecurring();
-		System.out.println(commandArgumentsString);
 		extractStartDate();
-		System.out.println(commandArgumentsString);
 		extractEndDate();	
-		System.out.println(commandArgumentsString);
 		extractDescription();	
-		System.out.println(commandArgumentsString);
 		extractTitle();
+		
 	}
 	
 	/*
@@ -121,6 +123,10 @@ public class AddParser extends ArgsParser{
 		}
 	}
 	
+	/*
+	 * This method uses the fields needed for adding all the recurring tasks, then 
+	 * gets an arraylist of AddCommands needed for the AddRecurringCommand
+	 */
 	private ArrayList<AddCommand> executeRecurring(){
 		
 		String recurDateString = itemRecurringDateGroup.getText();
@@ -139,6 +145,17 @@ public class AddParser extends ArgsParser{
 	protected Command getNonRecurringCommand(){
 		Date currentDate = new Date();
 		
+		if (itemIsEvent){
+			return createEventAddCommand(currentDate);
+		} else{
+			return createTaskAddCommand(currentDate);
+		}
+		
+		
+	}
+
+
+	private Command createTaskAddCommand(Date currentDate) {
 		if(hasCommandTitleOnly()){
 			return new AddCommand(POMPOM.LABEL_TASK, itemTitle, null, null, 
 									POMPOM.STATUS_FLOATING, null, null, null);
@@ -149,8 +166,17 @@ public class AddParser extends ArgsParser{
 			return new AddCommand(POMPOM.LABEL_TASK, itemTitle, null, null, 
 									POMPOM.STATUS_ONGOING, null, itemStartDate, null);	
 		} else {
-			return new AddCommand(POMPOM.LABEL_EVENT, itemTitle, itemDescription, itemPriority, 
+			return new AddCommand(POMPOM.LABEL_TASK, itemTitle, itemDescription, itemPriority, 
 									POMPOM.STATUS_ONGOING, itemLabel, itemStartDate, itemEndDate);
+		}
+	}
+	
+	private Command createEventAddCommand(Date currentDate) {
+		if (!hasAllFieldsFilled()){
+			return new InvalidCommand(commandArgumentsString);
+		} else {
+			return new AddCommand(POMPOM.LABEL_EVENT, itemTitle, itemDescription, itemPriority, 
+					POMPOM.STATUS_ONGOING, itemLabel, itemStartDate, itemEndDate);
 		}
 	}
 	
@@ -290,7 +316,6 @@ public class AddParser extends ArgsParser{
 	 */
 	public void extractEndDate(){
 		DateTimeParser endDateTimeParser = new DateTimeParser(DATETIMEPARSER_INDICATOR_END,commandArgumentsString);
-		System.out.println("enddate:" + endDateTimeParser.getString());
 		commandArgumentsString = commandArgumentsString.replace(endDateTimeParser.getString(), STRING_EMPTY);
 		itemEndDate = endDateTimeParser.getDate();
 		itemEndDateTitle= endDateTimeParser.getString();
@@ -335,7 +360,7 @@ public class AddParser extends ArgsParser{
 	 * 			is the index of the first space after the field prefix in commandArgumentsString
 	 */
 	private String removeFieldFromArgument(int indexPrefixBegin, int indexSpace) {
-		if (isValidIndex(indexSpace)){
+		if (!isValidIndex(indexSpace)){
 			return commandArgumentsString.substring(INDEX_COMMAND_BEGIN, indexPrefixBegin);
 		}
 			return commandArgumentsString.substring(INDEX_COMMAND_BEGIN, indexPrefixBegin)
@@ -353,7 +378,7 @@ public class AddParser extends ArgsParser{
 	 * 			is the prefix of the field that is to be removed.
 	 */
 	private String extractFieldData(int indexOfPrefix, int indexSpace, String prefix) {
-		if (isValidIndex(indexSpace)){
+		if (!isValidIndex(indexSpace)){
 			return  commandArgumentsString.substring(getPrefixEndIndex(indexOfPrefix, prefix));
 		}
 		return commandArgumentsString.substring(getPrefixEndIndex(indexOfPrefix, prefix), indexSpace);
@@ -441,6 +466,16 @@ public class AddParser extends ArgsParser{
 				&& isNullStatus()
 				&& isNullLabel()
 				&& isNullEndDate());
+	}
+	
+	public boolean hasAllFieldsFilled(){
+		return !(isNullTitle()
+				|| isNullDescription() 
+				|| isNullPriority()
+				|| isNullStatus()
+				|| isNullLabel()
+				|| isNullEndDate()
+				|| isNullStartDate());
 	}
 
 	private boolean isValidIndex(int index) {

@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 import java.util.logging.LoggingPermission;
 import command.Command;
 import command.PathCommand;
+import main.POMPOM;
 
 public class Parser{
 	
@@ -18,6 +19,7 @@ public class Parser{
 	private static final String CMD_SHOW = "show";
 	private static final String CMD_UNDO ="undo";
 	private static final String CMD_PATH = "setpath";
+	private static final String CMD_EVENT = "event";
 	
 	private static final int COMMAND_ARRAY_SIZE = 2; 
 	private static final int COMMAND_TYPE_INDEX = 0;
@@ -61,10 +63,12 @@ public class Parser{
 		
 		switch (commandType){
 			case CMD_ADD:
-				AddParser addArgumentParser = new AddParser(commandArgument);
-				return addArgumentParser.getCommand();
+				AddParser addTaskArgumentParser = new AddParser(commandArgument, POMPOM.LABEL_TASK);
+				return addTaskArgumentParser.getCommand();
+			case CMD_EVENT:
+				AddParser addEventArgumentParser = new AddParser(commandArgument, POMPOM.LABEL_EVENT);
+				return addEventArgumentParser.getCommand();
 			case CMD_DELETE:
-				System.out.println("delete test");
 				DeleteParser deleteArgumentParser = new DeleteParser(commandArgument);
 				return deleteArgumentParser.executeCommand();
 			case CMD_EDIT:
@@ -85,6 +89,7 @@ public class Parser{
 				return undoparser.executeCommand();
 			case CMD_PATH:
 				return new PathCommand(commandArgument);
+
 	}
 		InvalidParser InvalidArgumentParser = new InvalidParser(userCommand);
 		return InvalidArgumentParser.executeCommand();

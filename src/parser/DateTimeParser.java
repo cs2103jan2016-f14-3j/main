@@ -111,7 +111,6 @@ public class DateTimeParser{
 		int endDateIndex = rawString.indexOf(COMMAND_PREFIX_ENDDATE);
 		
 		if (isInvalidIndexes(startDateIndex, endDateIndex)){
-			System.out.println(startDateIndex + " " + endDateIndex);
 			return rawString;
 		} else{
 			return getSpecifiedDate(parseType, rawString, startDateIndex, endDateIndex);
@@ -223,7 +222,6 @@ public class DateTimeParser{
 	
 	private void processEndDate(){
 		List<DateGroup> dateGroup;
-		System.out.println(originalString);
 		//unique feature of end date: after title:description is the enddate.
 		if (hasEndPrefix(originalString)){
 			originalString = originalString.replace(COMMAND_PREFIX_ENDDATE,STRING_EMPTY);
