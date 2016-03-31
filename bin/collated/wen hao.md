@@ -723,18 +723,21 @@ public class POMPOM {
 
 				if (taskStartDate.after(currentDate)) {
 					currentTask.setStatus(STATUS_PENDING);
-				} else if (taskStartDate.before(currentDate) && isNotCompleted(currentTask)) {
+				} else if (taskStartDate.before(currentDate)
+						&& isNotCompleted(currentTask)) {
 					currentTask.setStatus(STATUS_ONGOING);
 				}
 
 			} else if (currentDate.before(taskStartDate)) {
 				currentTask.setStatus(STATUS_PENDING);
 
-			} else if (currentDate.compareTo(taskStartDate) >= 0 && currentDate.before(taskEndDate)
+			} else if (currentDate.compareTo(taskStartDate) >= 0
+					&& currentDate.before(taskEndDate)
 					&& isNotCompleted(currentTask)) {
 				currentTask.setStatus(STATUS_ONGOING);
 
-			} else if (currentDate.after(taskEndDate) && isNotCompleted(currentTask)) {
+			} else if (currentDate.after(taskEndDate)
+					&& isNotCompleted(currentTask)) {
 				currentTask.setStatus(STATUS_OVERDUE);
 
 			}
@@ -755,11 +758,11 @@ public class POMPOM {
 		refreshStatus();
 		return returnMsg;
 	}
-	
+
 	private static boolean isNotCompleted(Item item) {
-		
+
 		return !item.getStatus().equals(STATUS_COMPLETED);
-		
+
 	}
 
 	public static PrettyTimeParser getTimeParser() {

@@ -117,7 +117,7 @@ public class POMPOM {
 	}
 
 	public String execute(String input) {
-		Parser parser = new Parser();
+		Parser parser = Parser.getInstance();
 		Command command = parser.executeCommand(input);
 		String returnMsg = command.execute();
 		refreshStatus();

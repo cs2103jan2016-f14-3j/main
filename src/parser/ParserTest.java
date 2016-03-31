@@ -8,12 +8,6 @@ import command.Command;
 import main.POMPOM;
 import command.AddCommand;
 
-/**
- * @@author William
- *
- */
-
-
 public class ParserTest {
 	POMPOM pompom = new POMPOM();
 	Parser parser = Parser.getInstance();

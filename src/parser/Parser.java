@@ -6,11 +6,6 @@ import java.util.logging.LoggingPermission;
 import command.Command;
 import command.PathCommand;
 
-/**
- * @@author William
- *
- */
-
 public class Parser{
 	
 	/** List of Command types */
@@ -23,6 +18,8 @@ public class Parser{
 	private static final String CMD_SHOW = "show";
 	private static final String CMD_UNDO ="undo";
 	private static final String CMD_PATH = "setpath";
+	private static final String CMD_EVENT = "event";
+	
 	
 	private static final int COMMAND_ARRAY_SIZE = 2; 
 	private static final int COMMAND_TYPE_INDEX = 0;
@@ -40,7 +37,7 @@ public class Parser{
 		return parserInstance;
 	}
 	
-	public Parser(){
+	private Parser(){
 
 	}
 	
@@ -67,7 +64,7 @@ public class Parser{
 		switch (commandType){
 			case CMD_ADD:
 				AddParser addArgumentParser = new AddParser(commandArgument);
-				return addArgumentParser.executeCommand();
+				return addArgumentParser.getCommand();
 			case CMD_DELETE:
 				System.out.println("delete test");
 				DeleteParser deleteArgumentParser = new DeleteParser(commandArgument);
@@ -90,6 +87,9 @@ public class Parser{
 				return undoparser.executeCommand();
 			case CMD_PATH:
 				return new PathCommand(commandArgument);
+			case CMD_EVENT:
+				AddEventParser addEventArgumentParser = new AddEventParser(commandArgument);
+				return addEventArgumentParser.getCommand();
 	}
 		InvalidParser InvalidArgumentParser = new InvalidParser(userCommand);
 		return InvalidArgumentParser.executeCommand();

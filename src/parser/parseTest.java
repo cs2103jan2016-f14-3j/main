@@ -11,39 +11,37 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import org.junit.Test;
 
-
 /**
  * @@author William
  *
  */
 
-public class parseTest{
+public class parseTest {
 
-	Parser parser = new Parser();
-	
+	Parser parser = Parser.getInstance();
 
-	//@Test
+	// @Test
 	public static void testAddParser() {
-		//edit 1 status asd
-		//add go club
-		//add do homework next week
-		//add do cs2103:finish v0.1 p:high l:hw s:open f:next monday next tuesday
-		//edit 1 title asd
-		//delete 1
-		//exit
+		// edit 1 status asd
+		// add go club
+		// add do homework next week
+		// add do cs2103:finish v0.1 p:high l:hw s:open f:next monday next
+		// tuesday
+		// edit 1 title asd
+		// delete 1
+		// exit
 	}
-	
-	public static void prettyTime(){
+
+	public static void prettyTime() {
 		PrettyTimeParser timeParser = new PrettyTimeParser();
 		List<DateGroup> dgl = timeParser.parseSyntax("every day");
-		for (DateGroup dg: dgl){
+		for (DateGroup dg : dgl) {
 			System.out.println(dg.getText());
-		}	
+		}
 		System.out.println("ended");
 	}
-	public static void main(String[] args){
+
+	public static void main(String[] args) {
 		prettyTime();
 	}
 }
-	
-	

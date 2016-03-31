@@ -12,7 +12,7 @@ import main.POMPOM;
 import command.AddCommand;
 import command.AddRecurringCommand;
 
-public class AddParser extends ArgsParser {
+public class AddEventParser extends ArgsParser {
 
 	private String itemTitle = null;
 	private String itemDescription = null;
@@ -42,7 +42,7 @@ public class AddParser extends ArgsParser {
 	private final String DATETIMEPARSER_INDICATOR_RECURRING = "recurring";
 	private final String DATETIMEPARSER_INDICATOR_EXCEPT = "except";
 
-	public AddParser(String userCommand) {
+	public AddEventParser(String userCommand) {
 		super(userCommand);
 		if (this.hasNoArguments) {
 			invalidArgs();
@@ -133,16 +133,14 @@ public class AddParser extends ArgsParser {
 		Date currentDate = new Date();
 
 		if (hasCommandTitleOnly()) {
-			return new AddCommand(POMPOM.LABEL_TASK, itemTitle, null, null,
-					POMPOM.STATUS_FLOATING, null, null, null);
+			return new InvalidCommand("Event Must have Start Date");
 		} else if (hasCommandTitleAndEndDateOnly()) {
-			return new AddCommand(POMPOM.LABEL_TASK, itemTitle, null, null,
-					POMPOM.STATUS_ONGOING, null, currentDate, itemEndDate);
+			return new InvalidCommand("Event Must have Start Date");
 		} else if (hasCommandTitleAndStartDateOnly()) {
-			return new AddCommand(POMPOM.LABEL_TASK, itemTitle, null, null,
+			return new AddCommand(POMPOM.LABEL_EVENT, itemTitle, null, null,
 					POMPOM.STATUS_ONGOING, null, itemStartDate, null);
 		} else {
-			return new AddCommand(POMPOM.LABEL_TASK, itemTitle,
+			return new AddCommand(POMPOM.LABEL_EVENT, itemTitle,
 					itemDescription, itemPriority, POMPOM.STATUS_ONGOING,
 					itemLabel, itemStartDate, itemEndDate);
 		}
@@ -195,7 +193,7 @@ public class AddParser extends ArgsParser {
 		// Take note of the "only". hasCommandTitleAndEndDateONLY() means that
 		// all other fields are empty.
 		if (hasCommandTitleAndEndDateOnly()) {
-			defaultAddCommandFormat = new AddCommand(POMPOM.LABEL_TASK,
+			defaultAddCommandFormat = new AddCommand(POMPOM.LABEL_EVENT,
 					itemTitle, null, null, POMPOM.STATUS_ONGOING, null,
 					mostRecent, mostRecentEnd);
 		} else if (hasCommandTitleAndEndDate()) {
