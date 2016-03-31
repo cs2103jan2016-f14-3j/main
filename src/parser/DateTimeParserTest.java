@@ -111,7 +111,7 @@ public class DateTimeParserTest {
 		assertEquals(output,"e:28 march");
 	}
 	
-//	@Test
+	@Test
 	public void testParseMessedUpTitle() {
 		DateTimeParser dp = new DateTimeParser("end","do cs1231231231231232132341 tomorrow");
 		Date endDate = timeParser.parseSyntax("tomorrow").get(0).getDates().get(0);

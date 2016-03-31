@@ -70,12 +70,19 @@ public class AddParser extends ArgsParser{
 	 */
 	private void extractDataFromArguments() {
 		extractPriority();
+		System.out.println(commandArgumentsString);
 		extractStatus();
+		System.out.println(commandArgumentsString);
 		extractLabel();
+		System.out.println(commandArgumentsString);
 		extractRecurring();
+		System.out.println(commandArgumentsString);
 		extractStartDate();
+		System.out.println(commandArgumentsString);
 		extractEndDate();	
+		System.out.println(commandArgumentsString);
 		extractDescription();	
+		System.out.println(commandArgumentsString);
 		extractTitle();
 	}
 	
@@ -93,6 +100,7 @@ public class AddParser extends ArgsParser{
 	private void extractTitle() {
 		if (hasNoTitleToExtract()){
 			itemTitle=itemEndDateTitle;
+			itemEndDate = new Date();
 		} else{
 			itemTitle = commandArgumentsString.trim();
 		}
@@ -282,6 +290,7 @@ public class AddParser extends ArgsParser{
 	 */
 	public void extractEndDate(){
 		DateTimeParser endDateTimeParser = new DateTimeParser(DATETIMEPARSER_INDICATOR_END,commandArgumentsString);
+		System.out.println("enddate:" + endDateTimeParser.getString());
 		commandArgumentsString = commandArgumentsString.replace(endDateTimeParser.getString(), STRING_EMPTY);
 		itemEndDate = endDateTimeParser.getDate();
 		itemEndDateTitle= endDateTimeParser.getString();
