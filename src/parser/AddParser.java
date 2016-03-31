@@ -392,11 +392,12 @@ public class AddParser extends ArgsParser{
 	 * @param String
 	 * 			is the prefix of the current field
 	 * 
-	 * 
-	 * note: need to reimplement this. -1 is a magic number.
 	 */
 	private int getIndexOfNextField(int indexOfPrefix, String prefix) {
-		return commandArgumentsString.indexOf(COMMAND_COMMON_DELIMITER,indexOfPrefix+prefix.length())-1;
+		int indexOfPrefixEnd = indexOfPrefix+prefix.length(); 
+		int indexOfNextDelimiter = commandArgumentsString.indexOf(COMMAND_COMMON_DELIMITER,indexOfPrefixEnd);
+		int indexOfNextField = commandArgumentsString.lastIndexOf(STRING_SPACE,indexOfNextDelimiter);
+		return indexOfNextField;
 	}
 	
 	private int getPrefixEndIndex(int index, String prefix) {

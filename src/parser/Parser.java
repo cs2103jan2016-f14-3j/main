@@ -20,6 +20,7 @@ public class Parser{
 	private static final String CMD_UNDO ="undo";
 	private static final String CMD_PATH = "setpath";
 	private static final String CMD_EVENT = "event";
+	private static final String CMD_HELP = "help";
 	
 	private static final int COMMAND_ARRAY_SIZE = 2; 
 	private static final int COMMAND_TYPE_INDEX = 0;
@@ -85,8 +86,11 @@ public class Parser{
 				//return exitParser.executeCommand();
 				System.exit(0);
 			case CMD_UNDO:
-				UndoParser undoparser = new UndoParser();
-				return undoparser.executeCommand();
+				UndoParser undoParser = new UndoParser();
+				return undoParser.executeCommand();
+			case CMD_HELP:
+				HelpParser helpParser = new HelpParser();
+				return helpParser.executeCommand();
 			case CMD_PATH:
 				return new PathCommand(commandArgument);
 
