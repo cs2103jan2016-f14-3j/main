@@ -1,14 +1,16 @@
 package utils;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+/**
+ * @@author A0121628L
+ *
+ */
 public class FileHandler {
 	public static void writeStringToFile(File file,String text) throws IOException{
 		FileWriter out = new FileWriter(file);
@@ -17,8 +19,7 @@ public class FileHandler {
 	}
 	
 	public static String getStringFromFile(String path, Charset encoding) 
-			  throws IOException 
-	{
+			  throws IOException {
 	  byte[] encoded = Files.readAllBytes(Paths.get(path));
 	  return new String(encoded, encoding);
 	}

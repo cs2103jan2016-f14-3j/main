@@ -1,47 +1,34 @@
 package parser;
 
 import static org.junit.Assert.*;
+
 import org.junit.Test;
-import parser.Parser.COMMAND_TYPE;
+
+import command.Command;
+import main.POMPOM;
+import command.AddCommand;
 
 public class ParserTest {
+	POMPOM pompom = new POMPOM();
+	Parser parser = Parser.getInstance();
+	
+	/*
+	 * This is the boundary case for the valid user commands partition
+	 */
+	@Test
+	public void testAddCommand() {
+		Command outputCommand = parser.executeCommand("add do cs2013");
+		assertTrue(outputCommand instanceof command.AddCommand);
+	}
+	
+	/*
+	 * This is the boundary case for the invalid user commands partition
+	 */
+	@Test
+	public void testFailCommand() {
+		Command outputCommand = parser.executeCommand("ad do cs2013");
+		assertTrue(outputCommand instanceof command.InvalidCommand);
+	}
 
-	Parser parser = new Parser();
-	
-	@Test
-	public void testExecuteCommandEmptyCommand() {
-		String result = parser.executeCommand("");
-		assertEquals(result,"invalid command format : ");
-	}
-	
-	@Test
-	public void testDetermineCommandType(){
-		COMMAND_TYPE actual = parser.determineCommandType("add");
-		assertEquals(actual,COMMAND_TYPE.ADD_TASK);
-	}
-	
-	@Test
-	public void testGetCommandType(){
-		String actual = parser.getCommandType("add 1");
-		assertEquals(actual, "add");
-	}
-	
-	@Test
-	public void testGetArguments(){
-		String actual = parser.getArguments("add 1");
-		assertEquals(actual, "1");
-	}
-	
-	@Test
-	public void testExecuteCommandEmptyArgument(){
-		String actual = parser.executeCommand("add");
-		assertEquals(actual, "Arguments needed!");
-	}
-	
-	@Test
-	public void testExecuteCommand(){
-		String actual = parser.executeCommand("add watch deadpool");
-		assertEquals(actual,"Added 'watch deadpool' to task list!");
-	}
 
 }
