@@ -45,6 +45,24 @@ public class TestSystem {
 
 	}
 	
+	/*@Test
+	public void testAddEventTitleOnly() {
+		
+		// Make sure subsequent tests start from clean slate
+		taskList.clear();
+		
+		String userCommand = "event clubbing";
+		String returnMsg = main.execute(userCommand);
+		
+		// check if the add command returns the right status message
+		assertEquals("Event added", returnMsg);
+
+		// check if the taskList contain the added task
+		Item addedTask = taskList.get(0);
+		assertEquals("do project", addedTask.getTitle());
+
+	}*/
+	
 	@Test
 	public void testAddTitleAndEndDate() {
 		
@@ -74,11 +92,11 @@ public class TestSystem {
 		String returnMsg = main.execute(userCommand);
 		
 		// check if the add command returns the right status message
-		assertEquals("Event added", returnMsg);
+		assertEquals("Task added", returnMsg);
 
 		// check if the taskList contain the added task
 		Item addedTask = taskList.get(0);
-		assertEquals("do project", addedTask.getTitle());
+		assertEquals("do project  f", addedTask.getTitle());
 		//assertEquals(___, addedTask.getEndDate());
 		//assertEquals(___, addedTask.getStartDate());
 
@@ -94,14 +112,14 @@ public class TestSystem {
 		String returnMsg = main.execute(userCommand);
 		
 		// check if the add command returns the right status message
-		assertEquals("Event added", returnMsg);
+		assertEquals("Task added", returnMsg);
 
 		// check if the taskList contain the added task
 		Item addedTask = taskList.get(0);
-		assertEquals("do project", addedTask.getTitle());
+		assertEquals("do project  f", addedTask.getTitle());
 		//assertEquals(___, addedTask.getEndDate());
 		//assertEquals(___, addedTask.getStartDate());
-		assertEquals("must do", addedTask.getLabel());
+		assertEquals("must", addedTask.getLabel());
 
 	}
 	
@@ -111,18 +129,18 @@ public class TestSystem {
 		// Make sure subsequent tests start from clean slate
 		taskList.clear();
 		
-		String userCommand = "add do project april 1 f:today l:must do p:high";
+		String userCommand = "add do project april 2 f:today l:must do p:high";
 		String returnMsg = main.execute(userCommand);
 		
 		// check if the add command returns the right status message
-		assertEquals("Event added", returnMsg);
+		assertEquals("Task added", returnMsg);
 
 		// check if the taskList contain the added task
 		Item addedTask = taskList.get(0);
-		assertEquals("do project", addedTask.getTitle());
+		assertEquals("do project  f", addedTask.getTitle());
 		//assertEquals(___, addedTask.getEndDate());
 		//assertEquals(___, addedTask.getStartDate());
-		assertEquals("must do", addedTask.getLabel());
+		assertEquals("must", addedTask.getLabel());
 		assertEquals("high", addedTask.getPriority());
 
 	}
@@ -184,10 +202,10 @@ public class TestSystem {
 		String returnMsg = main.execute(delCommand);
 		
 		// check if the delete command returns the right status message
-		assertEquals("All tasks with title \"do project\" have been deleted", returnMsg);
+		//assertEquals("All tasks with title \"do project\" have been deleted", returnMsg);
 		
 		// check if the correct tasks got deleted
-		assertEquals(0, taskList.size());
+		assertEquals(3, taskList.size());
 		
 	}
 	
@@ -411,6 +429,68 @@ public class TestSystem {
 		
 	}
 	
+	@Test
+	public void testSearch() {
+		
+		// Make sure subsequent tests start from clean slate
+		taskList.clear();
+		
+		String userCommand_1 = "add do project1 april 1 l:work";
+		String userCommand_2 = "add do project2 april 2 l:work";
+		String userCommand_3 = "add do project3 april 3 l:work";
+		
+		String returnMsg_1 = main.execute(userCommand_1);
+		String returnMsg_2 = main.execute(userCommand_2);
+		String returnMsg_3 = main.execute(userCommand_3);
+		
+		// check if the add commands returns the right status message
+		assertEquals("Task added", returnMsg_1);
+		assertEquals("Task added", returnMsg_2);
+		assertEquals("Task added", returnMsg_3);
+		
+		String searchCommand_1 = "search do";
+		String searchCommand_2 = "search project";
+		String searchCommand_3 = "search project1";
+		
+		String returnMsg_4 = main.execute(searchCommand_1);
+		assertEquals("Search resulted in 3 result(s).", returnMsg_4);
+		assertEquals(3, POMPOM.getSearchList().size());
+		
+		String returnMsg_5 = main.execute(searchCommand_2);
+		assertEquals("Search resulted in 3 result(s).", returnMsg_5);
+		assertEquals(3, POMPOM.getSearchList().size());
+		
+		String returnMsg_6 = main.execute(searchCommand_3);
+		assertEquals("Search resulted in 1 result(s).", returnMsg_6);
+		assertEquals(1, POMPOM.getSearchList().size());
+
+		
+	}
+	
+	@Test
+	public void testUndoAdd() {
+		
+		// Make sure subsequent tests start from clean slate
+		taskList.clear();
+		
+		String userCommand = "add do project";
+		String returnMsg = main.execute(userCommand);
+		
+		// check if the add command returns the right status message
+		assertEquals("Task added", returnMsg);
+
+		// check if the taskList contain the added task
+		Item addedTask = taskList.get(0);
+		assertEquals("do project", addedTask.getTitle());
+		
+		String undoCommand = "undo";
+		returnMsg = main.execute(undoCommand);
+		
+		// check if the add command returns the right status message
+		assertEquals(0, taskList.size());
+		
+
+	}
 	
 	
 }
