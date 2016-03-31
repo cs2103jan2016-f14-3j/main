@@ -1,12 +1,12 @@
 {
   "Username": "Not Set",
-  "IdCounter": 11,
+  "IdCounter": 18,
   "TaskList": [
     {
       "Id": 1,
       "Type": "Task",
       "Title": "do cs2103  except 7 april to 10 april",
-      "Status": "pending",
+      "Status": "ongoing",
       "StartDate": "Fri Mar 25 08:46:29 SGT 2016",
       "EndDate": "Fri Apr 01 08:46:29 SGT 2016"
     },
@@ -38,7 +38,7 @@
       "Id": 5,
       "Type": "Task",
       "Title": "do cs2103  except 7 april to 10 april",
-      "Status": "pending",
+      "Status": "ongoing",
       "StartDate": "Fri Mar 25 08:47:58 SGT 2016",
       "EndDate": "Fri Apr 01 08:47:58 SGT 2016"
     },
@@ -70,7 +70,7 @@
       "Id": 9,
       "Type": "Task",
       "Title": "do cs2103  except 7 april to 10 april",
-      "Status": "pending",
+      "Status": "ongoing",
       "StartDate": "Fri Mar 25 08:50:28 SGT 2016",
       "EndDate": "Fri Apr 01 08:50:28 SGT 2016"
     },
@@ -89,6 +89,70 @@
       "Status": "pending",
       "StartDate": "Fri Apr 15 08:50:28 SGT 2016",
       "EndDate": "Fri Apr 22 08:50:28 SGT 2016"
+    },
+    {
+      "Id": 12,
+      "Type": "Task",
+      "Title": "task do project  f",
+      "Priority": "high",
+      "Description": "today  ",
+      "Label": "must",
+      "Status": "pending",
+      "StartDate": "Sat Apr 02 01:13:56 SGT 2016",
+      "EndDate": "Sat Apr 02 01:13:56 SGT 2016"
+    },
+    {
+      "Id": 13,
+      "Type": "Task",
+      "Title": "task do project  f",
+      "Priority": "high",
+      "Description": "today  do ",
+      "Label": "must",
+      "Status": "pending",
+      "StartDate": "Sat Apr 02 01:15:30 SGT 2016",
+      "EndDate": "Sat Apr 02 01:15:30 SGT 2016"
+    },
+    {
+      "Id": 14,
+      "Type": "Task",
+      "Title": "task do project   f",
+      "Priority": "high",
+      "Description": "today  do ",
+      "Label": "must",
+      "Status": "pending",
+      "StartDate": "Fri Apr 01 02:00:00 SGT 2016",
+      "EndDate": "Fri Apr 01 02:00:00 SGT 2016"
+    },
+    {
+      "Id": 15,
+      "Type": "Task",
+      "Title": "task do project    do",
+      "Priority": "high",
+      "Label": "must",
+      "Status": "ongoing",
+      "StartDate": "Fri Apr 01 01:16:18 SGT 2016",
+      "EndDate": "Sat Apr 02 01:16:18 SGT 2016"
+    },
+    {
+      "Id": 16,
+      "Type": "Task",
+      "Title": "do cs2103",
+      "Label": "nope",
+      "Status": "floating"
+    },
+    {
+      "Id": 17,
+      "Type": "Task",
+      "Title": "do csw123123 l",
+      "Description": "nope",
+      "Status": "floating"
+    },
+    {
+      "Id": 18,
+      "Type": "Task",
+      "Title": "do cs2103 asda l",
+      "Description": "nope",
+      "Status": "floating"
     }
   ]
 }
