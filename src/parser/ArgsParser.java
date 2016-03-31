@@ -6,10 +6,7 @@ import java.util.logging.LoggingPermission;
 
 import command.Command;
 
-/**
- * @@author William
- *
- */
+
 public class ArgsParser {
 	
 	protected static Logger logger = Logger.getLogger("Parser");

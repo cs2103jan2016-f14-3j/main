@@ -71,19 +71,6 @@ public class Storage {
 		
 	}
 	
-//	1. add <task>
-//	2. add <task> <mmm dd>
-//	3. add <task> <dd/mm/yyyy>
-//	4. add <task> <f:mmm dd> <mmm dd>
-//	5. add <task> <f:dd/mm/yyyy> <mmm dd>
-//	6. add <task> <f:mmm dd> <dd/mm/yyyy>
-//	7. add <task> <today/tomorrow/this week/month/year/ next week/month/year>
-//	8. add <task> <today/tomorrow/this week/month/year/ next week/month/year> <f:today/tomorrow/this week/month/year/ next week/month/year>
-//	9. add <task> <dd/mm/yyyy> <f:today/tomorrow/this week/month/year/ next week/month/year>
-//	10. add <task> <dd mmm> <f:today/tomorrow/this week/month/year/ next week/month/year>
-//	11. add <task> <today/tomorrow/this week/month/year/ next week/month/year><f:dd mmm>
-//	12.add <task> <today/tomorrow/this week/month/year/ next week/month/year><f:dd/mm/yyyy>
-
 	public void init() throws IOException {
 		initializeGsonObjects();
 		initializeSettings();
@@ -226,7 +213,6 @@ public class Storage {
 		}
 
 	}
-
 	// Use the Gson library to get a Storage object from String
 	private UserItemList deserializeStorageString(String jsonString) {
 		if (checkEmptyString(jsonString)) {

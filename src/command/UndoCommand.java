@@ -1,4 +1,6 @@
 package command;
+import java.util.logging.Level;
+
 /**
  * @@author wen hao
  *
@@ -12,6 +14,7 @@ public class UndoCommand extends Command{
 	public String execute() {
 		Command undo = (Command) POMPOM.getUndoStack().pop();
 		undo.execute();
+		logger.log(Level.INFO, "UndoCommand has be executed");
 		returnMsg = MESSAGE_UNDO;
 		return returnMsg;
 	}

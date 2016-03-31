@@ -1,3 +1,3 @@
 {
-  "StoragePath": "PomPom Storage \u0026 Settings/Storage.txt"
+  "StoragePath": "C:\\Users\\Josh\\workspace\\PomPom\\PomPom Storage \u0026 Settings\\Storage.txt"
 }

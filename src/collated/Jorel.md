@@ -146,16 +146,9 @@ public class Controller implements Initializable {
 				POMPOM.executeCommand(delCommand);
 			}
 		}
-		System.out.println(POMPOM.getCurrentTab());
 		switchToTab(POMPOM.getCurrentTab().toLowerCase());
 	}
 
-	/**
-	 * 
-	 */
-	/**
-	 * 
-	 */
 	void configureTable() {
 		table.setEditable(true);
 		taskID.setCellValueFactory(new PropertyValueFactory<Item, Number>("id"));
@@ -202,28 +195,29 @@ public class Controller implements Initializable {
 
 	// New methods by wei lip
 
-	public void switchToTab(String type) {
+	public void switchToTab(String inputTab) {
+		String tabName = inputTab.toLowerCase();
 		SingleSelectionModel<Tab> selectionModel = tabViews.getSelectionModel();
-		if (type.equals(POMPOM.LABEL_TASK.toLowerCase())) {
-			System.out.println("Teasdat :" + type);
+		
+		if (tabName.equals(POMPOM.LABEL_TASK.toLowerCase())) {
+			System.out.println("Teasdat :" + tabName);
 			selectionModel.select(taskTab);
 			taskTabAction();
-		} else if (type.equals(POMPOM.LABEL_COMPLETED_TASK.toLowerCase())) {
+		} else if (tabName.equals(POMPOM.LABEL_COMPLETED_TASK.toLowerCase())) {
 			selectionModel.select(taskTab);
 			completedTaskTabAction();
-		} else if (type.equals(POMPOM.LABEL_EVENT.toLowerCase())) {
+		} else if (tabName.equals(POMPOM.LABEL_EVENT.toLowerCase())) {
 			System.out.println("evenets");
 			selectionModel.select(eventTab);
 			eventTabAction();
-		} else if (type.equals(POMPOM.LABEL_COMPLETED_EVENT.toLowerCase())) {
+		} else if (tabName.equals(POMPOM.LABEL_COMPLETED_EVENT.toLowerCase())) {
 			selectionModel.select(eventTab);
 			completedEventTabAction();
-		} else if (type.equals(POMPOM.LABEL_SEARCH.toLowerCase())) {
+		} else if (tabName.equals(POMPOM.LABEL_SEARCH.toLowerCase())) {
 			System.out.println("SEARCH TESET");
 			selectionModel.select(searchTab);
 			searchTabAction();
 		}
-		return;
 	}
 	@FXML
 	public void taskTabAction() {

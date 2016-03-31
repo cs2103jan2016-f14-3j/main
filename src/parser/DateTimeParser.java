@@ -14,16 +14,12 @@ import java.util.logging.Logger;
 import org.ocpsoft.prettytime.nlp.PrettyTimeParser;
 import org.ocpsoft.prettytime.nlp.parse.DateGroup;
 
-/**
- * @@author William
- *
- */
+import command.InvalidCommand;
 
 public class DateTimeParser{
 	
 	private String originalString="";
 	private String dateTimeString="";
-	private String exceptString="";
 	private Date dateTime=null;
 	private static PrettyTimeParser timeParser=new PrettyTimeParser();
 	private boolean isRecurring = false;
@@ -42,84 +38,144 @@ public class DateTimeParser{
 	private static final String INDICATOR_RECURRING = "recurring";	
 	private static final String INDICATOR_EXCEPT = "except";
 	
+	private static final String STRING_EMPTY = "";
+	
+	private static final int INVALID_INDEX = -1;
+	
 	private static DateGroup recurringDateGroup=null;
 	
 	private static Logger logger = Logger.getLogger("Parser");
+	
 	public DateTimeParser(String parseType, String commandArgumentsString){
 		
-		if(parseType.equals(INDICATOR_RECURRING)){
-			commandArgumentsString=extractRecurringString(commandArgumentsString);
-			commandArgumentsString=extractExceptDates(commandArgumentsString);
-		} else if (parseType.equals(INDICATOR_EXCEPT)){
-			commandArgumentsString=extractExceptDates(commandArgumentsString);
-		} else{
-			commandArgumentsString=breakUpStartAndEndDates(parseType, commandArgumentsString);			
-		}
-		originalString=correctDateFormat(commandArgumentsString);
-		if(parseType.equals(INDICATOR_START)){
-				processStartDate();
-		} else if (parseType.equals(INDICATOR_END)){
-				processEndDate();	
-		} else if (parseType.equals(INDICATOR_RECURRING)){
-				processRecurring();	
-		}else if (parseType.equals(INDICATOR_EXCEPT)){
-				processExcept();
-		} else{
-			logger.log(Level.SEVERE,"programming error here. never specify date is end date or start date processing");
+		//Checks if the parse type is invalid.
+		//Only "recurring","except","start","end" is accepted.
+		if (isInvalidParseType(parseType)){
+			logger.log(Level.SEVERE,"Bug! invalid parsetype specified! " + parseType);
 			return;
 		}
+		
+		//extracts the field related to the parse type.
+		commandArgumentsString = extractFieldByParseType(parseType, commandArgumentsString);
+		
+		//corrects the string if
+		originalString=correctDateFormat(commandArgumentsString);
+		processFieldByParseType(parseType); 
+		
+		
+		//flipped dates are dates specified as MM/DD/YYYY
 		if (isFlippedDate){
 			dateTimeString=reverseCorrectDateFormat(dateTimeString);
 		}
 		
 	}
 	
-	static String breakUpStartAndEndDates(String startOrEnd, String rawString){
-		String firstPortion ="";
-		String restOfTheString="";
-		int startIndex = rawString.indexOf(COMMAND_PREFIX_STARTDATE);
-		int endIndex = rawString.indexOf(COMMAND_PREFIX_ENDDATE);
-		int minIndex=Math.min(startIndex, endIndex);
-		int maxIndex=Math.max(startIndex, endIndex);
-		
-		if (startIndex<0 || endIndex<0){
-			return rawString;
-		} else{
-			firstPortion= rawString.substring(minIndex,maxIndex);
-			restOfTheString=rawString.replace(firstPortion,"");
-		}	
-		if (startOrEnd.equals("start")){
-			if (firstPortion.indexOf(COMMAND_PREFIX_STARTDATE)>=0){
-				return firstPortion.trim();
-			} else{
-				return restOfTheString;
-			}
-		}else if (startOrEnd.equals("end")){
-			if (firstPortion.indexOf(COMMAND_PREFIX_ENDDATE)>=0){
-				return firstPortion.trim();
-			} else{
-				return restOfTheString;
-			}
-		} else{
-			logger.log(Level.SEVERE,"invalid startOrEnd given for breakupStart()");
-			return rawString;
+	private void processFieldByParseType(String parseType) {
+		switch (parseType){
+			case INDICATOR_START:
+				processStartDate();
+				return;
+			case INDICATOR_END:
+				processEndDate();
+				return;
+			case INDICATOR_RECURRING:
+				processRecurring();	
+				return;
+			case INDICATOR_EXCEPT:
+				processExcept();
+				return;
 		}
 	}
 	
-	static String extractRecurringString(String rawString){
-		String firstPortion ="";
-		String restOfTheString="";
-		int endIndex = rawString.indexOf(COMMAND_PREFIX_ENDDATE);
-		int recurringIndex = rawString.indexOf(COMMAND_PREFIX_RECURRING);
-		int minIndex=Math.min(endIndex, recurringIndex);
-		int maxIndex=Math.max(endIndex, recurringIndex);
+
+	private String extractFieldByParseType(String parseType, String commandArgumentsString) {
+		if(isRecurringParseType(parseType)){
+			commandArgumentsString=extractRecurringString(commandArgumentsString);
+			commandArgumentsString=extractExceptDates(commandArgumentsString);
+		} else if (isExceptParseType(parseType)){
+			commandArgumentsString=extractExceptDates(commandArgumentsString);
+		} else{
+			commandArgumentsString=breakUpStartAndEndDates(parseType, commandArgumentsString);			
+		}
+		return commandArgumentsString;
+	}
+	
+	static String breakUpStartAndEndDates(String parseType, String rawString){
+
+		if (isNotStartOrEndParseType(parseType)){
+			logger.log(Level.SEVERE,"invalid startOrEnd given for breakupStart()");
+			return rawString;
+		}		
 		
-		if (endIndex<0 || recurringIndex<0){
+		int startDateIndex = rawString.indexOf(COMMAND_PREFIX_STARTDATE);
+		int endDateIndex = rawString.indexOf(COMMAND_PREFIX_ENDDATE);
+		
+		if (isInvalidIndexes(startDateIndex, endDateIndex)){
 			return rawString;
 		} else{
-			firstPortion= rawString.substring(minIndex,maxIndex);
-			restOfTheString=rawString.replace(firstPortion,"");
+			return getSpecifiedDate(parseType, rawString, startDateIndex, endDateIndex);
 		}
+		
+	}
+
+	private static String getSpecifiedDate(String parseType, String rawString, int startDateIndex, int endDateIndex) {
+		String extractedField = extractFieldBetweenTwoIndexes(startDateIndex, endDateIndex, rawString); 
+		String restOfTheString = rawString.replace(extractedField,"");
+		return getSpecifiedDatePortion(parseType, extractedField, restOfTheString);
+	}
+	
+	private static String extractFieldBetweenTwoIndexes(int firstIndex, int secondIndex, String rawString){
+		int minIndex=Math.min(firstIndex, secondIndex);
+		int maxIndex=Math.max(firstIndex, secondIndex);
+		return rawString.substring(minIndex,maxIndex);
+	}
+
+	private static String getSpecifiedDatePortion(String parseType, String firstPortion, String restOfTheString) {
+		switch (parseType){
+			case INDICATOR_START:
+				return returnStartDatePortion(firstPortion, restOfTheString);
+			case INDICATOR_END:
+				return returnEndDatePortion(firstPortion, restOfTheString);		
+		}
+		logger.log(Level.SEVERE, "Invalid ParseType for DateTimeParser.getSpecifiedDatePortion() used! ");
+		return STRING_EMPTY;
+	}
+
+	private static String returnEndDatePortion(String firstPortion, String restOfTheString) {
+		if (hasEndPrefix(firstPortion)){
+			return firstPortion.trim();
+		} else{
+			return restOfTheString;
+		}
+	}
+
+	private static String returnStartDatePortion(String firstPortion, String restOfTheString) {
+		if (hasStartPrefix(firstPortion)){
+			return firstPortion.trim();
+		} else{
+			return restOfTheString;
+		}
+	}
+	
+	private String extractRecurringString(String rawString){
+		int endIndex = rawString.indexOf(COMMAND_PREFIX_ENDDATE);
+		int recurringIndex = rawString.indexOf(COMMAND_PREFIX_RECURRING);
+		
+		if (isInvalidIndexes(endIndex, recurringIndex)){
+			return rawString;
+		} else{		
+			return getRecurringDate(rawString, endIndex, recurringIndex);
+		}
+		
+	}
+
+	private String getRecurringDate(String rawString, int endIndex, int recurringIndex) {
+		String extractedField= extractFieldBetweenTwoIndexes(endIndex, recurringIndex, rawString);
+		String restOfTheString=rawString.replace(extractedField,"");
+		return getRecurringDatePortion(extractedField, restOfTheString);
+	}
+
+	private String getRecurringDatePortion(String firstPortion, String restOfTheString) {
 		if (firstPortion.contains(COMMAND_PREFIX_RECURRING)){
 			return firstPortion;
 		} else{
@@ -127,20 +183,25 @@ public class DateTimeParser{
 		}
 	}
 	
-	static String extractExceptDates(String rawString){
-		String firstPortion ="";
-		String restOfTheString="";
+	private String extractExceptDates(String rawString){
 		int endIndex = rawString.indexOf(COMMAND_PREFIX_ENDDATE);
 		int exceptIndex = rawString.indexOf(COMMAND_PREFIX_EXCEPT);
 		int minIndex=Math.min(endIndex, exceptIndex);
 		int maxIndex=Math.max(endIndex, exceptIndex);
-		
-		if (endIndex<0 || exceptIndex<0){
+		if (isInvalidIndexes(endIndex, exceptIndex)){
 			return rawString;
 		} else{
-			firstPortion= rawString.substring(minIndex,maxIndex);
-			restOfTheString=rawString.replace(firstPortion,"");
+			return getExtractDatePortion(rawString, minIndex, maxIndex);
 		}
+	}
+
+	private String getExtractDatePortion(String rawString, int minIndex, int maxIndex) {
+		String firstPortion= rawString.substring(minIndex,maxIndex);
+		String restOfTheString=rawString.replace(firstPortion,STRING_EMPTY);
+		return getExtractDatePortion(firstPortion, restOfTheString);
+	}
+
+	private String getExtractDatePortion(String firstPortion, String restOfTheString) {
 		if (firstPortion.contains(COMMAND_PREFIX_EXCEPT)){
 			return firstPortion;
 		} else{
@@ -153,24 +214,24 @@ public class DateTimeParser{
 		if (!hasStartPrefix(originalString)){
 			return;
 		}
-		originalString = originalString.replace(COMMAND_PREFIX_STARTDATE,"");;
-		List<DateGroup> dateGroup=parseAndCheckDate(originalString);
-		dateTimeString="f:"+dateTimeString;
-		dateTime=dateGroup.get(0).getDates().get(0);
+		originalString = originalString.replace(COMMAND_PREFIX_STARTDATE,STRING_EMPTY);
+		List<DateGroup> dateGroup = parseAndCheckDate(originalString);
+		dateTimeString = COMMAND_PREFIX_STARTDATE + dateTimeString;
+		dateTime = dateGroup.get(0).getDates().get(0);
 	}
 	
 	private void processEndDate(){
 		List<DateGroup> dateGroup;
 		//unique feature of end date: after title:description is the enddate.
 		if (hasEndPrefix(originalString)){
-			originalString = originalString.replace(COMMAND_PREFIX_ENDDATE,"");
-			dateGroup=parseAndCheckDate(originalString);
-			dateTimeString="e:"+dateTimeString;
+			originalString = originalString.replace(COMMAND_PREFIX_ENDDATE,STRING_EMPTY);
+			dateGroup = parseAndCheckDate(originalString);
+			dateTimeString = COMMAND_PREFIX_ENDDATE + dateTimeString;
 		} else{
-			dateGroup=parseAndCheckDate(originalString);
+			dateGroup = parseAndCheckDate(originalString);
 		}
 		if (!isEmptyDateGroup(dateGroup)){
-			dateTime=dateGroup.get(0).getDates().get(0);
+			dateTime = dateGroup.get(0).getDates().get(0);
 		}
 	}
 	
@@ -195,14 +256,6 @@ public class DateTimeParser{
 		}
 		exceptStartDateGroup=parseAndCheckDate(datesSplit[0]).get(0);
 		exceptEndDateGroup=parseAndCheckDate(datesSplit[1]).get(0);
-	}
-	
-	public boolean isEmptyDateGroup(List<DateGroup> dateGroup){
-		return dateGroup.size()<=0;
-	}
-	
-	public boolean hasParsableDate(String unparsedString){
-		return !isEmptyDateGroup(timeParser.parseSyntax(unparsedString));
 	}
 	
 	public List<DateGroup> parseAndCheckDate(String stringWithDate){
@@ -322,43 +375,12 @@ public class DateTimeParser{
 		return commandArguments;
 	}
 	
-	public static boolean hasPrefix(String toCheck){
-		if (isValidSubstring(toCheck,COMMAND_PREFIX_STARTDATE)
-				|| isValidSubstring(toCheck,COMMAND_PREFIX_ENDDATE)){
-			return true;
-		} else{
-			return false;
-		}
-	}
-	
-	public static boolean hasStartPrefix(String toCheck){
-		if (isValidSubstring(toCheck,COMMAND_PREFIX_STARTDATE)){
-			return true;
-		} else{
-			return false;
-		}
-	}
-	
-	public static boolean hasEndPrefix(String toCheck){
-		if (isValidSubstring(toCheck,COMMAND_PREFIX_ENDDATE)){
-			return true;
-		} else{
-			return false;
-		}
-	}
-	
 	public static long calculateInterval(String day){
 		Date dateone=timeParser.parseSyntax("last " + day).get(0).getDates().get(0);
 		Date datetwo=timeParser.parseSyntax("next " +day).get(0).getDates().get(0);
 		long interval = datetwo.getTime()-dateone.getTime();
-		long output = 1000*60*60*24*7;
 		return (interval)/10*10/2;
 	}
-
-	private static boolean isValidSubstring(String toCheck, String substring) {
-		return toCheck.contains(substring);
-	}
-	
 	
 	public Date getDate(){
 		return dateTime;
@@ -382,6 +404,62 @@ public class DateTimeParser{
 	
 	public DateGroup getExceptEndDateGroup(){
 		return exceptEndDateGroup;
+	}
+	
+	
+	public static boolean hasPrefix(String toCheck){
+		return (isValidSubstring(toCheck,COMMAND_PREFIX_STARTDATE)
+				|| isValidSubstring(toCheck,COMMAND_PREFIX_ENDDATE));
+	}
+	
+	public static boolean hasStartPrefix(String toCheck){
+		return isValidSubstring(toCheck,COMMAND_PREFIX_STARTDATE);
+	}
+	
+	public static boolean hasEndPrefix(String toCheck){
+		return (isValidSubstring(toCheck,COMMAND_PREFIX_ENDDATE));
+	}
+
+	private static boolean isValidSubstring(String toCheck, String substring) {
+		return toCheck.contains(substring);
+	}
+	
+	
+	private boolean isExceptParseType(String parseType) {
+		return parseType.equals(INDICATOR_EXCEPT);
+	}
+
+	private boolean isRecurringParseType(String parseType) {
+		return parseType.equals(INDICATOR_RECURRING);
+	}
+	
+	private static boolean isStartParseType(String parseType) {
+		return parseType.equals(INDICATOR_START);
+	}
+	
+	private static boolean isEndParseType(String parseType) {
+		return parseType.equals(INDICATOR_END);
+	}
+	
+	private static boolean isInvalidIndexes(int firstIndex, int secondIndex) {
+		return firstIndex<0 || secondIndex<0;
+	}
+	
+	private boolean isInvalidParseType(String parseType){
+		return !(isStartParseType(parseType) || isEndParseType(parseType)
+				|| isRecurringParseType(parseType) || isExceptParseType(parseType));
+	}
+	
+	private static boolean isNotStartOrEndParseType(String parseType){
+		return !(isEndParseType(parseType) || isStartParseType(parseType));
+	}
+	
+	public boolean isEmptyDateGroup(List<DateGroup> dateGroup){
+		return dateGroup.size()<=0;
+	}
+	
+	public boolean hasParsableDate(String unparsedString){
+		return !isEmptyDateGroup(timeParser.parseSyntax(unparsedString));
 	}
 	
 

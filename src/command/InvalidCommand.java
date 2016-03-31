@@ -5,14 +5,14 @@ package command;
  */
 public class InvalidCommand extends Command{
 
-	private String error;
+	private String MESSAGE_ERROR = "%s is not a valid command.";
 	
 	public InvalidCommand(String error) {
-		this.error = error;
+		this.MESSAGE_ERROR = error;
 	}
 	
 	public String execute() {
-		String returnMsg = error;
+		String returnMsg = MESSAGE_ERROR;
 		return returnMsg;
 	}
 

@@ -3,12 +3,6 @@ package parser;
 import command.Command;
 import command.InvalidCommand;
 
-/**
- * @@author William
- *
- */
-
-
 public class InvalidParser {
 	
 	private String invalidCommand;

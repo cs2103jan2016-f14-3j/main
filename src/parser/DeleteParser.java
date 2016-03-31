@@ -5,10 +5,6 @@ import command.DelCommand;
 import java.text.SimpleDateFormat;
 import java.util.logging.Level;
 
-/**
- * @@author William
- *
- */
 
 public class DeleteParser extends ArgsParser{
 	
@@ -22,7 +18,6 @@ public class DeleteParser extends ArgsParser{
 	
 	public Command executeCommand(){
 		if (outputCommand == null){
-			System.out.println(commandArgumentsString + "lol");
 			return new DelCommand(itemID);
 		} else{
 			return outputCommand;

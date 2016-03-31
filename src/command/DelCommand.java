@@ -15,15 +15,26 @@ public class DelCommand extends Command {
 	private static final String MESSAGE_TASK_DELETED = "%1s has been deleted from %2s";
 	private static final String MESSAGE_TASK_ERROR = "Unable to delete task %s";
 	private long taskId;
+	private String taskTitle;
+	private boolean isById;
 	private boolean isUndo;
 	private boolean canDelete;
 	private Item toDelete;
 
 	public DelCommand(long taskId) {
 		this.taskId = taskId;
+		this.isById = true;
 		isUndo = false;
 
-		logger.log(Level.INFO, "DelCommand initialized");
+		logger.log(Level.INFO, "DelCommand with id initialized");
+	}
+	
+	public DelCommand(String taskTitle) {
+		this.taskTitle = taskTitle;
+		this.isById = false;
+		isUndo = false;
+
+		logger.log(Level.INFO, "DelCommand with title initialized");
 	}
 
 	public DelCommand(long taskId, boolean isUndo) {
@@ -34,13 +45,27 @@ public class DelCommand extends Command {
 	}
 
 	private void removeTask() {
-		ArrayList<Item> taskList = getTaskList();
-		for (int i = 0; i < taskList.size(); i++) {
-			if (taskList.get(i).getId() == taskId) {
-				taskList.remove(i);
+		if (isById) {
+			
+			ArrayList<Item> taskList = getTaskList();
+			for (int i = 0; i < taskList.size(); i++) {
+				if (taskList.get(i).getId() == taskId) {
+					taskList.remove(i);
+				}
 			}
+			POMPOM.getStorage().setTaskList(taskList);
+	
+		} else {
+			
+			ArrayList<Item> taskList = getTaskList();
+			for (int i = 0; i < taskList.size(); i++) {
+				if (taskList.get(i).getTitle().toLowerCase().equals(taskTitle.toLowerCase())) {
+					taskList.remove(i);
+				}
+			}
+			POMPOM.getStorage().setTaskList(taskList);
+			
 		}
-		POMPOM.getStorage().setTaskList(taskList);
 	}
 
 	private Command createCounterAction() {
@@ -64,15 +89,24 @@ public class DelCommand extends Command {
 				updateUndoStack();
 				returnMsg = String.format(MESSAGE_TASK_DELETED, (taskId + "."), toDelete.getType());
 
-				if (toDelete.getType().equals(POMPOM.LABEL_EVENT.toLowerCase())) {
-					POMPOM.setCurrentTab(POMPOM.LABEL_EVENT);
+				if (toDelete.getType().equals(POMPOM.LABEL_EVENT)) {
+					if (toDelete.getStatus().equals(POMPOM.STATUS_OVERDUE)) {
+						POMPOM.setCurrentTab(POMPOM.LABEL_COMPLETED_EVENT);
+					} else {
+						POMPOM.setCurrentTab(POMPOM.LABEL_EVENT);
+					}
 				} else {
-					POMPOM.setCurrentTab(POMPOM.LABEL_TASK);
+					if (toDelete.getStatus().equals(POMPOM.STATUS_OVERDUE)) {
+						POMPOM.setCurrentTab(POMPOM.LABEL_COMPLETED_TASK);
+					} else {
+						POMPOM.setCurrentTab(POMPOM.LABEL_TASK);
+					}
 				}
 			}
 
 			removeTask();
-
+			logger.log(Level.INFO, "DelCommand has be executed");
+			
 		} else {
 			returnMsg = String.format(MESSAGE_TASK_ERROR, taskId);
 		}

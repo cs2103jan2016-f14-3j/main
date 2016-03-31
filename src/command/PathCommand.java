@@ -4,6 +4,7 @@ package command;
  *
  */
 import java.io.IOException;
+import java.util.logging.Level;
 
 import main.POMPOM;
 
@@ -29,6 +30,7 @@ public class PathCommand extends Command {
 			e.printStackTrace();
 		}
 		
+		logger.log(Level.INFO, "PathCommand has be executed");
 		returnMsg = String.format(MESSAGE_SET_PATH, storageFilePath);
 		return returnMsg;
 	}
