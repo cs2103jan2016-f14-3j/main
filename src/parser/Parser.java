@@ -62,7 +62,7 @@ public class Parser{
 		switch (commandType){
 			case CMD_ADD:
 				AddParser addArgumentParser = new AddParser(commandArgument);
-				return addArgumentParser.executeCommand();
+				return addArgumentParser.getCommand();
 			case CMD_DELETE:
 				System.out.println("delete test");
 				DeleteParser deleteArgumentParser = new DeleteParser(commandArgument);
