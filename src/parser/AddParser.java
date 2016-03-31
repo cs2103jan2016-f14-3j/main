@@ -255,7 +255,7 @@ public class AddParser extends ArgsParser{
 	private void extractDescription(){
 		int indexOfPrefix = commandArgumentsString.indexOf(COMMAND_PREFIX_DESCRIPTION);
 		if (isValidIndex(indexOfPrefix)){
-			itemDescription = commandArgumentsString.substring(indexOfPrefix+1);
+			itemDescription = commandArgumentsString.substring(indexOfPrefix+1).trim();
 			commandArgumentsString = commandArgumentsString.substring(0, indexOfPrefix);
 		}
 	}
@@ -268,9 +268,8 @@ public class AddParser extends ArgsParser{
 		int indexOfPrefix = commandArgumentsString.indexOf(COMMAND_PREFIX_PRIORITY);
 		int indexFieldEnd = getIndexOfNextField(indexOfPrefix, COMMAND_PREFIX_PRIORITY);
 		if (isValidIndex(indexOfPrefix)){
-			itemPriority = extractFieldData(indexOfPrefix, indexFieldEnd, COMMAND_PREFIX_PRIORITY);
-			commandArgumentsString = removeFieldFromArgument(indexOfPrefix, indexFieldEnd
-					);
+			itemPriority = extractFieldData(indexOfPrefix, indexFieldEnd, COMMAND_PREFIX_PRIORITY).trim();
+			commandArgumentsString = removeFieldFromArgument(indexOfPrefix, indexFieldEnd);
 		}
 	}
 	
@@ -295,7 +294,7 @@ public class AddParser extends ArgsParser{
 		int indexOfPrefix = commandArgumentsString.indexOf(COMMAND_PREFIX_LABEL);	
 		int indexFieldEnd = getIndexOfNextField(indexOfPrefix, COMMAND_PREFIX_LABEL);
 		if (isValidIndex(indexOfPrefix)){
-			itemLabel = extractFieldData(indexOfPrefix, indexFieldEnd, COMMAND_PREFIX_LABEL);
+			itemLabel = extractFieldData(indexOfPrefix, indexFieldEnd, COMMAND_PREFIX_LABEL).trim();
 			commandArgumentsString = removeFieldFromArgument(indexOfPrefix, indexFieldEnd);
 		}
 	}
