@@ -30,6 +30,18 @@ public class AddParserTest{
 		assertEquals("high",add.getPriority());
 	}
 	
+	@Test
+	public void testAddCommandLabel(){
+		AddParser add = new AddParser("do project l:study",POMPOM.LABEL_TASK);
+		assertEquals("study",add.getLabel());
+	}
+	
+	@Test
+	public void testAddCommandStatus(){
+		AddParser add = new AddParser("do project s:opened",POMPOM.LABEL_TASK);
+		assertEquals("opened",add.getStatus());
+	}
+	
 	/*
 	 * Tests if can add tasks with end date
 	 */
