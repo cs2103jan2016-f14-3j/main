@@ -133,6 +133,17 @@ public class AddParserTest{
 		Date endDate= new Date();
 		assertEquals(endDate.compareTo(add.getEndDate()),0);
 	}	
+	
+	/*
+	 * Tests if can add in a task with only a parsable title for event 
+	 */
+	@Test
+	public void testAddCommand10(){
+		AddParser add = new AddParser("add lol tomorrow",POMPOM.LABEL_EVENT);
+		assertEquals("add lol",add.getTitle());
+		Date endDate= new Date();
+		assertEquals(endDate.compareTo(add.getEndDate()),0);
+	}
 }
 	
 	

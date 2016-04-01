@@ -172,7 +172,7 @@ public class AddParser extends ArgsParser{
 	}
 	
 	private Command createEventAddCommand(Date currentDate) {
-		if (!hasAllFieldsFilled()){
+		if (isValidEvent()){
 			return new InvalidCommand(commandArgumentsString);
 		} else {
 			return new AddCommand(POMPOM.LABEL_EVENT, itemTitle, itemDescription, itemPriority, 
@@ -488,14 +488,8 @@ public class AddParser extends ArgsParser{
 				&& isNullEndDate());
 	}
 	
-	public boolean hasAllFieldsFilled(){
-		return !(isNullTitle()
-				|| isNullDescription() 
-				|| isNullPriority()
-				|| isNullStatus()
-				|| isNullLabel()
-				|| isNullEndDate()
-				|| isNullStartDate());
+	public boolean isValidEvent(){
+		return !(isNullEndDate());
 	}
 
 	private boolean isValidIndex(int index) {
