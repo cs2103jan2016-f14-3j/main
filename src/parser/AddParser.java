@@ -31,7 +31,7 @@ public class AddParser extends ArgsParser{
 	private String itemEndDateTitle=""; //for use if title is empty.
 	private Date exceptStartDate;
 	private Date exceptEndDate;
-	private boolean isValidArguments = true;
+	protected boolean isValidArguments = true;
 	
 	private static final int INDEX_INVALID = -1;
 	private static final int INDEX_COMMAND_BEGIN = 0;
@@ -116,7 +116,7 @@ public class AddParser extends ArgsParser{
 	 * the newly created AddCommand() object.
 	 */
 	protected Command getCommand(){
-		if (isValidArguments){
+		if (isValidArguments){	
 			if (itemIsRecurring){
 				ArrayList<AddCommand> addCommandList= executeRecurring();
 				return checkAndReturnAddRecurringCommand(addCommandList);
@@ -305,9 +305,9 @@ public class AddParser extends ArgsParser{
 			DateTimeParser endDateTimeParser = new DateTimeParser(DATETIMEPARSER_INDICATOR_END,commandArgumentsString);
 			commandArgumentsString = commandArgumentsString.replace(endDateTimeParser.getString(), STRING_EMPTY);
 			itemEndDate = endDateTimeParser.getDate();
+			itemEndDateTitle= endDateTimeParser.getString();
 			if (!isValidDate(itemEndDate) && isValidIndex(indexOfPrefix)){
-				isValidArguments = isValidDate(itemEndDate);
-				itemEndDateTitle= endDateTimeParser.getString();
+				isValidArguments = isValidDate(itemEndDate);	
 			}
 		}
 

@@ -28,6 +28,7 @@ public class AddParserTest{
 		assertNull(add.getStatus());
 		assertNull(add.getLabel());	
 		assertNull(add.getPriority());
+		assertTrue(add.isValidArguments);
 	}
 	
 	/*
@@ -43,6 +44,7 @@ public class AddParserTest{
 		assertNull(add.getDescription());
 		assertNull(add.getStatus());
 		assertNull(add.getLabel());	
+		assertTrue(add.isValidArguments);
 	}
 	
 	/*
@@ -58,6 +60,7 @@ public class AddParserTest{
 		assertNull(add.getDescription());
 		assertNull(add.getStatus());
 		assertNull(add.getLabel());	
+		assertTrue(add.isValidArguments);
 	}
 	
 	/*
@@ -73,6 +76,7 @@ public class AddParserTest{
 		assertNull(add.getDescription());
 		assertNull(add.getStatus());
 		assertNull(add.getLabel());	
+		assertTrue(add.isValidArguments);
 	}
 	
 	/*
@@ -88,6 +92,7 @@ public class AddParserTest{
 		assertNull(add.getDescription());
 		assertNull(add.getStatus());
 		assertNull(add.getPriority());	
+		assertTrue(add.isValidArguments);
 		
 	}
 	
@@ -104,6 +109,7 @@ public class AddParserTest{
 		assertNull(add.getStartDate());
 		assertNull(add.getDescription());
 		assertNull(add.getStatus());	
+		assertTrue(add.isValidArguments);
 	}
 	
 	/*
@@ -120,6 +126,7 @@ public class AddParserTest{
 		assertNull(add.getLabel());
 		assertNull(add.getPriority());
 		assertNull(add.getStatus());
+		assertTrue(add.isValidArguments);
 	}
 	
 	/*
@@ -136,6 +143,7 @@ public class AddParserTest{
 		assertNull(add.getLabel());
 		assertNull(add.getPriority());
 		assertNull(add.getStatus());
+		assertTrue(add.isValidArguments);
 	}
 
 	
@@ -154,6 +162,7 @@ public class AddParserTest{
 		assertNull(add.getLabel());
 		assertNull(add.getPriority());
 		assertNull(add.getStatus());
+		assertTrue(add.isValidArguments);
 	}
 	
 	/*
@@ -171,6 +180,7 @@ public class AddParserTest{
 		assertEquals(startDateDifference, 0);	
 		assertNull(add.getDescription());
 		assertNull(add.getStatus());
+		assertTrue(add.isValidArguments);
 	}
 	
 	@Test
@@ -185,6 +195,7 @@ public class AddParserTest{
 		assertEquals(startDateDifference, 0);	
 		assertNull(add.getDescription());
 		assertNull(add.getStatus());
+		assertTrue(add.isValidArguments);
 	}
 	
 	
@@ -202,6 +213,7 @@ public class AddParserTest{
 		assertNull(add.getLabel());
 		assertNull(add.getPriority());
 		assertNull(add.getStatus());
+		assertTrue(add.isValidArguments);
 	}
 	
 	/*
@@ -219,6 +231,7 @@ public class AddParserTest{
 		assertNull(add.getLabel());
 		assertNull(add.getPriority());
 		assertNull(add.getStatus());
+		assertTrue(add.isValidArguments);
 	}
 	
 	/*
@@ -236,6 +249,7 @@ public class AddParserTest{
 		assertNull(add.getLabel());
 		assertNull(add.getPriority());
 		assertNull(add.getStatus());	
+		assertTrue(add.isValidArguments);
 	}
 	
 	/*
@@ -256,6 +270,7 @@ public class AddParserTest{
 		assertNull(add.getPriority());
 		assertNull(add.getStatus());	
 		assertTrue(add.getIsRecurring());
+		assertTrue(add.isValidArguments);
 	}
 	
 	/*
@@ -277,6 +292,7 @@ public class AddParserTest{
 		assertNull(add.getPriority());
 		assertNull(add.getStatus());	
 		assertTrue(add.getIsRecurring());
+		assertTrue(add.isValidArguments);
 	}	
 	
 	/*
@@ -292,6 +308,7 @@ public class AddParserTest{
 		assertNull(add.getStatus());
 		assertNull(add.getLabel());	
 		assertNull(add.getPriority());
+		assertTrue(add.isValidArguments);
 	}	
 	
 	/*
@@ -299,7 +316,7 @@ public class AddParserTest{
 	 */
 	@Test
 	public void testAddCommandInvalidPriority(){
-		AddParser add = new AddParser("2103",POMPOM.LABEL_TASK);
+		AddParser add = new AddParser("2103 p:lol",POMPOM.LABEL_TASK);
 		assertEquals("2103",add.getTitle());
 		assertNull(add.getEndDate());
 		assertNull(add.getStartDate());
@@ -307,6 +324,7 @@ public class AddParserTest{
 		assertNull(add.getStatus());
 		assertNull(add.getLabel());	
 		assertNull(add.getPriority());
+		assertFalse(add.isValidArguments);
 	}	
 	
 	//helper methods
