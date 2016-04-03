@@ -21,6 +21,12 @@ public class Parser{
 	private static final String CMD_PATH = "setpath";
 	private static final String CMD_EVENT = "event";
 	private static final String CMD_HELP = "help";
+	private static final String CMD_DELETERECUR_1 = "delete recur";
+	private static final String CMD_EDITRECUR_1= "edit recur";
+	private static final String CMD_DELETERECUR_2 = "delete recur";
+	private static final String CMD_EDITRECUR_2 = "edit recur";
+
+	private static final String CMD_VIEW = "view";	
 	
 	private static final int COMMAND_ARRAY_SIZE = 2; 
 	private static final int COMMAND_TYPE_INDEX = 0;
@@ -93,6 +99,17 @@ public class Parser{
 				return helpParser.executeCommand();
 			case CMD_PATH:
 				return new PathCommand(commandArgument);
+			case CMD_DELETERECUR_1:
+				return new DelRecurringCommand(Long.parseLong(commandArgument));
+			case CMD_EDITRECUR_1:
+				EditRecurringParser EditRecurringArgumentParser = new EditRecurringParser(commandArgument);
+				return EditRArgumentParser.executeCommand();
+			case CMD_VIEW:
+				ViewParser viewParser = new ViewParser(commandArgument);
+				return viewParser.executeCommand();
+			case CMD_DONE:
+				DoneParser DoneArgumentParser = new DoneParser(commandArgument);
+				return DoneArgumentParser.executeCommand();
 	}	
 		InvalidParser InvalidArgumentParser = new InvalidParser(userCommand);
 		return InvalidArgumentParser.executeCommand();
