@@ -21,10 +21,18 @@ public class Parser{
 	private static final String CMD_PATH = "setpath";
 	private static final String CMD_EVENT = "event";
 	private static final String CMD_HELP = "help";
-	private static final String CMD_DELETERECUR_1 = "delete recur";
-	private static final String CMD_EDITRECUR_1= "edit recur";
-	private static final String CMD_DELETERECUR_2 = "delete recur";
-	private static final String CMD_EDITRECUR_2 = "edit recur";
+	private static final String CMD_DELETE_RECUR_1 = "delete recur";
+	private static final String CMD_EDIT_RECUR_1= "edit recur";
+	private static final String CMD_DELETE_RECUR_2 = "delete r";
+	private static final String CMD_EDIT_RECUR_2 = "edit r";
+	
+	private static final String[] CMD_ARRAY = {CMD_ADD, CMD_DELETE, CMD_DONE,
+												CMD_EDIT, CMD_EXIT, CMD_SEARCH,
+												CMD_SHOW, CMD_UNDO, CMD_PATH,
+												CMD_EVENT, CMD_HELP, CMD_DELETE_RECUR_1,
+												CMD_EDIT_RECUR_1, CMD_DELETE_RECUR_2,
+												CMD_EDIT_RECUR_2};
+	
 
 	private static final String CMD_VIEW = "view";	
 	
@@ -99,11 +107,14 @@ public class Parser{
 				return helpParser.executeCommand();
 			case CMD_PATH:
 				return new PathCommand(commandArgument);
-			case CMD_DELETERECUR_1:
-				return new DelRecurringCommand(Long.parseLong(commandArgument));
-			case CMD_EDITRECUR_1:
+			case CMD_DELETE_RECUR_1:
+			case CMD_DELETE_RECUR_2:
+				System.out.println("lolOLOLOL");
+			//	return new DelRecurringCommand(Long.parseLong(commandArgument));
+			case CMD_EDIT_RECUR_1:
+			case CMD_EDIT_RECUR_2:
 				EditRecurringParser EditRecurringArgumentParser = new EditRecurringParser(commandArgument);
-				return EditRArgumentParser.executeCommand();
+				//return EditRArgumentParser.executeCommand();
 			case CMD_VIEW:
 				ViewParser viewParser = new ViewParser(commandArgument);
 				return viewParser.executeCommand();
@@ -118,22 +129,14 @@ public class Parser{
 	
 	private String[] splitCommand(String userCommand){
 		String[] outputArray = new String[COMMAND_ARRAY_SIZE];
-		outputArray[COMMAND_TYPE_INDEX] = getCommandType(userCommand);
-		outputArray[COMMAND_ARGUMENT_INDEX] = getArguments(userCommand, outputArray[0]);
-		return outputArray;
-	}
-	
-	private String getCommandType(String userCommand){
-		String[] toSplit = userCommand.split(" ", COMMAND_ARRAY_SIZE);
-		return toSplit[COMMAND_TYPE_INDEX].toLowerCase().trim();
-	}
-	
-	private String getArguments(String userCommand, String commandType) {
-		String[] toSplit = userCommand.split(" ", COMMAND_ARRAY_SIZE);
-		if (toSplit.length==2){
-			return toSplit[COMMAND_ARGUMENT_INDEX].toLowerCase().trim();
+		for (String command: CMD_ARRAY){
+			if (userCommand.indexOf(command)==0){
+				System.out.println(userCommand);
+				outputArray[COMMAND_TYPE_INDEX]=command.trim();
+				outputArray[COMMAND_ARGUMENT_INDEX]=userCommand.substring(command.length()).trim();
+			}
 		}
-		return "";
+		return outputArray;
 	}
 
 }

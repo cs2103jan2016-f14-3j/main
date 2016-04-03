@@ -39,7 +39,8 @@ public class AddParser extends ArgsParser{
 	private final String COMMAND_COMMON_DELIMITER = ":";
 	private final String COMMAND_PREFIX_LABEL = "l:";
 	private final String COMMAND_PREFIX_PRIORITY = "p:";
-	private final String COMMAND_PREFIX_DESCRIPTION = ":";
+	private final String COMMAND_PREFIX_STARTDATE = "f:";
+	private final String COMMAND_PREFIX_ENDDATE = "f:";
 	private final String STRING_SPACE = " ";
 	private final String STRING_EMPTY="";
 	private final String DATETIMEPARSER_INDICATOR_START = "start";
@@ -84,8 +85,7 @@ public class AddParser extends ArgsParser{
 		extractLabel();
 		extractRecurring();
 		extractStartDate();
-		extractEndDate();	
-		extractDescription();	
+		extractEndDate();		
 		extractTitle();
 	}
 	
@@ -251,17 +251,6 @@ public class AddParser extends ArgsParser{
 		}
 	}
 	
-	/**
-	 *  This method removes the description field from commandArgumentsString and updates 
-	 *  the description variable (itemDescription).
-	 */
-	private void extractDescription(){
-		int indexOfPrefix = commandArgumentsString.indexOf(COMMAND_PREFIX_DESCRIPTION);
-		if (isValidIndex(indexOfPrefix)){
-			itemDescription = commandArgumentsString.substring(indexOfPrefix+1).trim();
-			commandArgumentsString = commandArgumentsString.substring(0, indexOfPrefix);
-		}
-	}
 
 	/**
 	 *  This method removes the priority field from commandArgumentsString and updates 
@@ -295,10 +284,13 @@ public class AddParser extends ArgsParser{
 	 *  the start date variable (itemStartDate).
 	 */
 	public void extractStartDate(){
-		DateTimeParser startDateTimeParser = new DateTimeParser(DATETIMEPARSER_INDICATOR_START,commandArgumentsString);			
-		commandArgumentsString = commandArgumentsString.replace(startDateTimeParser.getString(), STRING_EMPTY);
-		itemStartDate=startDateTimeParser.getDate();
-		isValidArguments = isValidDate(itemStartDate);
+		int indexOfPrefix = commandArgumentsString.indexOf(COMMAND_PREFIX_STARTDATE);
+		if (isValidIndex(indexOfPrefix) && isValidArguments){
+			DateTimeParser startDateTimeParser = new DateTimeParser(DATETIMEPARSER_INDICATOR_START,commandArgumentsString);			
+			commandArgumentsString = commandArgumentsString.replace(startDateTimeParser.getString(), STRING_EMPTY);
+			itemStartDate=startDateTimeParser.getDate();
+			isValidArguments = isValidDate(itemStartDate);
+		}
 		
 	}
 	
@@ -307,11 +299,17 @@ public class AddParser extends ArgsParser{
 	 *  the end date variable (itemEndDate).
 	 */
 	public void extractEndDate(){
-		DateTimeParser endDateTimeParser = new DateTimeParser(DATETIMEPARSER_INDICATOR_END,commandArgumentsString);
-		commandArgumentsString = commandArgumentsString.replace(endDateTimeParser.getString(), STRING_EMPTY);
-		itemEndDate = endDateTimeParser.getDate();
-		isValidArguments = isValidDate(itemEndDate);
-		itemEndDateTitle= endDateTimeParser.getString();
+		//failing condition: got e:, but dont have parsable date.
+		int indexOfPrefix = commandArgumentsString.indexOf(COMMAND_PREFIX_ENDDATE);
+		if (isValidArguments){
+			DateTimeParser endDateTimeParser = new DateTimeParser(DATETIMEPARSER_INDICATOR_END,commandArgumentsString);
+			commandArgumentsString = commandArgumentsString.replace(endDateTimeParser.getString(), STRING_EMPTY);
+			itemEndDate = endDateTimeParser.getDate();
+			if (!isValidDate(itemEndDate) && isValidIndex(indexOfPrefix)){
+				isValidArguments = isValidDate(itemEndDate);
+				itemEndDateTitle= endDateTimeParser.getString();
+			}
+		}
 
 	}
 	
