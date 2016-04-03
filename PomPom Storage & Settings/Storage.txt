@@ -159,17 +159,15 @@
       "Id": 19,
       "Type": "Task",
       "Title": "lol",
-      "Status": "overdue",
-      "StartDate": "Sun Apr 03 21:26:46 SGT 2016",
-      "EndDate": "Sun Mar 20 21:26:46 SGT 2016"
+      "Status": "pending",
+      "StartDate": "Wed Apr 20 22:37:10 SGT 2016",
+      "EndDate": "Wed Apr 20 22:37:03 SGT 2016"
     },
     {
       "Id": 20,
       "Type": "Task",
       "Title": "lol",
-      "Status": "ongoing",
-      "StartDate": "Sun Apr 03 21:26:54 SGT 2016",
-      "EndDate": "Wed Mar 01 21:26:54 SGT 2056"
+      "Status": "floating"
     }
   ]
 }

@@ -81,12 +81,13 @@ public class AddParser extends ArgsParser{
 	 * 
 	 */
 	private void extractDataFromArguments() {
+		extractTitle();
 		extractPriority();
 		extractLabel();
 		extractRecurring();
 		extractStartDate();
 		extractEndDate();		
-		extractTitle();
+		
 	}
 	
 	/*
@@ -101,6 +102,7 @@ public class AddParser extends ArgsParser{
 	 * 
 	 */
 	private void extractTitle() {
+		
 		if (hasNoTitleToExtract()){
 			itemTitle=itemEndDateTitle;
 			itemEndDate = null;
