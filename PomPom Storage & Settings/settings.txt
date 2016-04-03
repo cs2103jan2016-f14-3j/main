@@ -1,0 +1,3 @@
+{
+  "StoragePath": "/Users/Zenico/Documents/workspace/POMPOM/PomPom Storage \u0026 Settings/Storage.txt"
+}

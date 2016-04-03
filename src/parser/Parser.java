@@ -20,6 +20,7 @@ public class Parser{
 	private static final String CMD_UNDO ="undo";
 	private static final String CMD_PATH = "setpath";
 	private static final String CMD_EVENT = "event";
+	private static final String CMD_HELP = "help";
 	
 	private static final int COMMAND_ARRAY_SIZE = 2; 
 	private static final int COMMAND_TYPE_INDEX = 0;
@@ -66,7 +67,7 @@ public class Parser{
 				AddParser addTaskArgumentParser = new AddParser(commandArgument, POMPOM.LABEL_TASK);
 				return addTaskArgumentParser.getCommand();
 			case CMD_EVENT:
-				AddParser addEventArgumentParser = new AddParser(commandArgument, POMPOM.LABEL_EVENT);
+				AddEventParser addEventArgumentParser = new AddEventParser(commandArgument);
 				return addEventArgumentParser.getCommand();
 			case CMD_DELETE:
 				DeleteParser deleteArgumentParser = new DeleteParser(commandArgument);
@@ -85,12 +86,14 @@ public class Parser{
 				//return exitParser.executeCommand();
 				System.exit(0);
 			case CMD_UNDO:
-				UndoParser undoparser = new UndoParser();
-				return undoparser.executeCommand();
+				UndoParser undoParser = new UndoParser();
+				return undoParser.executeCommand();
+			case CMD_HELP:
+				HelpParser helpParser = new HelpParser();
+				return helpParser.executeCommand();
 			case CMD_PATH:
 				return new PathCommand(commandArgument);
-
-	}
+	}	
 		InvalidParser InvalidArgumentParser = new InvalidParser(userCommand);
 		return InvalidArgumentParser.executeCommand();
 

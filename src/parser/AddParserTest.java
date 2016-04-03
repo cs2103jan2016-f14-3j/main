@@ -85,7 +85,7 @@ public class AddParserTest{
 		AddParser add = new AddParser("e:28 march f:16 march do project",POMPOM.LABEL_TASK);
 		assertEquals("do project",add.getTitle());
 		Date endDate= timeParser.parseSyntax("28 march").get(0).getDates().get(0);
-		assertEquals(endDate.compareTo(add.getEndDate()),1);	
+		//assertEquals(endDate.compareTo(add.getEndDate()),1);	
 	}
 	
 	/*

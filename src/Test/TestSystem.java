@@ -45,13 +45,13 @@ public class TestSystem {
 
 	}
 	
-	/*@Test
+	@Test
 	public void testAddEventTitleOnly() {
 		
 		// Make sure subsequent tests start from clean slate
 		taskList.clear();
 		
-		String userCommand = "event clubbing";
+		String userCommand = "event clubbing f:april 3";
 		String returnMsg = main.execute(userCommand);
 		
 		// check if the add command returns the right status message
@@ -59,9 +59,9 @@ public class TestSystem {
 
 		// check if the taskList contain the added task
 		Item addedTask = taskList.get(0);
-		assertEquals("do project", addedTask.getTitle());
+		assertEquals("clubbing", addedTask.getTitle());
 
-	}*/
+	}
 	
 	@Test
 	public void testAddTitleAndEndDate() {
@@ -69,7 +69,7 @@ public class TestSystem {
 		// Make sure subsequent tests start from clean slate
 		taskList.clear();
 		
-		String userCommand = "add do project april 1";
+		String userCommand = "add do project april 3";
 		String returnMsg = main.execute(userCommand);
 		
 		// check if the add command returns the right status message
@@ -88,7 +88,7 @@ public class TestSystem {
 		// Make sure subsequent tests start from clean slate
 		taskList.clear();
 		
-		String userCommand = "add do project april 1 f:today";
+		String userCommand = "add do project april 3 f:today";
 		String returnMsg = main.execute(userCommand);
 		
 		// check if the add command returns the right status message
@@ -108,7 +108,7 @@ public class TestSystem {
 		// Make sure subsequent tests start from clean slate
 		taskList.clear();
 		
-		String userCommand = "add do project april 1 f:today l:must do";
+		String userCommand = "add do project e:april 3 f:today l:must do";
 		String returnMsg = main.execute(userCommand);
 		
 		// check if the add command returns the right status message
@@ -116,10 +116,10 @@ public class TestSystem {
 
 		// check if the taskList contain the added task
 		Item addedTask = taskList.get(0);
-		assertEquals("do project  f", addedTask.getTitle());
+		assertEquals("do project", addedTask.getTitle());
 		//assertEquals(___, addedTask.getEndDate());
 		//assertEquals(___, addedTask.getStartDate());
-		assertEquals("must", addedTask.getLabel());
+		assertEquals("must do", addedTask.getLabel());
 
 	}
 	
@@ -129,7 +129,7 @@ public class TestSystem {
 		// Make sure subsequent tests start from clean slate
 		taskList.clear();
 		
-		String userCommand = "add do project april 2 f:today l:must do p:high";
+		String userCommand = "add do project e:april 3 f:today l:must do p:high";
 		String returnMsg = main.execute(userCommand);
 		
 		// check if the add command returns the right status message
@@ -137,10 +137,10 @@ public class TestSystem {
 
 		// check if the taskList contain the added task
 		Item addedTask = taskList.get(0);
-		assertEquals("do project  f", addedTask.getTitle());
+		assertEquals("do project", addedTask.getTitle());
 		//assertEquals(___, addedTask.getEndDate());
 		//assertEquals(___, addedTask.getStartDate());
-		assertEquals("must", addedTask.getLabel());
+		assertEquals("must do", addedTask.getLabel());
 		assertEquals("high", addedTask.getPriority());
 
 	}

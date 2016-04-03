@@ -1,0 +1,292 @@
+{
+  "Username": "Not Set",
+  "IdCounter": 37,
+  "TaskList": [
+    {
+      "Id": 1,
+      "Type": "Task",
+      "Title": "do cs2103",
+      "Priority": "high",
+      "Label": "study",
+      "Status": "completed",
+      "StartDate": "Fri Apr 01 14:14:13 SGT 2016",
+      "EndDate": "Sat Apr 02 14:14:13 SGT 2016"
+    },
+    {
+      "Id": 3,
+      "Type": "Task",
+      "Title": "play games",
+      "Priority": "low",
+      "Label": "entertainment",
+      "Status": "ongoing",
+      "EndDate": "Sat Apr 02 14:15:45 SGT 2016"
+    },
+    {
+      "Id": 4,
+      "Type": "Task",
+      "Title": "watch dots",
+      "Priority": "low",
+      "Label": "entertainment",
+      "Status": "ongoing",
+      "StartDate": "Fri Apr 01 14:16:38 SGT 2016"
+    },
+    {
+      "Id": 5,
+      "Type": "Task",
+      "Title": "watch mrlady  t",
+      "Priority": "low",
+      "Description": "",
+      "Label": "entertainment",
+      "Status": "completed",
+      "StartDate": "Fri Apr 01 14:16:52 SGT 2016",
+      "EndDate": "Sat Apr 02 14:16:52 SGT 2016"
+    },
+    {
+      "Id": 6,
+      "Type": "Task",
+      "Title": "poster",
+      "Priority": "low",
+      "Label": "work",
+      "Status": "completed",
+      "StartDate": "Fri Apr 01 14:17:05 SGT 2016"
+    },
+    {
+      "Id": 7,
+      "Type": "ongoing",
+      "Title": "l",
+      "Priority": "low",
+      "Label": "entertainment",
+      "Status": "ongoing",
+      "StartDate": "Fri Apr 01 14:17:32 SGT 2016",
+      "EndDate": "Sat Apr 02 14:17:32 SGT 2016"
+    },
+    {
+      "Id": 8,
+      "Type": "ongoing",
+      "Title": "lsm1101 exams",
+      "Priority": "low",
+      "Label": "exam",
+      "Status": "ongoing",
+      "StartDate": "Fri Apr 01 14:17:51 SGT 2016"
+    },
+    {
+      "Id": 9,
+      "Type": "Event",
+      "Title": "op2",
+      "Status": "ongoing",
+      "StartDate": "Fri Apr 01 14:18:41 SGT 2016",
+      "EndDate": "Fri Apr 08 14:18:41 SGT 2016"
+    },
+    {
+      "Id": 10,
+      "Type": "pending",
+      "Title": "lol",
+      "Priority": "Medium",
+      "Description": "",
+      "Label": "sup",
+      "Status": "pending",
+      "StartDate": "Tue May 03 11:12:00 SGT 2016",
+      "EndDate": "Sun May 22 12:12:00 SGT 2016"
+    },
+    {
+      "Id": 11,
+      "Type": "Task",
+      "Title": "james birthday",
+      "Priority": "low",
+      "Label": "birthday",
+      "Status": "ongoing",
+      "StartDate": "Fri Apr 01 14:22:41 SGT 2016"
+    },
+    {
+      "Id": 12,
+      "Type": "Event",
+      "Title": "Weilip Birthday ",
+      "Priority": "Medium",
+      "Description": "",
+      "Label": "",
+      "Status": "pending",
+      "StartDate": "Mon Apr 18 11:12:00 SGT 2016",
+      "EndDate": "Mon Apr 18 12:12:00 SGT 2016"
+    },
+    {
+      "Id": 13,
+      "Type": "Task",
+      "Title": "welfarepack packing",
+      "Priority": "low",
+      "Label": "club",
+      "Status": "overdue",
+      "StartDate": "Fri Apr 01 14:24:31 SGT 2016",
+      "EndDate": "Fri Apr 01 14:24:31 SGT 2016"
+    },
+    {
+      "Id": 14,
+      "Type": "Task",
+      "Title": "running",
+      "Priority": "low",
+      "Label": "exercise",
+      "Status": "overdue",
+      "StartDate": "Fri Apr 01 14:25:09 SGT 2016",
+      "EndDate": "Fri Apr 01 14:25:09 SGT 2016"
+    },
+    {
+      "Id": 15,
+      "Type": "Task",
+      "Title": "repair watch",
+      "Priority": "high",
+      "Label": "misc",
+      "Status": "pending",
+      "StartDate": "Sat Apr 02 14:26:14 SGT 2016",
+      "EndDate": "Sat Apr 02 14:26:14 SGT 2016"
+    },
+    {
+      "Id": 16,
+      "Type": "Task",
+      "Title": "bake cake",
+      "Label": "misc",
+      "Status": "floating"
+    },
+    {
+      "Id": 17,
+      "Type": "Task",
+      "Title": "photoshop  e",
+      "Description": "9 april",
+      "Label": "work",
+      "Status": "ongoing",
+      "EndDate": "Sat Apr 09 14:28:03 SGT 2016"
+    },
+    {
+      "Id": 18,
+      "Type": "Task",
+      "Title": "purchase goods",
+      "Label": "welfare",
+      "Status": "floating"
+    },
+    {
+      "Id": 19,
+      "Type": "Task",
+      "Title": "edit code",
+      "Status": "floating"
+    },
+    {
+      "Id": 22,
+      "Type": "Task",
+      "Title": "drawblock",
+      "Label": "entertainment",
+      "Status": "floating"
+    },
+    {
+      "Id": 23,
+      "Type": "Task",
+      "Title": "see doctor",
+      "Priority": "high",
+      "Status": "floating"
+    },
+    {
+      "Id": 24,
+      "Type": "Task",
+      "Title": "test",
+      "Priority": "high",
+      "Status": "floating"
+    },
+    {
+      "Id": 25,
+      "Type": "Task",
+      "Title": "task deadline e",
+      "Description": "tomorrow 10pm",
+      "Status": "ongoing",
+      "EndDate": "Sat Apr 02 22:00:00 SGT 2016"
+    },
+    {
+      "Id": 26,
+      "Type": "Event",
+      "Title": "event",
+      "Status": "ongoing",
+      "StartDate": "Fri Apr 01 13:00:00 SGT 2016",
+      "EndDate": "Sat Apr 02 15:00:00 SGT 2016"
+    },
+    {
+      "Id": 2,
+      "Type": "Task",
+      "Title": "do housework  priority",
+      "Description": "medium",
+      "Label": "burden",
+      "Status": "pending",
+      "StartDate": "Sat Apr 02 14:14:53 SGT 2016"
+    },
+    {
+      "Id": 29,
+      "Type": "Event",
+      "Title": "do cs2103 e",
+      "Description": "27 april",
+      "Status": "pending",
+      "StartDate": "Fri Apr 08 14:55:34 SGT 2016",
+      "EndDate": "Fri Apr 15 14:55:34 SGT 2016"
+    },
+    {
+      "Id": 30,
+      "Type": "Event",
+      "Title": "do cs2103 e",
+      "Description": "27 april",
+      "Status": "pending",
+      "StartDate": "Fri Apr 15 14:55:34 SGT 2016",
+      "EndDate": "Fri Apr 22 14:55:34 SGT 2016"
+    },
+    {
+      "Id": 31,
+      "Type": "Event",
+      "Title": "do cs2103 e",
+      "Description": "27 april",
+      "Status": "pending",
+      "StartDate": "Fri Apr 22 14:55:34 SGT 2016",
+      "EndDate": "Fri Apr 29 14:55:34 SGT 2016"
+    },
+    {
+      "Id": 32,
+      "Type": "Task",
+      "Title": "do cs2103",
+      "Status": "pending",
+      "StartDate": "Fri Apr 08 14:55:53 SGT 2016",
+      "EndDate": "Fri Apr 15 14:55:53 SGT 2016"
+    },
+    {
+      "Id": 33,
+      "Type": "Task",
+      "Title": "do cs2103",
+      "Status": "pending",
+      "StartDate": "Fri Apr 15 14:55:53 SGT 2016",
+      "EndDate": "Fri Apr 22 14:55:53 SGT 2016"
+    },
+    {
+      "Id": 34,
+      "Type": "Task",
+      "Title": "do cs2103",
+      "Status": "pending",
+      "StartDate": "Fri Apr 22 14:55:53 SGT 2016",
+      "EndDate": "Fri Apr 29 14:55:53 SGT 2016"
+    },
+    {
+      "Id": 35,
+      "Type": "Task",
+      "Title": "do cs2103",
+      "Status": "pending",
+      "StartDate": "Fri Apr 08 14:56:06 SGT 2016",
+      "EndDate": "Fri Apr 15 14:56:06 SGT 2016"
+    },
+    {
+      "Id": 36,
+      "Type": "Task",
+      "Title": "do cs2103",
+      "Status": "pending",
+      "StartDate": "Fri Apr 15 14:56:06 SGT 2016",
+      "EndDate": "Fri Apr 22 14:56:06 SGT 2016"
+    },
+    {
+      "Id": 37,
+      "Type": "Task",
+      "Title": "do cs2103",
+      "Status": "pending",
+      "StartDate": "Fri Apr 22 14:56:06 SGT 2016",
+      "EndDate": "Fri Apr 29 14:56:06 SGT 2016"
+    }
+  ]
+}
