@@ -72,6 +72,15 @@ public class ItemAdapter extends TypeAdapter<UserItemList> {
 								e.printStackTrace();
 							}
 							break;
+						case "IsRecurring":
+							task.setRecurring(in.nextBoolean());
+							break;
+						case "PrevId":
+							task.setPrevId(in.nextLong());
+							break;
+						case "NextId":
+							task.setNextId(in.nextLong());
+							break;
 						}
 					}
 					taskArrayList.add(task);
@@ -112,6 +121,9 @@ public class ItemAdapter extends TypeAdapter<UserItemList> {
 				if (task.getEndDate() != null) {
 					out.name("EndDate").value(task.getEndDate().toString());
 				}
+				out.name("IsRecurring").value(task.getIsRecurring());
+				out.name("PrevId").value(task.getPrevId());
+				out.name("NextId").value(task.getNextId());
 				out.endObject();
 
 			}

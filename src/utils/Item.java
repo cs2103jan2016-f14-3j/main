@@ -21,6 +21,13 @@ public class Item implements Comparator<Item> {
 	private Date startDate;
 	private Date endDate;
 	private Boolean checkBox;
+	private boolean isRecurring;
+	private Long prevId;
+	private Long nextId;
+	
+	public boolean isRecurring() {
+		return isRecurring;
+	}
 
 	// Check box code for testing for now
 	private SimpleBooleanProperty checked = new SimpleBooleanProperty(false);
@@ -50,6 +57,9 @@ public class Item implements Comparator<Item> {
 		this.label = label;
 		this.startDate = startDate;
 		this.endDate = endDate;
+		this.isRecurring = false;
+		this.prevId = null;
+		this.nextId = null;
 	}
 
 	public Item() {
@@ -134,6 +144,30 @@ public class Item implements Comparator<Item> {
 
 	public void setCheckBox(Boolean checkBox) {
 		this.checkBox = checkBox;
+	}
+	
+	public boolean getIsRecurring() {
+		return isRecurring;
+	}
+	
+	public void setRecurring(boolean isRecurring) {
+		this.isRecurring = isRecurring;
+	}
+
+	public Long getPrevId() {
+		return prevId;
+	}
+
+	public void setPrevId(Long prevId) {
+		this.prevId = prevId;
+	}
+
+	public Long getNextId() {
+		return nextId;
+	}
+
+	public void setNextId(Long nextId) {
+		this.nextId = nextId;
 	}
 
 	// Debugging Method
