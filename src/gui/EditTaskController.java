@@ -54,7 +54,7 @@ public class EditTaskController implements Initializable{
 	@FXML
 	Button newTaskCancel;
 	@FXML
-	TextField newType;
+	ComboBox<String> newType;
 	
 	private Stage dialogStage;
 	Controller control = new Controller();
@@ -73,7 +73,8 @@ public class EditTaskController implements Initializable{
     boolean okClicked;
     
     ObservableList<String> options = FXCollections.observableArrayList("High", "Medium", "Low");
-    
+	ObservableList<String> itemType = FXCollections.observableArrayList("Task", "Event");
+
     private Item item;
     
 	@Override
@@ -88,6 +89,7 @@ public class EditTaskController implements Initializable{
         assert newTaskSave != null : "fx:id=\"newTaskSave\" was not injected: check your FXML file 'POMPOM.fxml'.";
         System.out.println(this.getClass().getSimpleName() + ".initialize");
         newPriority.setItems(options);
+		newType.setItems(itemType);
 	}
 	
 	public void setDialogStage(Stage dialogStage) {
@@ -100,24 +102,41 @@ public class EditTaskController implements Initializable{
 		newTaskTitle.setText(item.getTitle());	
 		newLabel.setText(item.getLabel());
 		newPriority.setValue(item.getPriority());
-		newType.setText(item.getStatus());
+		newType.setValue(item.getType());
 		taskId = item.getId();
+		Date retrieveSDate = item.getStartDate();
+	    Calendar cal = Calendar.getInstance();
+	    int year;
+	    int month;
+	    int day;
+	    int hour;
+	    int min;
+		if(retrieveSDate != null){
+	    cal.setTime(retrieveSDate);
+	    year = cal.get(Calendar.YEAR);
+	    month = cal.get(Calendar.MONTH);
+	    day = cal.get(Calendar.DAY_OF_MONTH);
+	    hour = cal.get(Calendar.HOUR_OF_DAY);
+	    min = cal.get(Calendar.MINUTE);
+		newStartDate.setValue(LocalDate.of(year, month+1, day));
+		newStartHour.setText(Integer.toString(hour));
+		newStartMin.setText(Integer.toString(min));
+		}
+		Date retrieveEDate = item.getEndDate();
+		if(retrieveEDate!=null){
+		cal.setTime(retrieveEDate);
+	    year = cal.get(Calendar.YEAR);
+	    month = cal.get(Calendar.MONTH);
+	    day = cal.get(Calendar.DAY_OF_MONTH);
+	    hour = cal.get(Calendar.HOUR_OF_DAY);
+	    min = cal.get(Calendar.MINUTE);
+	    newEndDate.setValue(LocalDate.of(year, month+1, day));
+	    newEndHour.setText(Integer.toString(hour));
+	    newEndMin.setText(Integer.toString(min));
+		}
 	}
 
-	
-//	1. add <task>
-//	2. add <task> <mmm dd>
-//	3. add <task> <dd/mm/yyyy>
-//	4. add <task> <f:mmm dd> <mmm dd>
-//	5. add <task> <f:dd/mm/yyyy> <mmm dd>
-//	6. add <task> <f:mmm dd> <dd/mm/yyyy>
-//	7. add <task> <today/tomorrow/this week/month/year/ next week/month/year>
-//	8. add <task> <today/tomorrow/this week/month/year/ next week/month/year> <f:today/tomorrow/this week/month/year/ next week/month/year>
-//	9. add <task> <dd/mm/yyyy> <f:today/tomorrow/this week/month/year/ next week/month/year>
-//	10. add <task> <dd mmm> <f:today/tomorrow/this week/month/year/ next week/month/year>
-//	11. add <task> <today/tomorrow/this week/month/year/ next week/month/year><f:dd mmm>
-//	12.add <task> <today/tomorrow/this week/month/year/ next week/month/year><f:dd/mm/yyyy>
-		
+			
 	@FXML
 	private void handleSave() throws IOException, ParseException{
 		title = newTaskTitle.getText();
@@ -129,38 +148,36 @@ public class EditTaskController implements Initializable{
 		endMin = newEndMin.getText();
 		label = newLabel.getText();
 		priority = newPriority.getValue();
-		type = newType.getText();
+		type = newType.getValue();
 		
-//	      Calendar sc =  Calendar.getInstance();
-//	      sc.set(startDate.getYear(), startDate.getMonthValue(), startDate.getDayOfMonth());
-//	      Date sd = sc.getTime();
-//	      SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-//	      SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm");
-//	      String sDateTime = sdf.format(sd) + " " + startHour + ":" + startMin;
-//	      Date sDate = dateFormat.parse(sDateTime);
-//		
-//	      Calendar ec =  Calendar.getInstance();
-//	      ec.set(endDate.getYear(), endDate.getMonthValue(), endDate.getDayOfMonth());
-//	      Date ed = ec.getTime();
-//	      String eDateTime = sdf.format(ed) + " " + endHour + ":" + endMin;
-//	      Date eDate = dateFormat.parse(eDateTime);
+	      Calendar sc =  Calendar.getInstance();
+	      sc.set(startDate.getYear(), startDate.getMonthValue(), startDate.getDayOfMonth());
+	      Date sd = sc.getTime();
+	      SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+	      SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+	      String sDateTime = sdf.format(sd) + " " + startHour + ":" + startMin;
+	      Date sDate = dateFormat.parse(sDateTime);
+		
+	      Calendar ec =  Calendar.getInstance();
+	      ec.set(endDate.getYear(), endDate.getMonthValue(), endDate.getDayOfMonth());
+	      Date ed = ec.getTime();
+	      String eDateTime = sdf.format(ed) + " " + endHour + ":" + endMin;
+	      Date eDate = dateFormat.parse(eDateTime);
 
 		EditCommand editTitle = new EditCommand(taskId, "title", title);
 		EditCommand editPriority = new EditCommand(taskId, "priority", priority);
 		EditCommand editLabel= new EditCommand(taskId, "label", label);
 		EditCommand editStatus = new EditCommand(taskId, "type", type);
+		EditCommand editStartDate = new EditCommand(taskId, "start date", sDate);
+		EditCommand editEndDate = new EditCommand(taskId, "end date", eDate);
 		
 		POMPOM.executeCommand(editTitle);
 		POMPOM.executeCommand(editPriority);
 		POMPOM.executeCommand(editLabel);
 		POMPOM.executeCommand(editStatus);
+		POMPOM.executeCommand(editStartDate);
+		POMPOM.executeCommand(editEndDate);
 		
-//		String input = "add " + "f:";
-//		String input = "add " + title + " null " + priority + " Upcoming " + label  + " " + startDate + "/" + startTime + " " + endDate + "/" + endTime;
-//		System.out.println(input);
-//		pompom.execute(input);
-		
-		POMPOM.getStorage().saveStorage();
 		okClicked = true;
 		dialogStage.close();
 	}
@@ -173,7 +190,7 @@ public class EditTaskController implements Initializable{
 	public boolean isOkClicked() {
 		return okClicked;
 	}
-
+	
 
 	
 }

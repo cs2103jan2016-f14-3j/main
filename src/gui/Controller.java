@@ -6,11 +6,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.ResourceBundle;
 
+
 import command.DelCommand;
 import main.POMPOM;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
+import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -19,8 +21,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
 import javafx.scene.control.SingleSelectionModel;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
@@ -38,6 +40,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import utils.Item;
 import utils.ListClassifier;
+
 
 /**
  * @@author Jorel
@@ -109,13 +112,16 @@ public class Controller implements Initializable {
 	private Main main = new Main();
 	private boolean initialized = false;
 
-	ArrayList<Item> displayList;
-
 	Node node;
-
+	
+	ArrayList<Item> displayList;
+	
 	ObservableList<String> taskView = FXCollections.observableArrayList();
 	static ObservableList<Item> tableContent;
 	POMPOM pompom;
+	
+	CheckBox selectAll = new CheckBox();
+
 
 	public static ObservableList<Item> getTableContent() {
 		return tableContent;
@@ -173,6 +179,13 @@ public class Controller implements Initializable {
 			enterCommand.setDisable(false);
 		}
 	}
+	
+//	private void selectAll(){
+//		int rows = table.getItems().size();
+//		for (int i = 0; i < rows; i++) {
+//			checkBox.setEditable(true);
+//		}
+//	}
 
 	@FXML
 	private void deleteItems() throws IOException {
@@ -192,7 +205,7 @@ public class Controller implements Initializable {
 		}
 		switchToTab(POMPOM.getCurrentTab().toLowerCase());
 	}
-	
+
 	@FXML
 	private void editItem() throws IOException {
 		Item item = table.getSelectionModel().getSelectedItem();
@@ -200,17 +213,16 @@ public class Controller implements Initializable {
 			boolean okClicked = main.editTaskDialog(item);
 			if (okClicked) {
 				configureTable();
+				POMPOM.getStorage().saveStorage();
 			}
+		}
 	}
-	}
-	
-	public void enableEditBtn(MouseEvent event) {
-	    if (event.isPrimaryButtonDown() && event.getClickCount() == 1) {
-	        editTask.setDisable(false);
-	     }
-	}
-		
 
+	public void enableEditBtn(MouseEvent event) {
+		if (event.isPrimaryButtonDown() && event.getClickCount() == 1) {
+			editTask.setDisable(false);
+		}
+	}
 
 	void configureTable() {
 		table.setEditable(true);
@@ -218,10 +230,11 @@ public class Controller implements Initializable {
 		taskName.setCellValueFactory(new PropertyValueFactory<Item, String>(
 				"title"));
 
-		//Checkbox init
+		// Checkbox init
+		checkBox.setGraphic(selectAll);
 		checkBox.setCellFactory(CheckBoxTableCell.forTableColumn(checkBox));
 		checkBox.setCellValueFactory(c -> c.getValue().checkedProperty());
-		
+
 		taskStartDateTime
 				.setCellValueFactory(new PropertyValueFactory<Item, Date>(
 						"startDate"));
@@ -244,16 +257,15 @@ public class Controller implements Initializable {
 
 	public void newTaskFired(ActionEvent event) throws IOException {
 		boolean okClicked = main.newTaskDialog();
-		if(okClicked){
-			System.out.println(okClicked);
+		if (okClicked) {
 			configureTable();
+			POMPOM.getStorage().saveStorage();
 		}
 	}
-	
-	public void helpFired(ActionEvent event){
+
+	public void helpFired(ActionEvent event) {
 		main.helpDialog();
 	}
-	
 
 	public void toSettingsView(MouseEvent event) throws IOException {
 		content.getChildren().clear();
@@ -266,13 +278,13 @@ public class Controller implements Initializable {
 		node = (Node) FXMLLoader.load(getClass().getResource("Dashboard.fxml"));
 		content.getChildren().setAll(node);
 	}
-		
+
 	// New methods by wei lip
 
 	public void switchToTab(String inputTab) {
 		String tabName = inputTab.toLowerCase();
 		SingleSelectionModel<Tab> selectionModel = tabViews.getSelectionModel();
-		
+
 		if (tabName.equals(POMPOM.LABEL_TASK.toLowerCase())) {
 			System.out.println("Teasdat :" + tabName);
 			selectionModel.select(taskTab);
@@ -293,6 +305,7 @@ public class Controller implements Initializable {
 			searchTabAction();
 		}
 	}
+
 	@FXML
 	public void taskTabAction() {
 		if (!initialized)
@@ -303,6 +316,7 @@ public class Controller implements Initializable {
 		configureTable();
 		POMPOM.setCurrentTab(POMPOM.LABEL_TASK.toLowerCase());
 	}
+
 	@FXML
 	public void completedTaskTabAction() {
 		if (!initialized) {
@@ -313,6 +327,7 @@ public class Controller implements Initializable {
 		configureTable();
 		POMPOM.setCurrentTab(POMPOM.LABEL_COMPLETED_TASK.toLowerCase());
 	}
+
 	@FXML
 	public void eventTabAction() {
 		System.out.println("cleared");
@@ -322,7 +337,8 @@ public class Controller implements Initializable {
 		POMPOM.setCurrentTab(POMPOM.LABEL_EVENT.toLowerCase());
 		System.out.println("eventtabaction: " + POMPOM.getCurrentTab());
 	}
-	@FXML	
+
+	@FXML
 	public void completedEventTabAction() {
 		displayList = ListClassifier.getDoneEventList(POMPOM.getStorage()
 				.getTaskList());
@@ -347,11 +363,16 @@ public class Controller implements Initializable {
 		msg = pompom.execute(input);
 		switchToTab(POMPOM.getCurrentTab().toLowerCase());
 
-		timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(0), new KeyValue(returnMsg.textProperty(), msg)));
-		timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(2), new KeyValue(returnMsg.textProperty(), " ")));
+		timeline.getKeyFrames().add(
+				new KeyFrame(Duration.seconds(0), new KeyValue(returnMsg
+						.textProperty(), msg)));
+		timeline.getKeyFrames().add(
+				new KeyFrame(Duration.seconds(2), new KeyValue(returnMsg
+						.textProperty(), " ")));
 		timeline.play();
 		configureTable();
 		POMPOM.getStorage().saveStorage();
+		selectRow(input);
 		inputCommand.setPromptText("Command:");
 	}
 
@@ -361,16 +382,45 @@ public class Controller implements Initializable {
 			String input = inputCommand.getText();
 			msg = pompom.execute(input);
 			switchToTab(POMPOM.getCurrentTab().toLowerCase());
-			timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(0), new KeyValue(returnMsg.textProperty(), msg)));
-			timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(2), new KeyValue(returnMsg.textProperty(), " ")));
+			timeline.getKeyFrames().add(
+					new KeyFrame(Duration.seconds(0), new KeyValue(returnMsg
+							.textProperty(), msg)));
+			timeline.getKeyFrames().add(
+					new KeyFrame(Duration.seconds(2), new KeyValue(returnMsg
+							.textProperty(), " ")));
 			timeline.play();
 			configureTable();
 			POMPOM.getStorage().saveStorage();
+			selectRow(input);
 			inputCommand.clear();
 			inputCommand.setPromptText("Command:");
 
 		}
 
+	}
+	
+	public void selectRow(String input){
+		int i = input.indexOf(' ');
+		String command = input.substring(0, i);
+		String restOfAction = input.substring(i+1);
+		int rowNo = table.getItems().size();
+		if(command.equals("add") || command.equals("event")){
+			table.getSelectionModel().select(rowNo-1);
+			table.scrollTo(rowNo-1);
+		}
+		if(command.equals("edit")){
+			int z;
+			int j = restOfAction.indexOf(' ');
+			int itemNo = Integer.parseInt(restOfAction.substring(0, j));
+			for(z = 0; z<rowNo-1; z++ ){
+				int searchItemNo = taskID.getCellData(z).intValue();
+				if(itemNo == searchItemNo){
+					break;
+				}
+			}
+			table.getSelectionModel().select(z);
+			table.scrollTo(z);
+		}	
 	}
 
 }

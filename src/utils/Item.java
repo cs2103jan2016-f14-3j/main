@@ -163,9 +163,11 @@ public class Item implements Comparator<Item> {
 		}
 		if (item1.getEndDate().compareTo(item2.getEndDate()) > 0) {
 			return 1;
-		} else if (item1.getEndDate().compareTo(item2.getEndDate()) < 0) {
+		}
+		else if (item1.getEndDate().compareTo(item2.getEndDate()) < 0) {
 			return -1;
-		} else if (item1.getEndDate().compareTo(item2.getEndDate()) == 0) {
+		} 
+		else if (item1.getEndDate().compareTo(item2.getEndDate()) == 0) {
 			return 0;
 		}
 		return 0;

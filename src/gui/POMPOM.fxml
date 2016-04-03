@@ -83,10 +83,8 @@
 						</TabPane>
             <TableView fx:id="table" layoutX="14.0" layoutY="32.0" onMousePressed="#enableEditBtn" prefHeight="397.0" prefWidth="564.0">
                <columns>
-				 <TableColumn fx:id="checkBox" prefWidth="27.0" />
-<!-- 				 <cellValueFactory> <PropertyValueFactory property="checked"/> </cellValueFactory> <cellFactory> <utils.CheckBoxCellFactory /> </cellFactory> 
-				</TableColumn> 
- -->                  <TableColumn fx:id="taskID" prefWidth="38.0" text="ID" />
+				 <TableColumn fx:id="checkBox" prefWidth="27.0"/>
+                 <TableColumn fx:id="taskID" prefWidth="38.0" text="ID" />
                   <TableColumn fx:id="taskName" prefWidth="61.0" text="Task" />
                   <TableColumn fx:id="taskStartDateTime" prefWidth="116.0" text="Start Date / Time" />
                   <TableColumn fx:id="taskEndDateTime" prefWidth="110.0" text="End Date/Time" />

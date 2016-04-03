@@ -80,12 +80,25 @@ public class AddCommand extends Command {
 		
 		if (task.getType().equals(POMPOM.LABEL_EVENT)) {
 			returnMsg = String.format(MESSAGE_TASK_ADDED, POMPOM.LABEL_EVENT);
-			POMPOM.setCurrentTab(POMPOM.LABEL_EVENT);
+			
+			if (task.getStatus().equals(POMPOM.STATUS_OVERDUE)) {
+				POMPOM.setCurrentTab(POMPOM.LABEL_COMPLETED_EVENT);
+			} else {
+				POMPOM.setCurrentTab(POMPOM.LABEL_EVENT);
+			}
+			
 		} else {
 			returnMsg = String.format(MESSAGE_TASK_ADDED, POMPOM.LABEL_TASK);
-			POMPOM.setCurrentTab(POMPOM.LABEL_TASK);
+			
+			if (task.getStatus().equals(POMPOM.STATUS_OVERDUE)) {
+				POMPOM.setCurrentTab(POMPOM.LABEL_COMPLETED_TASK);
+			} else {
+				POMPOM.setCurrentTab(POMPOM.LABEL_TASK);
+			}
+			
 		}
 		
+		logger.log(Level.INFO, "AddCommand has be executed");
 		return returnMsg;
 	}
 	

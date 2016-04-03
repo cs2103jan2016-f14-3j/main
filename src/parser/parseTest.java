@@ -19,7 +19,7 @@ import org.junit.Test;
 
 public class parseTest{
 
-	Parser parser = new Parser();
+	Parser parser = Parser.getInstance();
 	
 
 	//@Test

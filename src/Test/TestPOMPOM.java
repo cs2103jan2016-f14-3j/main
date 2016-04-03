@@ -1,17 +1,15 @@
 package Test;
 
-import static org.junit.Assert.assertEquals;
-
-
 import java.util.ArrayList;
 
 import org.junit.Test;
-
 import command.EditCommand;
 import command.MultiEditCommand;
 import main.POMPOM;
 import utils.Item;
 import static java.lang.Math.toIntExact;
+import static org.junit.Assert.assertEquals;
+
 /**
  * @@author wen hao
  *

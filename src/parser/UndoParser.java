@@ -5,16 +5,16 @@ import command.DelCommand;
 import command.ExitCommand;
 import command.UndoCommand;
 
-/**
- * @@author William
- *
- */
 
 public class UndoParser {
+
+
 	
 	public Command executeCommand(){
 		return new UndoCommand();
 		
 	}
+	
+
 	
 }

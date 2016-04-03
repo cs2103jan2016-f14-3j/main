@@ -67,43 +67,58 @@ public class POMPOM {
 			Date taskStartDate = currentTask.getStartDate();
 			Date taskEndDate = currentTask.getEndDate();
 
-			if (taskStartDate == null && taskEndDate == null) {
-				currentTask.setStatus(STATUS_FLOATING);
+			if (currentTask.getType().equals(POMPOM.LABEL_TASK)) {
 
-			} else if (taskStartDate == null) {
+				if (taskStartDate == null && taskEndDate == null) {
+					currentTask.setStatus(STATUS_FLOATING);
 
-				if (currentDate.before(taskEndDate)) {
-					currentTask.setStatus(STATUS_ONGOING);
-				} else if (!currentTask.getStatus().equals(STATUS_COMPLETED)) {
-					currentTask.setStatus(STATUS_OVERDUE);
-				}
+				} else if (taskStartDate == null) {
 
-			} else if (taskEndDate == null) {
+					if (currentDate.before(taskEndDate)) {
+						currentTask.setStatus(STATUS_ONGOING);
+					} else if (!currentTask.getStatus().equals(STATUS_COMPLETED)) {
+						currentTask.setStatus(STATUS_OVERDUE);
+					}
 
-				if (taskStartDate.after(currentDate)) {
+				} else if (taskEndDate == null) {
+
+					if (taskStartDate.after(currentDate)) {
+						currentTask.setStatus(STATUS_PENDING);
+					} else if (taskStartDate.before(currentDate) && isNotCompleted(currentTask)) {
+						currentTask.setStatus(STATUS_ONGOING);
+					}
+
+				} else if (currentDate.before(taskStartDate)) {
 					currentTask.setStatus(STATUS_PENDING);
-				} else if (taskStartDate.before(currentDate) && isNotCompleted(currentTask)) {
+
+				} else if (currentDate.compareTo(taskStartDate) >= 0 && currentDate.before(taskEndDate)
+						&& isNotCompleted(currentTask)) {
 					currentTask.setStatus(STATUS_ONGOING);
+
+				} else if (currentDate.after(taskEndDate) && isNotCompleted(currentTask)) {
+					currentTask.setStatus(STATUS_OVERDUE);
+
 				}
 
-			} else if (currentDate.before(taskStartDate)) {
-				currentTask.setStatus(STATUS_PENDING);
-
-			} else if (currentDate.compareTo(taskStartDate) >= 0 && currentDate.before(taskEndDate)
-					&& isNotCompleted(currentTask)) {
-				currentTask.setStatus(STATUS_ONGOING);
-
-			} else if (currentDate.after(taskEndDate) && isNotCompleted(currentTask)) {
-				currentTask.setStatus(STATUS_OVERDUE);
-
+			} else {
+				
+				if (currentDate.before(taskStartDate)) {
+					currentTask.setStatus(STATUS_PENDING);
+				} else if (currentDate.after(taskStartDate) && taskEndDate == null) {
+					currentTask.setStatus(STATUS_ONGOING);
+				} else if (currentDate.after(taskStartDate) && currentDate.before(taskEndDate)) {
+					currentTask.setStatus(STATUS_ONGOING);
+				} else if (currentDate.after(taskStartDate) && currentDate.after(taskEndDate)) {
+					currentTask.setStatus(STATUS_COMPLETED);
+				}
+				
 			}
 		}
 	}
 
 	public String execute(String input) {
-		Parser parser = new Parser();
+		Parser parser = Parser.getInstance();
 		Command command = parser.executeCommand(input);
-		System.out.println(command);
 		String returnMsg = command.execute();
 		refreshStatus();
 		return returnMsg;
@@ -114,11 +129,11 @@ public class POMPOM {
 		refreshStatus();
 		return returnMsg;
 	}
-	
+
 	private static boolean isNotCompleted(Item item) {
-		
+
 		return !item.getStatus().equals(STATUS_COMPLETED);
-		
+
 	}
 
 	public static PrettyTimeParser getTimeParser() {
@@ -133,7 +148,7 @@ public class POMPOM {
 		return storage;
 	}
 
-	public static Stack getUndoStack() {
+	public static Stack<Command> getUndoStack() {
 		return undoStack;
 	}
 

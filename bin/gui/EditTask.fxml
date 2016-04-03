@@ -38,7 +38,6 @@
             <Font name="Tw Cen MT Bold" size="18.0" />
          </font>
       </Label>
-      <TextField fx:id="newType" layoutX="100.0" layoutY="265.0" prefHeight="26.0" prefWidth="237.0" />
       <ComboBox fx:id="newPriority" layoutX="100.0" layoutY="312.0" prefWidth="150.0" promptText="Select One" />
       <Label layoutX="12.0" layoutY="315.0" text="Priority:">
          <font>
@@ -64,5 +63,6 @@
       </Label>
       <Label layoutX="139.0" layoutY="101.0" text=":" />
       <Label layoutX="139.0" layoutY="184.0" text=":" />
+      <ComboBox fx:id="newType" layoutX="100.0" layoutY="265.0" prefWidth="150.0" />
    </children>
 </Pane>

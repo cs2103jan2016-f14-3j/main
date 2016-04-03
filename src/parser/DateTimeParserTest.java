@@ -8,11 +8,6 @@ import org.junit.Test;
 import org.ocpsoft.prettytime.nlp.PrettyTimeParser;
 import org.ocpsoft.prettytime.nlp.parse.DateGroup;
 
-/**
- * @@author William
- *
- */
-
 public class DateTimeParserTest {
 
 	PrettyTimeParser timeParser = new PrettyTimeParser();
@@ -116,7 +111,7 @@ public class DateTimeParserTest {
 		assertEquals(output,"e:28 march");
 	}
 	
-//	@Test
+	@Test
 	public void testParseMessedUpTitle() {
 		DateTimeParser dp = new DateTimeParser("end","do cs1231231231231232132341 tomorrow");
 		Date endDate = timeParser.parseSyntax("tomorrow").get(0).getDates().get(0);
@@ -129,9 +124,6 @@ public class DateTimeParserTest {
 		PrettyTimeParser parser = new PrettyTimeParser();
 		List<DateGroup> dg=parser.parseSyntax("every monday until 28 march");
 		Date d= dg.get(0).getDates().get(0);
-		System.out.println(d.toString());
-		System.out.println(dg.get(0).getRecursUntil());
-		System.out.println(dg.get(0).getText());
 	}
 	
 	@Test
@@ -149,11 +141,9 @@ public class DateTimeParserTest {
 		assertEquals(testDate.toString(),expectedDate.toString());
 	}
 	
-	@Test
+//	@Test
 	public void testEveryEnd(){
 		DateTimeParser dp = new DateTimeParser("end","do cs2103 e:28 march every friday");
-		System.out.println(dp.getString());
-		System.out.println(dp.getDate().toString());
 	}
 	
 	@Test
@@ -162,14 +152,14 @@ public class DateTimeParserTest {
 		List<DateGroup> dg=parser.parseSyntax("every monday until 28 march except 1 march to 16 march");	
 	}
 	
-	@Test
+	//@Test
 	public void testAddNumberOnly() {
 		DateTimeParser dp = new DateTimeParser("end","2103");
 		System.out.println(dp.getString());
 		System.out.println(dp.getDate().toString());
 	}
 	
-	@Test
+//	@Test
 	public void testExtractException(){
 		DateTimeParser dp = new DateTimeParser("except","e: 28 march except 16 march to 31 march");
 		//System.out.println(dp.getString());

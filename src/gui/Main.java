@@ -20,10 +20,10 @@ import javafx.scene.layout.Pane;
  *
  */
 public class Main extends Application {
-	
-	
+
 	@FXML
 	Pane content;
+
 	public static void main(String[] args) {
 		Application.launch(Main.class, args);
 	}
@@ -34,7 +34,7 @@ public class Main extends Application {
 		Parent root = FXMLLoader.load(getClass().getResource("POMPOM.fxml"));
 		stage.setTitle("POMPOM");
 		stage.setScene(new Scene(root, 800, 565));
-		
+
 		stage.show();
 	}
 
@@ -62,7 +62,7 @@ public class Main extends Application {
 			return false;
 		}
 	}
-	
+
 	public boolean editTaskDialog(Item item) {
 		try {
 			FXMLLoader loader = new FXMLLoader(
@@ -88,10 +88,10 @@ public class Main extends Application {
 		}
 	}
 
-
 	public void helpDialog() {
 		try {
-			FXMLLoader loader = new FXMLLoader(Main.class.getResource("Help.fxml"));
+			FXMLLoader loader = new FXMLLoader(
+					Main.class.getResource("Help.fxml"));
 			Pane page = (Pane) loader.load();
 
 			Stage dialogStage = new Stage();
@@ -104,7 +104,7 @@ public class Main extends Application {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 	}
 
 }
