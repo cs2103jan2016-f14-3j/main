@@ -5,13 +5,12 @@ import java.util.logging.Logger;
 
 import main.POMPOM;
 import utils.Item;
-
+/**
+ * @@author wen hao
+ *
+ */
 public abstract class Command {
-
-	protected static final String STATUS_PENDING = "pending";
-	protected static final String STATUS_ONGOING = "ongoing";
-	protected static final String STATUS_COMPLETED = "completed";
-	protected static final String STATUS_OVERDUE = "overdue";
+	
 	protected String returnMsg = "";
 	
 	public static Logger logger = Logger.getLogger("Command");

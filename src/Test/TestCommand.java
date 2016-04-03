@@ -1,7 +1,5 @@
 package Test;
 
-import static org.junit.Assert.assertEquals;
-
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -16,6 +14,12 @@ import command.UndoCommand;
 import main.POMPOM;
 import utils.Item;
 
+import static org.junit.Assert.assertEquals;
+
+/**
+ * @@author wen hao
+ *
+ */
 public class TestCommand {
 
 	Date currentDate = new Date();
@@ -29,7 +33,7 @@ public class TestCommand {
 		ArrayList<Item> taskList = POMPOM.getStorage().getTaskList();
 		taskList.clear();
 
-		// check if the “add” command returns the right status message
+		// check if the add command returns the right status message
 		assertEquals("Task added", command.execute());
 
 		// check if the taskList contain the added task
@@ -43,7 +47,7 @@ public class TestCommand {
 	}
 
 	@Test
-	public void testDelete() {
+	public void testDeleteById() {
 		POMPOM pompom = new POMPOM();
 		AddCommand add = new AddCommand(POMPOM.LABEL_TASK, "do cs3241", "bezier curve", "medium", "ongoing", "lab",
 				currentDate, currentDate);
@@ -65,6 +69,34 @@ public class TestCommand {
 
 		// check if the delete command returns the right status message
 		assertEquals(addedTask.getId() + ". has been deleted from " + addedTask.getType(), delete.execute());
+
+		// check if the item was really deleted
+		assertEquals(0, taskList.size());
+	}
+	
+	@Test
+	public void testDeleteByTitle() {
+		POMPOM pompom = new POMPOM();
+		AddCommand add = new AddCommand(POMPOM.LABEL_TASK, "do cs3241", "bezier curve", "medium", "ongoing", "lab",
+				currentDate, currentDate);
+
+		ArrayList<Item> taskList = POMPOM.getStorage().getTaskList();
+		taskList.clear();
+
+		add.execute();
+
+		// check if the taskList contain the added task
+		Item addedTask = taskList.get(0);
+		assertEquals("do cs3241", addedTask.getTitle());
+		assertEquals("bezier curve", addedTask.getDescription());
+		assertEquals("medium", addedTask.getPriority());
+		assertEquals("ongoing", addedTask.getStatus());
+		assertEquals("lab", addedTask.getLabel());
+
+		DelCommand delete = new DelCommand(addedTask.getTitle());
+
+		// check if the delete command returns the right status message
+		assertEquals("All tasks with title \"" + addedTask.getTitle() + "\" have been deleted", delete.execute());
 
 		// check if the item was really deleted
 		assertEquals(0, taskList.size());

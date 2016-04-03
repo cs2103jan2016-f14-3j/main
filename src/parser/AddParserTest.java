@@ -19,95 +19,166 @@ public class AddParserTest{
 	 * Tests if can add floating tasks
 	 */
 	@Test
-	public void testAddCommand1(){
+	public void testAddCommandTitleOnly(){
 		AddParser add = new AddParser("do project",POMPOM.LABEL_TASK);
 		assertEquals("do project",add.getTitle());
+		assertNull(add.getEndDate());
+		assertNull(add.getStartDate());
+		assertNull(add.getDescription());
+		assertNull(add.getStatus());
+		assertNull(add.getLabel());	
+		assertNull(add.getPriority());
 	}
 	
+	/*
+	 * Tests if can set priority, priority has space
+	 */
 	@Test
 	public void testAddCommandPriority(){
-		AddParser add = new AddParser("do project p:high",POMPOM.LABEL_TASK);
-		assertEquals("high",add.getPriority());
+		AddParser add = new AddParser("do project p:high priority",POMPOM.LABEL_TASK);
+		assertEquals("do project",add.getTitle());
+		assertEquals("high priority",add.getPriority());
+		assertNull(add.getEndDate());
+		assertNull(add.getStartDate());
+		assertNull(add.getDescription());
+		assertNull(add.getStatus());
+		assertNull(add.getLabel());	
 	}
 	
+	/*
+	 * Tests if can set label
+	 */
 	@Test
 	public void testAddCommandLabel(){
-		AddParser add = new AddParser("do project l:study",POMPOM.LABEL_TASK);
-		assertEquals("study",add.getLabel());
-	}
-	
-	@Test
-	public void testAddCommandStatus(){
-		AddParser add = new AddParser("do project s:opened",POMPOM.LABEL_TASK);
-		assertEquals("opened",add.getStatus());
+		AddParser add = new AddParser("do project l:school work",POMPOM.LABEL_TASK);
+		assertEquals("do project",add.getTitle());
+		assertEquals("school work",add.getLabel());
+		assertNull(add.getEndDate());
+		assertNull(add.getStartDate());
+		assertNull(add.getDescription());
+		assertNull(add.getStatus());
+		assertNull(add.getPriority());	
+		
 	}
 	
 	/*
 	 * Tests if can add tasks with end date
 	 */
 	@Test
-	public void testAddCommand2(){
+	public void testAddCommandEndDate(){
 		AddParser add = new AddParser("do project 28 march",POMPOM.LABEL_TASK);
 		assertEquals("do project",add.getTitle());
-		Date endDate= timeParser.parseSyntax("28 march").get(0).getDates().get(0);
-		assertEquals(endDate.compareTo(add.getEndDate()),1);	
+		long endDateDifferenceInSeconds = getEndDateDifference(add,"28 march");
+		assertEquals(endDateDifferenceInSeconds,0);	
+		assertNull(add.getStartDate());
+		assertNull(add.getDescription());
+		assertNull(add.getLabel());
+		assertNull(add.getPriority());
+		assertNull(add.getStatus());
 	}
+	
+	/*
+	 * Tests if can add tasks with end date prefix
+	 */
+	@Test
+	public void testAddCommandEndDatePrefix(){
+		AddParser add = new AddParser("do project e:28 march",POMPOM.LABEL_TASK);
+		assertEquals("do project",add.getTitle());
+		long endDateDifferenceInSeconds = getEndDateDifference(add, "28 march");
+		assertEquals(endDateDifferenceInSeconds,0);	
+		assertNull(add.getStartDate());
+		assertNull(add.getDescription());
+		assertNull(add.getLabel());
+		assertNull(add.getPriority());
+		assertNull(add.getStatus());
+	}
+
 	
 	/*
 	 * Tests if can add tasks with start and end date.
 	 */
 	@Test
-	public void testAddCommand3(){
+	public void testAddCommandStartEndDate(){
 		AddParser add = new AddParser("do project e:28 march f:16 march",POMPOM.LABEL_TASK);
 		assertEquals("do project",add.getTitle());
-		Date endDate= timeParser.parseSyntax("28 march").get(0).getDates().get(0);
-		Date startDate= timeParser.parseSyntax("16 march").get(0).getDates().get(0);
-		assertEquals(endDate.compareTo(add.getEndDate()),1);	
-		assertEquals(startDate.compareTo(add.getStartDate()),1);	
+		long endDateDifference= getEndDateDifference(add,"28 march");
+		long startDateDifference= getStartDateDifference(add,"16 march");
+		assertEquals(endDateDifference, 0);	
+		assertEquals(startDateDifference, 0);	
+		assertNull(add.getDescription());
+		assertNull(add.getLabel());
+		assertNull(add.getPriority());
+		assertNull(add.getStatus());
 	}
 	
 	/*
 	 * Tests if can switch the order of the title and end date
 	 */
 	@Test
-	public void testAddCommand4(){
+	public void testAddCommandReorder(){
 		AddParser add = new AddParser("28 march do project",POMPOM.LABEL_TASK);
 		assertEquals("do project",add.getTitle());
-		Date endDate= timeParser.parseSyntax("28 march").get(0).getDates().get(0);
-		assertEquals(endDate.compareTo(add.getEndDate()),1);	
+		long endDateDifferenceInSeconds = getEndDateDifference(add,"28 march");
+		assertEquals(endDateDifferenceInSeconds,0);		
+		assertNull(add.getStartDate());
+		assertNull(add.getDescription());
+		assertNull(add.getLabel());
+		assertNull(add.getPriority());
+		assertNull(add.getStatus());
 	}
 	
 	/*
 	 * Tests if can switch the order of the start date, end date and title. 
 	 */
 	@Test
-	public void testAddCommand5(){
+	public void testAddCommandReorderWithEndDate(){
 		AddParser add = new AddParser("e:28 march f:16 march do project",POMPOM.LABEL_TASK);
 		assertEquals("do project",add.getTitle());
 		Date endDate= timeParser.parseSyntax("28 march").get(0).getDates().get(0);
+		Date startDate= timeParser.parseSyntax("16 march").get(0).getDates().get(0);
 		assertEquals(endDate.compareTo(add.getEndDate()),1);	
+		assertEquals(startDate.compareTo(add.getStartDate()),1);
+		assertNull(add.getDescription());
+		assertNull(add.getLabel());
+		assertNull(add.getPriority());
+		assertNull(add.getStatus());
 	}
 	
 	/*
 	 * Tests if can switch the order of the start date, end date and title.
 	 */
 	@Test
-	public void testAddCommand6(){
+	public void testAddCommandReorderWithEndDateFromFirst(){
 		AddParser add = new AddParser("f:16 march e:28 march do project",POMPOM.LABEL_TASK);
 		assertEquals("do project",add.getTitle());
 		Date endDate= timeParser.parseSyntax("28 march").get(0).getDates().get(0);
+		Date startDate= timeParser.parseSyntax("16 march").get(0).getDates().get(0);
 		assertEquals(endDate.compareTo(add.getEndDate()),1);	
+		assertEquals(startDate.compareTo(add.getStartDate()),1);
+		assertNull(add.getDescription());
+		assertNull(add.getLabel());
+		assertNull(add.getPriority());
+		assertNull(add.getStatus());	
 	}
 	
 	/*
-	 * Tests if can add in recurring tasks with end date
+	 * Tests if can add in weekly recurring tasks with end date
 	 */
-	//@Test
-	public void testAddCommand7(){
-		AddParser add = new AddParser("do cs2103 every friday e:28 march",POMPOM.LABEL_TASK);
+	@Test
+	public void testAddCommandRecurringBasic(){
+		AddParser add = new AddParser("do cs2103 every friday e:6 june",POMPOM.LABEL_TASK);
 		assertEquals("do cs2103",add.getTitle());
-		Date endDate= timeParser.parseSyntax("28 march").get(0).getDates().get(0);
-		assertEquals(endDate.compareTo(add.getEndDate()),1);	
+		long endDateDifference= getEndDateDifference(add,"6 june");
+		assertEquals(endDateDifference,0);		
+		DateGroup itemRecurringDateGroup = add.getItemRecurringDateGroup();
+		Date addStartDate = itemRecurringDateGroup.getDates().get(0);
+		long startDateDifference= getStartDateDifference(addStartDate,"this friday");
+		assertEquals(startDateDifference,0);	
+		assertNull(add.getDescription());
+		assertNull(add.getLabel());
+		assertNull(add.getPriority());
+		assertNull(add.getStatus());	
+		assertTrue(add.getIsRecurring());
 	}
 	
 	/*
@@ -116,10 +187,18 @@ public class AddParserTest{
 	 */
 	@Test
 	public void testAddCommand8(){
-		AddParser add = new AddParser("do cs2103 e:28 march every friday",POMPOM.LABEL_TASK);
+		AddParser add = new AddParser("do cs2103 e:6 june every friday",POMPOM.LABEL_TASK);
 		assertEquals("do cs2103",add.getTitle());
-		Date endDate= timeParser.parseSyntax("28 march").get(0).getDates().get(0);
-		assertEquals(endDate.compareTo(add.getEndDate()),1);	
+		long endDateDifference= getEndDateDifference(add,"6 june");
+		assertEquals(endDateDifference,0);		
+		DateGroup itemRecurringDateGroup = add.getItemRecurringDateGroup();
+		Date addStartDate = itemRecurringDateGroup.getDates().get(0);
+		long startDateDifference= getStartDateDifference(addStartDate,"this friday");
+		assertEquals(startDateDifference,0);
+		assertNull(add.getDescription());
+		assertNull(add.getLabel());
+		assertNull(add.getPriority());
+		assertNull(add.getStatus());	
 		assertTrue(add.getIsRecurring());
 	}	
 	
@@ -130,19 +209,41 @@ public class AddParserTest{
 	public void testAddCommand9(){
 		AddParser add = new AddParser("2103",POMPOM.LABEL_TASK);
 		assertEquals("2103",add.getTitle());
-		Date endDate= new Date();
-		assertEquals(endDate.compareTo(add.getEndDate()),0);
+		assertNull(add.getEndDate());
+		assertNull(add.getStartDate());
+		assertNull(add.getDescription());
+		assertNull(add.getStatus());
+		assertNull(add.getLabel());	
+		assertNull(add.getPriority());
 	}	
 	
-	/*
-	 * Tests if can add in a task with only a parsable title for event 
-	 */
-	@Test
-	public void testAddCommand10(){
-		AddParser add = new AddParser("add lol tomorrow",POMPOM.LABEL_EVENT);
-		assertEquals("add lol",add.getTitle());
-		Date endDate= new Date();
-		assertEquals(endDate.compareTo(add.getEndDate()),0);
+	//helper methods
+	private long getEndDateDifference(AddParser add, String dateString) {
+		long expectedEndDateInMillis= timeParser.parseSyntax(dateString).get(0).getDates().get(0).getTime();
+		long parsedEndDateInMillis = add.getEndDate().getTime(); 
+		long endDateDifferenceInSeconds = (expectedEndDateInMillis-parsedEndDateInMillis)/1000;
+		return endDateDifferenceInSeconds;
+	}
+	
+	private long getStartDateDifference(AddParser add, String dateString) {
+		long expectedStartDateInMillis= timeParser.parseSyntax(dateString).get(0).getDates().get(0).getTime();
+		long parsedStartDateInMillis = add.getStartDate().getTime(); 
+		long startDateDifferenceInSeconds = (expectedStartDateInMillis-parsedStartDateInMillis)/1000;
+		return startDateDifferenceInSeconds;
+	}
+	
+	private long getEndDateDifference(Date add, String dateString) {
+		long expectedEndDateInMillis= timeParser.parseSyntax(dateString).get(0).getDates().get(0).getTime();
+		long parsedEndDateInMillis = add.getTime(); 
+		long endDateDifferenceInSeconds = (expectedEndDateInMillis-parsedEndDateInMillis)/1000;
+		return endDateDifferenceInSeconds;
+	}
+	
+	private long getStartDateDifference(Date add, String dateString) {
+		long expectedStartDateInMillis= timeParser.parseSyntax(dateString).get(0).getDates().get(0).getTime();
+		long parsedStartDateInMillis = add.getTime(); 
+		long startDateDifferenceInSeconds = (expectedStartDateInMillis-parsedStartDateInMillis)/1000;
+		return startDateDifferenceInSeconds;
 	}
 }
 	

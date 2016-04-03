@@ -12,33 +12,25 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<Pane prefHeight="566.0" prefWidth="598.0" styleClass="content" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.Controller">
+<Pane fx:id="content" prefHeight="566.0" prefWidth="598.0" styleClass="content" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.Controller">
    <children>
       <Label fx:id="label" layoutX="14.0" layoutY="21.0" text="Dashboard">
          <font>
             <Font name="Tw Cen MT Bold" size="24.0" />
          </font>
       </Label>
-      <AnchorPane fx:id="content" layoutY="46.0" prefHeight="515.0" prefWidth="598.0">
+      <AnchorPane layoutY="46.0" prefHeight="515.0" prefWidth="598.0">
          <children>
-            <TabPane fx:id="tabViews" layoutX="8.0" prefHeight="200.0" prefWidth="356.0" tabClosingPolicy="UNAVAILABLE">
+            <TabPane fx:id="tabViews" layoutX="8.0" prefHeight="200.0" prefWidth="570.0" tabClosingPolicy="UNAVAILABLE">
                <tabs>
                   <Tab fx:id="taskTab" onSelectionChanged="#taskTabAction" text="Task" />
                   <Tab fx:id="completedTaskTab" onSelectionChanged="#completedTaskTabAction" text="CompletedTask" />
-                  <Tab fx:id="eventTab" onSelectionChanged="#eventTabAction" text="Events">
+                  <Tab fx:id="eventTab" onSelectionChanged="#eventTabAction" text="Events" />
+                  <Tab fx:id="completedEventTab" onSelectionChanged="#completedEventTabAction" text="CompletedEvents" />
+                  <Tab fx:id="searchTab" onSelectionChanged="#searchTabAction" text="Search">
                      <content>
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
                      </content>
-                  </Tab>
-                  <Tab fx:id="completedEventTab" onSelectionChanged="#completedEventTabAction" text="CompletedEvents">
-                    <content>
-                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-                    </content>
-                  </Tab>
-                  <Tab fx:id="searchTab" onSelectionChanged="#searchTabAction" text="Search">
-                    <content>
-                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-                    </content>
                   </Tab>
                </tabs>
             </TabPane>
@@ -59,20 +51,20 @@
                   <Font name="Tw Cen MT" size="14.0" />
                </font>
             </TextField>
-            <HBox id="HBox" alignment="CENTER" layoutX="384.0" layoutY="-13.0" prefHeight="26.0" prefWidth="200.0" spacing="15.0">
-               <children>
-                  <Button id="button1" fx:id="newTask" onAction="#newTaskFired" text="New" />
-                  <Button id="button1" fx:id="editTask" text="Edit" />
-                  <Button id="button1" fx:id="deleteTask" text="Delete" />
-               </children>
-            </HBox>
             <Button fx:id="enterCommand" layoutX="526.0" layoutY="441.0" mnemonicParsing="false" onAction="#enterCommandFired" text="Enter" />
-            <Label fx:id="returnMsg" layoutX="14.0" layoutY="476.0" prefHeight="11.0" prefWidth="8.0">
+            <Label fx:id="returnMsg" alignment="CENTER" contentDisplay="CENTER" layoutX="14.0" layoutY="476.0" prefHeight="15.0" prefWidth="526.0" textAlignment="CENTER" textFill="#ff0101">
                <font>
                   <Font name="Andale Mono" size="10.0" />
                </font>
             </Label>
          </children>
       </AnchorPane>
+      <HBox id="HBox" alignment="CENTER" layoutX="367.0" layoutY="22.0" prefHeight="26.0" prefWidth="217.0" spacing="15.0">
+         <children>
+            <Button id="button1" fx:id="newTask" onAction="#newTaskFired" text="New" />
+            <Button id="button1" fx:id="editTask" text="Edit" />
+            <Button id="button1" fx:id="deleteTask" onAction="#deleteItems" text="Delete" />
+         </children>
+      </HBox>
    </children>
 </Pane>

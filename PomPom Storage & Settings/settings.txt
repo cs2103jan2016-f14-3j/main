@@ -1,0 +1,3 @@
+{
+  "StoragePath": "PomPom Storage \u0026 Settings/Storage.txt"
+}

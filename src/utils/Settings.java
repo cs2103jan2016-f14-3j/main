@@ -1,7 +1,7 @@
 package utils;
 
 /**
- * @author A0121628L
+ * @@author A0121628L
  *
  */
 public class Settings {

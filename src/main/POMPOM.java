@@ -12,6 +12,10 @@ import parser.Parser;
 import storage.Storage;
 import utils.Item;
 
+/**
+ * @@author wen hao
+ *
+ */
 public class POMPOM {
 
 	public static final String STATUS_PENDING = "pending";
@@ -19,6 +23,11 @@ public class POMPOM {
 	public static final String STATUS_COMPLETED = "completed";
 	public static final String STATUS_OVERDUE = "overdue";
 	public static final String STATUS_FLOATING = "floating";
+	
+	public static final String PRIORITY_HIGH = "high";
+	public static final String PRIORITY_MED = "medium";
+	public static final String PRIORITY_LOW = "low";
+	
 
 	public static final String LABEL_TASK = "Task";
 	public static final String LABEL_COMPLETED_TASK = "CompletedTask";
@@ -54,7 +63,7 @@ public class POMPOM {
 		}
 	}
 
-	public void refreshStatus() {
+	public static void refreshStatus() {
 		ArrayList<Item> taskList = storage.getTaskList();
 		Date currentDate = new Date();
 
@@ -63,35 +72,51 @@ public class POMPOM {
 			Date taskStartDate = currentTask.getStartDate();
 			Date taskEndDate = currentTask.getEndDate();
 
-			if (taskStartDate == null && taskEndDate == null) {
-				currentTask.setStatus(STATUS_FLOATING);
+			if (currentTask.getType().equals(LABEL_TASK)) {
 
-			} else if (taskStartDate == null) {
+				if (taskStartDate == null && taskEndDate == null) {
+					currentTask.setStatus(STATUS_FLOATING);
 
-				if (currentDate.before(taskEndDate)) {
-					currentTask.setStatus(STATUS_ONGOING);
-				} else if (!currentTask.getStatus().equals(STATUS_COMPLETED)) {
-					currentTask.setStatus(STATUS_OVERDUE);
-				}
+				} else if (taskStartDate == null) {
 
-			} else if (taskEndDate == null) {
+					if (currentDate.before(taskEndDate)) {
+						currentTask.setStatus(STATUS_ONGOING);
+					} else if (!currentTask.getStatus().equals(STATUS_COMPLETED)) {
+						currentTask.setStatus(STATUS_OVERDUE);
+					}
 
-				if (taskStartDate.after(currentDate)) {
+				} else if (taskEndDate == null) {
+
+					if (taskStartDate.after(currentDate)) {
+						currentTask.setStatus(STATUS_PENDING);
+					} else if (taskStartDate.before(currentDate) && isNotCompleted(currentTask)) {
+						currentTask.setStatus(STATUS_ONGOING);
+					}
+
+				} else if (currentDate.before(taskStartDate)) {
 					currentTask.setStatus(STATUS_PENDING);
-				} else if (taskStartDate.before(currentDate) && isNotCompleted(currentTask)) {
+
+				} else if (currentDate.compareTo(taskStartDate) >= 0 && currentDate.before(taskEndDate)
+						&& isNotCompleted(currentTask)) {
 					currentTask.setStatus(STATUS_ONGOING);
+
+				} else if (currentDate.after(taskEndDate) && isNotCompleted(currentTask)) {
+					currentTask.setStatus(STATUS_OVERDUE);
+
 				}
 
-			} else if (currentDate.before(taskStartDate)) {
-				currentTask.setStatus(STATUS_PENDING);
-
-			} else if (currentDate.compareTo(taskStartDate) >= 0 && currentDate.before(taskEndDate)
-					&& isNotCompleted(currentTask)) {
-				currentTask.setStatus(STATUS_ONGOING);
-
-			} else if (currentDate.after(taskEndDate) && isNotCompleted(currentTask)) {
-				currentTask.setStatus(STATUS_OVERDUE);
-
+			} else {
+				
+				if (currentDate.before(taskStartDate)) {
+					currentTask.setStatus(STATUS_PENDING);
+				} else if (currentDate.after(taskStartDate) && taskEndDate == null) {
+					currentTask.setStatus(STATUS_ONGOING);
+				} else if (currentDate.after(taskStartDate) && currentDate.before(taskEndDate)) {
+					currentTask.setStatus(STATUS_ONGOING);
+				} else if (currentDate.after(taskStartDate) && currentDate.after(taskEndDate)) {
+					currentTask.setStatus(STATUS_COMPLETED);
+				}
+				
 			}
 		}
 	}
@@ -99,7 +124,6 @@ public class POMPOM {
 	public String execute(String input) {
 		Parser parser = Parser.getInstance();
 		Command command = parser.executeCommand(input);
-		System.out.println(command);
 		String returnMsg = command.execute();
 		refreshStatus();
 		return returnMsg;
@@ -107,13 +131,14 @@ public class POMPOM {
 
 	public static String executeCommand(Command executable) {
 		String returnMsg = executable.execute();
+		refreshStatus();
 		return returnMsg;
 	}
-	
+
 	private static boolean isNotCompleted(Item item) {
-		
+
 		return !item.getStatus().equals(STATUS_COMPLETED);
-		
+
 	}
 
 	public static PrettyTimeParser getTimeParser() {
@@ -128,7 +153,7 @@ public class POMPOM {
 		return storage;
 	}
 
-	public static Stack getUndoStack() {
+	public static Stack<Command> getUndoStack() {
 		return undoStack;
 	}
 
@@ -138,7 +163,7 @@ public class POMPOM {
 	}
 
 	public static String getCurrentTab() {
-		return currentTab;
+		return POMPOM.currentTab;
 	}
 
 	public static void setCurrentTab(String setTab) {

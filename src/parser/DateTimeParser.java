@@ -58,7 +58,7 @@ public class DateTimeParser{
 		//extracts the field related to the parse type.
 		commandArgumentsString = extractFieldByParseType(parseType, commandArgumentsString);
 		
-		//corrects the string if
+		//corrects the string if in a mm/dd/yyyy format
 		originalString=correctDateFormat(commandArgumentsString);
 		processFieldByParseType(parseType); 
 		
@@ -67,6 +67,8 @@ public class DateTimeParser{
 		if (isFlippedDate){
 			dateTimeString=reverseCorrectDateFormat(dateTimeString);
 		}
+		
+		
 		
 	}
 	

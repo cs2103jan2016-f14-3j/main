@@ -3,7 +3,10 @@ package command;
 import java.io.IOException;
 
 import main.POMPOM;
-
+/**
+ * @@author wen hao
+ *
+ */
 public class ExitCommand {
 	
 	public ExitCommand() {

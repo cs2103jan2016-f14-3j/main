@@ -1,12 +1,12 @@
 package gui;
 
-import java.awt.Desktop.Action;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.ResourceBundle;
 
+import command.DelCommand;
 import main.POMPOM;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -18,8 +18,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
@@ -35,13 +33,16 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import utils.Item;
 import utils.ListClassifier;
 
+/**
+ * @@author Jorel
+ *
+ */
 public class Controller implements Initializable {
 	@FXML
 	Pane mainContent;
@@ -52,13 +53,19 @@ public class Controller implements Initializable {
 	@FXML
 	Button settingBtn;
 	@FXML
+	ImageView highPBtn;
+	@FXML
+	ImageView mediumPBtn;
+	@FXML
+	ImageView lowPBtn;
+	@FXML
 	Button newTask;
 	@FXML
 	Button editTask;
 	@FXML
-	Button saveTask;
-	@FXML
 	Button deleteTask;
+	@FXML
+	Button help;
 	@FXML
 	Button enterCommand;
 	@FXML
@@ -69,6 +76,7 @@ public class Controller implements Initializable {
 	TableColumn<Item, String> taskName;
 	@FXML
 	TableColumn<Item, Boolean> checkBox;
+
 	@FXML
 	TableColumn<Item, Date> taskStartDateTime;
 	@FXML
@@ -80,13 +88,13 @@ public class Controller implements Initializable {
 	@FXML
 	TableColumn<Item, String> taskStatus;
 	@FXML
-	ListView<String> list;
-	@FXML
 	TextField inputCommand;
 	@FXML
 	Label returnMsg;
 	@FXML
 	Label label;
+	@FXML
+	Label priorityLabel;
 	@FXML
 	TabPane tabViews;
 	@FXML
@@ -102,17 +110,17 @@ public class Controller implements Initializable {
 	private boolean initialized = false;
 
 	ArrayList<Item> displayList;
-	
-	Node node;
 
+	Node node;
 
 	ObservableList<String> taskView = FXCollections.observableArrayList();
 	static ObservableList<Item> tableContent;
-	POMPOM pompom = new POMPOM();
+	POMPOM pompom;
 
 	public static ObservableList<Item> getTableContent() {
 		return tableContent;
 	}
+
 	public ArrayList<Item> getDisplayList() {
 		return displayList;
 	}
@@ -125,7 +133,6 @@ public class Controller implements Initializable {
 	public void initialize(URL location, ResourceBundle resources) {
 		assert newTask != null : "fx:id=\"newTask\" was not injected: check your FXML file 'POMPOM.fxml'.";
 		assert editTask != null : "fx:id=\"editTask\" was not injected: check your FXML file 'POMPOM.fxml'.";
-		assert saveTask != null : "fx:id=\"saveTask\" was not injected: check your FXML file 'POMPOM.fxml'.";
 		assert deleteTask != null : "fx:id=\"deleteTask\" was not injected: check your FXML file 'POMPOM.fxml'.";
 		assert enterCommand != null : "fx:id=\"enterCommand\" was not injected: check your FXML file 'POMPOM.fxml'.";
 		assert table != null : "fx:id=\"table\" was not injected: check your FXML file 'POMPOM.fxml'.";
@@ -138,10 +145,14 @@ public class Controller implements Initializable {
 		assert taskPriority != null : "fx:id=\"taskPriority\" was not injected: check your FXML file 'POMPOM.fxml'.";
 		assert taskStatus != null : "fx:id=\"taskStatus\" was not injected: check your FXML file 'POMPOM.fxml'.";
 		assert inputCommand != null : "fx:id=\"inputCommand\" was not injected: check your FXML file 'POMPOM.fxml'.";
+		// Initialize main logic class
+		pompom = new POMPOM();
 
 		System.out.println(this.getClass().getSimpleName() + ".initialize");
+		// Initialize on task tab
 		POMPOM.setCurrentTab(POMPOM.LABEL_TASK);
-		displayList = ListClassifier.getTaskList(POMPOM.getStorage().getTaskList());
+		displayList = ListClassifier.getTaskList(POMPOM.getStorage()
+				.getTaskList());
 		configureButtons();
 		configureTable();
 		initialized = true;
@@ -152,17 +163,50 @@ public class Controller implements Initializable {
 		if (newTask != null) {
 			newTask.setDisable(false);
 		}
-		if (saveTask != null) {
-			saveTask.setDisable(true);
-		}
 		if (editTask != null) {
 			editTask.setDisable(true);
 		}
 		if (deleteTask != null) {
-			deleteTask.setDisable(true);
+			deleteTask.setDisable(false);
 		}
 		if (enterCommand != null) {
 			enterCommand.setDisable(false);
+		}
+	}
+
+	@FXML
+	private void deleteItems() throws IOException {
+		int rows = table.getItems().size();
+		System.out.println("arara: " + checkBox.getCellData(0));
+		for (int i = 0; i < rows; i++) {
+			if (checkBox.getCellData(i) == true) {
+				// Change to logger
+				System.out.println("ID Deleted: "
+						+ Long.parseLong(taskID.getCellData(i).toString()));
+				DelCommand delCommand = new DelCommand(Long.parseLong(taskID
+						.getCellData(i).toString()));
+				POMPOM.executeCommand(delCommand);
+				configureTable();
+				POMPOM.getStorage().saveStorage();
+			}
+		}
+		switchToTab(POMPOM.getCurrentTab().toLowerCase());
+	}
+
+	@FXML
+	private void editItem() throws IOException {
+		Item item = table.getSelectionModel().getSelectedItem();
+		if (item != null) {
+			boolean okClicked = main.editTaskDialog(item);
+			if (okClicked) {
+				configureTable();
+			}
+		}
+	}
+
+	public void enableEditBtn(MouseEvent event) {
+		if (event.isPrimaryButtonDown() && event.getClickCount() == 1) {
+			editTask.setDisable(false);
 		}
 	}
 
@@ -171,7 +215,11 @@ public class Controller implements Initializable {
 		taskID.setCellValueFactory(new PropertyValueFactory<Item, Number>("id"));
 		taskName.setCellValueFactory(new PropertyValueFactory<Item, String>(
 				"title"));
+
+		// Checkbox init
 		checkBox.setCellFactory(CheckBoxTableCell.forTableColumn(checkBox));
+		checkBox.setCellValueFactory(c -> c.getValue().checkedProperty());
+
 		taskStartDateTime
 				.setCellValueFactory(new PropertyValueFactory<Item, Date>(
 						"startDate"));
@@ -185,106 +233,121 @@ public class Controller implements Initializable {
 						"priority"));
 		taskStatus.setCellValueFactory(new PropertyValueFactory<Item, String>(
 				"status"));
+
 		tableContent = FXCollections.observableArrayList(displayList);
 		table.setItems(tableContent);
 		table.refresh();
 
 	}
-	
-	public void newTaskFired(ActionEvent event) {
-		main.newTaskDialog();
+
+	public void newTaskFired(ActionEvent event) throws IOException {
+		boolean okClicked = main.newTaskDialog();
+		if (okClicked) {
+			System.out.println(okClicked);
+			configureTable();
+		}
+	}
+
+	public void helpFired(ActionEvent event) {
+		main.helpDialog();
 	}
 
 	public void toSettingsView(MouseEvent event) throws IOException {
+		content.getChildren().clear();
 		node = (Node) FXMLLoader.load(getClass().getResource("Settings.fxml"));
 		content.getChildren().setAll(node);
 	}
 
 	public void toDashBoardView(MouseEvent event) throws IOException {
+		content.getChildren().clear();
 		node = (Node) FXMLLoader.load(getClass().getResource("Dashboard.fxml"));
 		content.getChildren().setAll(node);
 	}
 
-
 	// New methods by wei lip
 
-	
-	
-	
-	public void switchToTab(String type) {
+	public void switchToTab(String inputTab) {
+		String tabName = inputTab.toLowerCase();
 		SingleSelectionModel<Tab> selectionModel = tabViews.getSelectionModel();
-		if (type.equals(POMPOM.LABEL_TASK.toLowerCase())) {
+
+		if (tabName.equals(POMPOM.LABEL_TASK.toLowerCase())) {
+			System.out.println("Teasdat :" + tabName);
 			selectionModel.select(taskTab);
 			taskTabAction();
-		} else if (type.equals(POMPOM.LABEL_COMPLETED_TASK.toLowerCase())) {
+		} else if (tabName.equals(POMPOM.LABEL_COMPLETED_TASK.toLowerCase())) {
 			selectionModel.select(taskTab);
 			completedTaskTabAction();
-		} else if (type.equals(POMPOM.LABEL_EVENT.toLowerCase())) {
+		} else if (tabName.equals(POMPOM.LABEL_EVENT.toLowerCase())) {
+			System.out.println("evenets");
 			selectionModel.select(eventTab);
 			eventTabAction();
-		} else if (type.equals(POMPOM.LABEL_COMPLETED_EVENT.toLowerCase())) {
+		} else if (tabName.equals(POMPOM.LABEL_COMPLETED_EVENT.toLowerCase())) {
 			selectionModel.select(eventTab);
 			completedEventTabAction();
-		}else if (type.equals(POMPOM.LABEL_SEARCH.toLowerCase())) {
+		} else if (tabName.equals(POMPOM.LABEL_SEARCH.toLowerCase())) {
 			System.out.println("SEARCH TESET");
 			selectionModel.select(searchTab);
 			searchTabAction();
 		}
-		return;
 	}
 
+	@FXML
 	public void taskTabAction() {
 		if (!initialized)
 			return;
-		displayList = ListClassifier.getTaskList(POMPOM.getStorage().getTaskList());
+
+		displayList = ListClassifier.getTaskList(POMPOM.getStorage()
+				.getTaskList());
 		configureTable();
-		POMPOM.setCurrentTab(POMPOM.LABEL_TASK);
+		POMPOM.setCurrentTab(POMPOM.LABEL_TASK.toLowerCase());
 	}
 
+	@FXML
 	public void completedTaskTabAction() {
-		if (!initialized){
+		if (!initialized) {
 			return;
 		}
-		displayList = ListClassifier
-				.getDoneTaskList(POMPOM.getStorage().getTaskList());
+		displayList = ListClassifier.getDoneTaskList(POMPOM.getStorage()
+				.getTaskList());
 		configureTable();
-		POMPOM.setCurrentTab(POMPOM.LABEL_COMPLETED_TASK);
+		POMPOM.setCurrentTab(POMPOM.LABEL_COMPLETED_TASK.toLowerCase());
 	}
 
+	@FXML
 	public void eventTabAction() {
-		displayList = ListClassifier.getEventList(POMPOM.getStorage().getTaskList());
+		System.out.println("cleared");
+		displayList = ListClassifier.getEventList(POMPOM.getStorage()
+				.getTaskList());
 		configureTable();
-		POMPOM.setCurrentTab(POMPOM.LABEL_EVENT);
+		POMPOM.setCurrentTab(POMPOM.LABEL_EVENT.toLowerCase());
+		System.out.println("eventtabaction: " + POMPOM.getCurrentTab());
 	}
 
+	@FXML
 	public void completedEventTabAction() {
 		displayList = ListClassifier.getDoneEventList(POMPOM.getStorage()
 				.getTaskList());
 		configureTable();
-		POMPOM.setCurrentTab(POMPOM.LABEL_COMPLETED_EVENT);
+		POMPOM.setCurrentTab(POMPOM.LABEL_COMPLETED_EVENT.toLowerCase());
 	}
-	public void searchTabAction(){
-		if(POMPOM.getSearchList() != null){
+
+	public void searchTabAction() {
+		if (POMPOM.getSearchList() != null) {
 			displayList = POMPOM.getSearchList();
 		}
 		configureTable();
-		POMPOM.setCurrentTab(POMPOM.LABEL_SEARCH);
+		POMPOM.setCurrentTab(POMPOM.LABEL_SEARCH.toLowerCase());
 	}
-	
-	
-	
-	
-	
 
-	// //////////           Wei LIP             ////////////
-	
+	// ////////// Wei LIP ////////////
+
 	public void enterCommandFired(ActionEvent event) throws IOException {
 		Timeline timeline = new Timeline();
 		String input = inputCommand.getText();
 		inputCommand.clear();
 		msg = pompom.execute(input);
-		switchToTab(POMPOM.currentTab.toLowerCase());
-		
+		switchToTab(POMPOM.getCurrentTab().toLowerCase());
+
 		timeline.getKeyFrames().add(
 				new KeyFrame(Duration.seconds(0), new KeyValue(returnMsg
 						.textProperty(), msg)));
@@ -296,18 +359,21 @@ public class Controller implements Initializable {
 		POMPOM.getStorage().saveStorage();
 		inputCommand.setPromptText("Command:");
 	}
-	
+
 	public void enterCommandKey(KeyEvent event) throws IOException {
 		Timeline timeline = new Timeline();
 		if (event.getCode().equals(KeyCode.ENTER)) {
 			String input = inputCommand.getText();
 			msg = pompom.execute(input);
-			switchToTab(POMPOM.currentTab.toLowerCase());
+			switchToTab(POMPOM.getCurrentTab().toLowerCase());
+			timeline.getKeyFrames().add(
+					new KeyFrame(Duration.seconds(0), new KeyValue(returnMsg
+							.textProperty(), msg)));
 			timeline.getKeyFrames().add(
 					new KeyFrame(Duration.seconds(2), new KeyValue(returnMsg
-							.textProperty(), msg)));
+							.textProperty(), " ")));
 			timeline.play();
-			returnMsg.setText("");
+			configureTable();
 			POMPOM.getStorage().saveStorage();
 			inputCommand.clear();
 			inputCommand.setPromptText("Command:");
@@ -315,9 +381,5 @@ public class Controller implements Initializable {
 		}
 
 	}
-	
-	
-
-	
 
 }

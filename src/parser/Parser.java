@@ -67,7 +67,7 @@ public class Parser{
 				AddParser addTaskArgumentParser = new AddParser(commandArgument, POMPOM.LABEL_TASK);
 				return addTaskArgumentParser.getCommand();
 			case CMD_EVENT:
-				AddParser addEventArgumentParser = new AddParser(commandArgument, POMPOM.LABEL_EVENT);
+				AddEventParser addEventArgumentParser = new AddEventParser(commandArgument);
 				return addEventArgumentParser.getCommand();
 			case CMD_DELETE:
 				DeleteParser deleteArgumentParser = new DeleteParser(commandArgument);
@@ -93,8 +93,7 @@ public class Parser{
 				return helpParser.executeCommand();
 			case CMD_PATH:
 				return new PathCommand(commandArgument);
-
-	}
+	}	
 		InvalidParser InvalidArgumentParser = new InvalidParser(userCommand);
 		return InvalidArgumentParser.executeCommand();
 

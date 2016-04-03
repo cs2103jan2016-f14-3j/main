@@ -3,7 +3,7 @@ package parser;
 
 import java.util.ArrayList;
 import java.util.Date;
-import command.InvalidCommand;
+
 import org.ocpsoft.prettytime.nlp.parse.DateGroup;
 
 import static org.junit.Assert.assertNotNull;
@@ -11,6 +11,7 @@ import static org.junit.Assert.assertFalse;
 import command.Command;
 import main.POMPOM;
 import command.AddCommand;
+import command.InvalidCommand;
 import command.AddRecurringCommand;
 
 
@@ -30,6 +31,7 @@ public class AddParser extends ArgsParser{
 	private String itemEndDateTitle=""; //for use if title is empty.
 	private Date exceptStartDate;
 	private Date exceptEndDate;
+	private boolean isValidArguments = true;
 	
 	private static final int INDEX_INVALID = -1;
 	private static final int INDEX_COMMAND_BEGIN = 0;
@@ -78,14 +80,12 @@ public class AddParser extends ArgsParser{
 	 */
 	private void extractDataFromArguments() {
 		extractPriority();
-		extractStatus();
 		extractLabel();
 		extractRecurring();
 		extractStartDate();
 		extractEndDate();	
 		extractDescription();	
 		extractTitle();
-		
 	}
 	
 	/*
@@ -102,7 +102,7 @@ public class AddParser extends ArgsParser{
 	private void extractTitle() {
 		if (hasNoTitleToExtract()){
 			itemTitle=itemEndDateTitle;
-			itemEndDate = new Date();
+			itemEndDate = null;
 		} else{
 			itemTitle = commandArgumentsString.trim();
 		}
@@ -115,11 +115,15 @@ public class AddParser extends ArgsParser{
 	 * the newly created AddCommand() object.
 	 */
 	protected Command getCommand(){
-		if (itemIsRecurring){
-			ArrayList<AddCommand> addCommandList= executeRecurring();
-			return checkAndReturnAddRecurringCommand(addCommandList);
+		if (isValidArguments){
+			if (itemIsRecurring){
+				ArrayList<AddCommand> addCommandList= executeRecurring();
+				return checkAndReturnAddRecurringCommand(addCommandList);
+			} else{
+				return getNonRecurringCommand();
+			}
 		} else{
-			return getNonRecurringCommand();
+			return new InvalidCommand(commandArgumentsString);
 		}
 	}
 	
@@ -150,8 +154,6 @@ public class AddParser extends ArgsParser{
 		} else{
 			return createTaskAddCommand(currentDate);
 		}
-		
-		
 	}
 
 
@@ -172,7 +174,7 @@ public class AddParser extends ArgsParser{
 	}
 	
 	private Command createEventAddCommand(Date currentDate) {
-		if (isValidEvent()){
+		if (!hasAllFieldsFilled()){
 			return new InvalidCommand(commandArgumentsString);
 		} else {
 			return new AddCommand(POMPOM.LABEL_EVENT, itemTitle, itemDescription, itemPriority, 
@@ -269,19 +271,7 @@ public class AddParser extends ArgsParser{
 		int indexFieldEnd = getIndexOfNextField(indexOfPrefix, COMMAND_PREFIX_PRIORITY);
 		if (isValidIndex(indexOfPrefix)){
 			itemPriority = extractFieldData(indexOfPrefix, indexFieldEnd, COMMAND_PREFIX_PRIORITY).trim();
-			commandArgumentsString = removeFieldFromArgument(indexOfPrefix, indexFieldEnd);
-		}
-	}
-	
-	/**
-	 *  This method removes the status field from commandArgumentsString and updates 
-	 *  the status variable (itemStatus).
-	 */
-	public void extractStatus(){
-		int indexOfPrefix = commandArgumentsString.indexOf(COMMAND_PREFIX_STATUS); 
-		int indexFieldEnd = getIndexOfNextField(indexOfPrefix, COMMAND_PREFIX_STATUS);
-		if (isValidIndex(indexOfPrefix)){
-			itemStatus = extractFieldData(indexOfPrefix, indexFieldEnd, COMMAND_PREFIX_STATUS);
+			isValidArguments = isValidPriority(itemPriority);
 			commandArgumentsString = removeFieldFromArgument(indexOfPrefix, indexFieldEnd);
 		}
 	}
@@ -305,8 +295,10 @@ public class AddParser extends ArgsParser{
 	 */
 	public void extractStartDate(){
 		DateTimeParser startDateTimeParser = new DateTimeParser(DATETIMEPARSER_INDICATOR_START,commandArgumentsString);	
+		
 		commandArgumentsString = commandArgumentsString.replace(startDateTimeParser.getString(), STRING_EMPTY);
 		itemStartDate=startDateTimeParser.getDate();
+		isValidArguments = isValidDate(itemStartDate);
 		
 	}
 	
@@ -318,6 +310,7 @@ public class AddParser extends ArgsParser{
 		DateTimeParser endDateTimeParser = new DateTimeParser(DATETIMEPARSER_INDICATOR_END,commandArgumentsString);
 		commandArgumentsString = commandArgumentsString.replace(endDateTimeParser.getString(), STRING_EMPTY);
 		itemEndDate = endDateTimeParser.getDate();
+		isValidArguments = isValidDate(itemEndDate);
 		itemEndDateTitle= endDateTimeParser.getString();
 	}
 	
@@ -435,6 +428,21 @@ public class AddParser extends ArgsParser{
 		return itemRecurringPeriod;
 	}
 	
+	public DateGroup getItemRecurringDateGroup(){
+		return itemRecurringDateGroup;
+	}
+	
+	private boolean isValidPriority(String priorityString){
+		priorityString = priorityString.toLowerCase();
+		return (priorityString.equals(POMPOM.PRIORITY_HIGH)
+				|| priorityString.equals(POMPOM.PRIORITY_MED)
+				|| priorityString.equals(POMPOM.PRIORITY_LOW));
+	}
+	
+	private boolean isValidDate(Date parsedDate){
+		return parsedDate==null;
+	}
+	
 	public boolean isNullTitle(){
 		return itemTitle==null;
 	}
@@ -488,8 +496,14 @@ public class AddParser extends ArgsParser{
 				&& isNullEndDate());
 	}
 	
-	public boolean isValidEvent(){
-		return !(isNullEndDate());
+	public boolean hasAllFieldsFilled(){
+		return !(isNullTitle()
+				|| isNullDescription() 
+				|| isNullPriority()
+				|| isNullStatus()
+				|| isNullLabel()
+				|| isNullEndDate()
+				|| isNullStartDate());
 	}
 
 	private boolean isValidIndex(int index) {
