@@ -13,18 +13,18 @@ import utils.Item;
  *
  */
 public class AddCommand extends Command {
-	
-	private static final String MESSAGE_TASK_ADDED = "%s added";	
+
+	private static final String MESSAGE_TASK_ADDED = "%s added";
 	private Item task;
 	private boolean isUndo;
-	
-	public AddCommand(String type, String title, String description, String priority, 
-			String status, String label, Date startDate, Date endDate) {
+
+	public AddCommand(String type, String title, String description, String priority, String status, String label,
+			Date startDate, Date endDate) {
 
 		task = new Item();
 		isUndo = false;
 		assertNotNull(title);
-		
+
 		Long id = POMPOM.getStorage().getIdCounter();
 		task.setId(id);
 		task.setType(type);
@@ -35,17 +35,19 @@ public class AddCommand extends Command {
 		task.setLabel(label);
 		task.setStartDate(startDate);
 		task.setEndDate(endDate);
-		
+		task.setRecurring(false);
+
 		logger.log(Level.INFO, "AddCommand initialized");
 	}
-	
-	public AddCommand(Long id, String type, String title, String description, String priority, 
-			String status, String label, Date startDate, Date endDate) {
+
+	public AddCommand(String type, String title, String description, String priority, String status, String label,
+			Date startDate, Date endDate, boolean isRecurring) {
 
 		task = new Item();
-		isUndo = true;
+		isUndo = false;
 		assertNotNull(title);
-		
+
+		Long id = POMPOM.getStorage().getIdCounter();
 		task.setId(id);
 		task.setType(type);
 		task.setTitle(title);
@@ -55,51 +57,95 @@ public class AddCommand extends Command {
 		task.setLabel(label);
 		task.setStartDate(startDate);
 		task.setEndDate(endDate);
-		
+		task.setRecurring(false);
+
+		logger.log(Level.INFO, "Recurring AddCommand initialized");
+	}
+
+	public AddCommand(Long id, String type, String title, String description, String priority, String status,
+			String label, Date startDate, Date endDate, boolean isRecurring, Long prevId, Long nextId) {
+
+		task = new Item();
+		isUndo = true;
+		assertNotNull(title);
+
+		task.setId(id);
+		task.setType(type);
+		task.setTitle(title);
+		task.setDescription(description);
+		task.setPriority(priority);
+		task.setStatus(status);
+		task.setLabel(label);
+		task.setStartDate(startDate);
+		task.setEndDate(endDate);
+		task.setRecurring(isRecurring);
+		task.setPrevId(prevId);
+		task.setNextId(nextId);
+
 		logger.log(Level.INFO, "Counter action AddCommand initialized");
 	}
-	
+
 	private void storeTask() {
 		POMPOM.getStorage().getTaskList().add(task);
 	}
-	
+
 	private Command createCounterAction() {
 		DelCommand counterAction = new DelCommand(task.getId(), true);
 		return counterAction;
 	}
-	
+
 	private void updateUndoStack() {
 		Command counterAction = createCounterAction();
 		POMPOM.getUndoStack().push(counterAction);
 	}
+
+	private void setProperPointers() {
 		
+		Item currentTask = task;
+		
+		if (!(currentTask.getPrevId() == null)) {
+			Item prevTask = getTask(currentTask.getPrevId());
+			prevTask.setNextId(currentTask.getId());
+		}
+		
+		if (!(currentTask.getNextId() < currentTask.getId())) {
+			Item nextTask = getTask(currentTask.getNextId());
+			nextTask.setPrevId(currentTask.getId());
+		}
+		
+	}
+
 	public String execute() {
-		
-		if (!isUndo) updateUndoStack();
+
+		if (!isUndo)
+			updateUndoStack();
 		storeTask();
-		
+
+		if (task.getIsRecurring())
+			setProperPointers();
+
 		if (task.getType().equals(POMPOM.LABEL_EVENT)) {
 			returnMsg = String.format(MESSAGE_TASK_ADDED, POMPOM.LABEL_EVENT);
-			
+
 			if (task.getStatus().equals(POMPOM.STATUS_OVERDUE)) {
 				POMPOM.setCurrentTab(POMPOM.LABEL_COMPLETED_EVENT);
 			} else {
 				POMPOM.setCurrentTab(POMPOM.LABEL_EVENT);
 			}
-			
+
 		} else {
 			returnMsg = String.format(MESSAGE_TASK_ADDED, POMPOM.LABEL_TASK);
-			
+
 			if (task.getStatus().equals(POMPOM.STATUS_OVERDUE)) {
 				POMPOM.setCurrentTab(POMPOM.LABEL_COMPLETED_TASK);
 			} else {
 				POMPOM.setCurrentTab(POMPOM.LABEL_TASK);
 			}
-			
+
 		}
-		
+
 		logger.log(Level.INFO, "AddCommand has be executed");
 		return returnMsg;
 	}
-	
+
 }
