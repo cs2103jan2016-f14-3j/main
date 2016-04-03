@@ -31,13 +31,43 @@ public class AddParserTest{
 	}
 	
 	/*
-	 * Tests if can set priority, priority has space
+	 * Tests if can set priority normally
 	 */
 	@Test
 	public void testAddCommandPriority(){
-		AddParser add = new AddParser("do project p:high priority",POMPOM.LABEL_TASK);
+		AddParser add = new AddParser("do project p:high",POMPOM.LABEL_TASK);
 		assertEquals("do project",add.getTitle());
-		assertEquals("high priority",add.getPriority());
+		assertEquals("high",add.getPriority());
+		assertNull(add.getEndDate());
+		assertNull(add.getStartDate());
+		assertNull(add.getDescription());
+		assertNull(add.getStatus());
+		assertNull(add.getLabel());	
+	}
+	
+	/*
+	 * Tests if can set priority normally (with a space in between)
+	 */
+	@Test
+	public void testAddCommandPriority2(){
+		AddParser add = new AddParser("do project p: high",POMPOM.LABEL_TASK);
+		assertEquals("do project",add.getTitle());
+		assertEquals("high",add.getPriority());
+		assertNull(add.getEndDate());
+		assertNull(add.getStartDate());
+		assertNull(add.getDescription());
+		assertNull(add.getStatus());
+		assertNull(add.getLabel());	
+	}
+	
+	/*
+	 * Tests if can set priority with shortcut
+	 */
+	@Test
+	public void testAddCommandPriorityShortcut(){
+		AddParser add = new AddParser("do project p:h",POMPOM.LABEL_TASK);
+		assertEquals("do project",add.getTitle());
+		assertEquals("high",add.getPriority());
 		assertNull(add.getEndDate());
 		assertNull(add.getStartDate());
 		assertNull(add.getDescription());
@@ -59,6 +89,21 @@ public class AddParserTest{
 		assertNull(add.getStatus());
 		assertNull(add.getPriority());	
 		
+	}
+	
+	/*
+	 * Tests if can set label and priority
+	 */
+	@Test
+	public void testAddCommandLabelAndPriority(){
+		AddParser add = new AddParser("do project l: school work p: high",POMPOM.LABEL_TASK);
+		assertEquals("do project",add.getTitle());
+		assertEquals("school work",add.getLabel());
+		assertEquals("high",add.getPriority());
+		assertNull(add.getEndDate());
+		assertNull(add.getStartDate());
+		assertNull(add.getDescription());
+		assertNull(add.getStatus());	
 	}
 	
 	/*
@@ -207,6 +252,21 @@ public class AddParserTest{
 	 */
 	@Test
 	public void testAddCommand9(){
+		AddParser add = new AddParser("2103",POMPOM.LABEL_TASK);
+		assertEquals("2103",add.getTitle());
+		assertNull(add.getEndDate());
+		assertNull(add.getStartDate());
+		assertNull(add.getDescription());
+		assertNull(add.getStatus());
+		assertNull(add.getLabel());	
+		assertNull(add.getPriority());
+	}	
+	
+	/*
+	 * Tests if can add in a task with only a parsable title 
+	 */
+	@Test
+	public void testAddCommandInvalidPriority(){
 		AddParser add = new AddParser("2103",POMPOM.LABEL_TASK);
 		assertEquals("2103",add.getTitle());
 		assertNull(add.getEndDate());

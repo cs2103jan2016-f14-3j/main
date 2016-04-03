@@ -28,11 +28,11 @@ public class DateTimeParser{
 	
 	private boolean isFlippedDate=false;
 	
-	private static final String COMMAND_PREFIX_STARTDATE = "f:";
-	private static final String COMMAND_PREFIX_ENDDATE = "e:";
+
 	private static final String COMMAND_PREFIX_RECURRING = "every";
 	private static final String COMMAND_PREFIX_EXCEPT = "except";
-
+	private static final String COMMAND_PREFIX_STARTDATE = "f:";
+	private static final String COMMAND_PREFIX_ENDDATE = "e:";
 	private static final String INDICATOR_START = "start";
 	private static final String INDICATOR_END = "end";
 	private static final String INDICATOR_RECURRING = "recurring";	
@@ -67,9 +67,6 @@ public class DateTimeParser{
 		if (isFlippedDate){
 			dateTimeString=reverseCorrectDateFormat(dateTimeString);
 		}
-		
-		
-		
 	}
 	
 	private void processFieldByParseType(String parseType) {
@@ -216,9 +213,12 @@ public class DateTimeParser{
 		if (!hasStartPrefix(originalString)){
 			return;
 		}
-		originalString = originalString.replace(COMMAND_PREFIX_STARTDATE,STRING_EMPTY);
-		List<DateGroup> dateGroup = parseAndCheckDate(originalString);
-		dateTimeString = COMMAND_PREFIX_STARTDATE + dateTimeString;
+		List<DateGroup> dateGroup = parseAndCheckDate(originalString.replace(COMMAND_PREFIX_STARTDATE,STRING_EMPTY));
+		String parsedDateString = dateGroup.get(0).getText();
+		int fromFieldStartIndex = originalString.indexOf("f:");
+		int fromFieldEndIndex = originalString.indexOf(parsedDateString)+parsedDateString.length();
+		originalString=originalString.substring(fromFieldStartIndex,fromFieldEndIndex);
+		dateTimeString = originalString;
 		dateTime = dateGroup.get(0).getDates().get(0);
 	}
 	

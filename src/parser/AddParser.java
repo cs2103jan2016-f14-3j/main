@@ -38,7 +38,6 @@ public class AddParser extends ArgsParser{
 	
 	private final String COMMAND_COMMON_DELIMITER = ":";
 	private final String COMMAND_PREFIX_LABEL = "l:";
-	private final String COMMAND_PREFIX_STATUS = "s:";
 	private final String COMMAND_PREFIX_PRIORITY = "p:";
 	private final String COMMAND_PREFIX_DESCRIPTION = ":";
 	private final String STRING_SPACE = " ";
@@ -47,6 +46,9 @@ public class AddParser extends ArgsParser{
 	private final String DATETIMEPARSER_INDICATOR_END = "end";
 	private final String DATETIMEPARSER_INDICATOR_RECURRING = "recurring";
 	private final String DATETIMEPARSER_INDICATOR_EXCEPT = "except";
+	private final String PRIORITY_CUSTOM1_HIGH = "h";
+	private final String PRIORITY_CUSTOM1_MED = "m";
+	private final String PRIORITY_CUSTOM1_LOW = "l";
 	
 	//Task Constructor
 	public AddParser(String userCommand, String eventMarker){
@@ -270,12 +272,12 @@ public class AddParser extends ArgsParser{
 		int indexOfPrefix = commandArgumentsString.indexOf(COMMAND_PREFIX_PRIORITY);
 		int indexFieldEnd = getIndexOfNextField(indexOfPrefix, COMMAND_PREFIX_PRIORITY);
 		if (isValidIndex(indexOfPrefix)){
-			itemPriority = extractFieldData(indexOfPrefix, indexFieldEnd, COMMAND_PREFIX_PRIORITY).trim();
-			isValidArguments = isValidPriority(itemPriority);
+			String rawItemPriority = extractFieldData(indexOfPrefix, indexFieldEnd, COMMAND_PREFIX_PRIORITY).trim();
+			itemPriority = parseAndCheckItemPriority(rawItemPriority);
 			commandArgumentsString = removeFieldFromArgument(indexOfPrefix, indexFieldEnd);
 		}
 	}
-	
+
 	/**
 	 *  This method removes the label field from commandArgumentsString and updates 
 	 *  the label variable (itemLabel).
@@ -294,8 +296,7 @@ public class AddParser extends ArgsParser{
 	 *  the start date variable (itemStartDate).
 	 */
 	public void extractStartDate(){
-		DateTimeParser startDateTimeParser = new DateTimeParser(DATETIMEPARSER_INDICATOR_START,commandArgumentsString);	
-		
+		DateTimeParser startDateTimeParser = new DateTimeParser(DATETIMEPARSER_INDICATOR_START,commandArgumentsString);			
 		commandArgumentsString = commandArgumentsString.replace(startDateTimeParser.getString(), STRING_EMPTY);
 		itemStartDate=startDateTimeParser.getDate();
 		isValidArguments = isValidDate(itemStartDate);
@@ -359,6 +360,25 @@ public class AddParser extends ArgsParser{
 			return commandArgumentsString.substring(INDEX_COMMAND_BEGIN, indexPrefixBegin)
 									+ commandArgumentsString.substring(indexSpace);
 	}
+	
+	private String parseAndCheckItemPriority(String rawItemPriority) {
+		rawItemPriority = rawItemPriority.toLowerCase();
+		if (isValidPriority(rawItemPriority)){
+			return rawItemPriority;
+		} else {
+			switch (rawItemPriority){
+				case PRIORITY_CUSTOM1_HIGH:	
+					return POMPOM.PRIORITY_HIGH;
+				case PRIORITY_CUSTOM1_MED:	
+					return POMPOM.PRIORITY_MED;
+				case PRIORITY_CUSTOM1_LOW:	
+					return POMPOM.PRIORITY_LOW;
+			}
+		}
+		isValidArguments=false;
+		return null;
+	}
+
 	
 	/**
 	 * This method returns the data of the specified field. (minus the prefix)
