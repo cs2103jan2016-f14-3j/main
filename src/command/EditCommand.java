@@ -39,7 +39,7 @@ public class EditCommand extends Command {
 		this.newData = newData;
 		isUndo = false;
 		
-		//logger.log(Level.INFO, "EditCommand initialized");
+		logger.log(Level.INFO, "EditCommand initialized");
 	}
 	
 	public EditCommand(long taskId, String field, Date newDate) {
@@ -49,7 +49,7 @@ public class EditCommand extends Command {
 		this.newDate = newDate;
 		isUndo = false;
 		
-		//logger.log(Level.INFO, "EditCommand initialized");
+		logger.log(Level.INFO, "EditCommand initialized");
 	}
 	
 	public EditCommand(long taskId, String field, String newData, boolean isUndo) {
@@ -59,7 +59,7 @@ public class EditCommand extends Command {
 		this.newData = newData;
 		this.isUndo = isUndo;
 		
-		//logger.log(Level.INFO, "Counter action EditCommand initialized");
+		logger.log(Level.INFO, "Counter action EditCommand initialized");
 	}
 	
 	public EditCommand(long taskId, String field, Date newDate, boolean isUndo) {
@@ -69,7 +69,7 @@ public class EditCommand extends Command {
 		this.newDate = newDate;
 		this.isUndo = isUndo;
 		
-	//	logger.log(Level.INFO, "Counter action EditCommand initialized");
+		logger.log(Level.INFO, "Counter action EditCommand initialized");
 	}
 	
 	private void updateChanges() {		
@@ -142,6 +142,23 @@ public class EditCommand extends Command {
 		POMPOM.getUndoStack().push(counterAction);
 	}
 	
+	private void showCorrectTab() {
+		
+		if (task.getType().toLowerCase().equals(POMPOM.LABEL_EVENT.toLowerCase())) {
+			if (task.getStatus().equals(POMPOM.STATUS_COMPLETED)) {
+				POMPOM.setCurrentTab(POMPOM.LABEL_COMPLETED_EVENT);
+			} else {
+				POMPOM.setCurrentTab(POMPOM.LABEL_EVENT);
+			}
+		} else {
+			if (task.getStatus().equals(POMPOM.STATUS_COMPLETED)) {
+				POMPOM.setCurrentTab(POMPOM.LABEL_COMPLETED_TASK);
+			} else {
+				POMPOM.setCurrentTab(POMPOM.LABEL_TASK);
+			}
+		}
+		
+	}
 	
 	public String execute() {
 		canEdit = checkExists(taskId);
@@ -155,6 +172,8 @@ public class EditCommand extends Command {
 		} else {
 			returnMsg = MESSAGE_TASK_ERROR;
 		}
+		
+		showCorrectTab();
 		
 		logger.log(Level.INFO, "EditCommand has be executed");
 		return returnMsg;
