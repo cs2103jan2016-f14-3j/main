@@ -271,21 +271,18 @@ public class Controller implements Initializable {
 		SingleSelectionModel<Tab> selectionModel = tabViews.getSelectionModel();
 
 		if (tabName.equals(POMPOM.LABEL_TASK.toLowerCase())) {
-			System.out.println("Teasdat :" + tabName);
 			selectionModel.select(taskTab);
 			taskTabAction();
 		} else if (tabName.equals(POMPOM.LABEL_COMPLETED_TASK.toLowerCase())) {
 			selectionModel.select(taskTab);
 			completedTaskTabAction();
 		} else if (tabName.equals(POMPOM.LABEL_EVENT.toLowerCase())) {
-			System.out.println("evenets");
 			selectionModel.select(eventTab);
 			eventTabAction();
 		} else if (tabName.equals(POMPOM.LABEL_COMPLETED_EVENT.toLowerCase())) {
 			selectionModel.select(eventTab);
 			completedEventTabAction();
 		} else if (tabName.equals(POMPOM.LABEL_SEARCH.toLowerCase())) {
-			System.out.println("SEARCH TESET");
 			selectionModel.select(searchTab);
 			searchTabAction();
 		}
