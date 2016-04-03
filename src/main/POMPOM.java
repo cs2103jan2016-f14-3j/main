@@ -29,6 +29,10 @@ public class POMPOM {
 	public static final String LABEL_EVENT = "Event";
 	public static final String LABEL_COMPLETED_EVENT = "CompletedEvent";
 	public static final String LABEL_SEARCH = "Search";
+	
+	public static final String PRIORITY_HIGH = "high";
+	public static final String PRIORITY_MED = "medium";
+	public static final String PRIORITY_LOW = "low";
 
 	private static Storage storage;
 	private static Stack<Command> undoStack;
@@ -102,14 +106,16 @@ public class POMPOM {
 
 			} else {
 				
-				if (currentDate.before(taskStartDate)) {
-					currentTask.setStatus(STATUS_PENDING);
-				} else if (currentDate.after(taskStartDate) && taskEndDate == null) {
-					currentTask.setStatus(STATUS_ONGOING);
-				} else if (currentDate.after(taskStartDate) && currentDate.before(taskEndDate)) {
-					currentTask.setStatus(STATUS_ONGOING);
-				} else if (currentDate.after(taskStartDate) && currentDate.after(taskEndDate)) {
-					currentTask.setStatus(STATUS_COMPLETED);
+				if (currentTask.getStatus() != STATUS_COMPLETED) {
+					if (currentDate.before(taskStartDate)) {
+						currentTask.setStatus(STATUS_PENDING);
+					} else if (currentDate.after(taskStartDate) && taskEndDate == null) {
+						currentTask.setStatus(STATUS_ONGOING);
+					} else if (currentDate.after(taskStartDate) && currentDate.before(taskEndDate)) {
+						currentTask.setStatus(STATUS_ONGOING);
+					} else if (currentDate.after(taskStartDate) && currentDate.after(taskEndDate)) {
+						currentTask.setStatus(STATUS_COMPLETED);
+					}
 				}
 				
 			}
