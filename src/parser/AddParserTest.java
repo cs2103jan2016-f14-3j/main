@@ -127,7 +127,7 @@ public class AddParserTest{
 	 */
 	@Test
 	public void testAddCommandEndDatePrefix(){
-		AddParser add = new AddParser("do project e:28 march",POMPOM.LABEL_TASK);
+		AddParser add = new AddParser("do project e: 28 march",POMPOM.LABEL_TASK);
 		assertEquals("do project",add.getTitle());
 		long endDateDifferenceInSeconds = getEndDateDifference(add, "28 march");
 		assertEquals(endDateDifferenceInSeconds,0);	
@@ -155,6 +155,38 @@ public class AddParserTest{
 		assertNull(add.getPriority());
 		assertNull(add.getStatus());
 	}
+	
+	/*
+	 * Tests if can add tasks with all fields filled
+	 */
+	@Test
+	public void testAddCommandFullTask(){
+		AddParser add = new AddParser("do project e:28 march f:16 march l:soc homework p:h",POMPOM.LABEL_TASK);
+		assertEquals("do project",add.getTitle());
+		long endDateDifference= getEndDateDifference(add,"28 march");
+		long startDateDifference= getStartDateDifference(add,"16 march");
+		assertEquals("soc homework",add.getLabel());
+		assertEquals(POMPOM.PRIORITY_HIGH, add.getPriority());
+		assertEquals(endDateDifference, 0);	
+		assertEquals(startDateDifference, 0);	
+		assertNull(add.getDescription());
+		assertNull(add.getStatus());
+	}
+	
+	@Test
+	public void testAddCommandFullEvent(){
+		AddParser add = new AddParser("do project e:28 march f:16 march l:soc homework p:h",POMPOM.LABEL_EVENT);
+		assertEquals("do project",add.getTitle());
+		long endDateDifference= getEndDateDifference(add,"28 march");
+		long startDateDifference= getStartDateDifference(add,"16 march");
+		assertEquals("soc homework",add.getLabel());
+		assertEquals(POMPOM.PRIORITY_HIGH, add.getPriority());
+		assertEquals(endDateDifference, 0);	
+		assertEquals(startDateDifference, 0);	
+		assertNull(add.getDescription());
+		assertNull(add.getStatus());
+	}
+	
 	
 	/*
 	 * Tests if can switch the order of the title and end date
@@ -294,7 +326,8 @@ public class AddParserTest{
 	
 	private long getEndDateDifference(Date add, String dateString) {
 		long expectedEndDateInMillis= timeParser.parseSyntax(dateString).get(0).getDates().get(0).getTime();
-		long parsedEndDateInMillis = add.getTime(); 
+		long parsedEndDateInMillis = add.getT
+				ime(); 
 		long endDateDifferenceInSeconds = (expectedEndDateInMillis-parsedEndDateInMillis)/1000;
 		return endDateDifferenceInSeconds;
 	}

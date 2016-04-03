@@ -215,7 +215,7 @@ public class DateTimeParser{
 		}
 		List<DateGroup> dateGroup = parseAndCheckDate(originalString.replace(COMMAND_PREFIX_STARTDATE,STRING_EMPTY));
 		String parsedDateString = dateGroup.get(0).getText();
-		int fromFieldStartIndex = originalString.indexOf("f:");
+		int fromFieldStartIndex = originalString.indexOf(COMMAND_PREFIX_STARTDATE);
 		int fromFieldEndIndex = originalString.indexOf(parsedDateString)+parsedDateString.length();
 		originalString=originalString.substring(fromFieldStartIndex,fromFieldEndIndex);
 		dateTimeString = originalString;
@@ -226,9 +226,12 @@ public class DateTimeParser{
 		List<DateGroup> dateGroup;
 		//unique feature of end date: after title:description is the enddate.
 		if (hasEndPrefix(originalString)){
-			originalString = originalString.replace(COMMAND_PREFIX_ENDDATE,STRING_EMPTY);
-			dateGroup = parseAndCheckDate(originalString);
-			dateTimeString = COMMAND_PREFIX_ENDDATE + dateTimeString;
+			dateGroup = parseAndCheckDate(originalString.replace(COMMAND_PREFIX_ENDDATE,STRING_EMPTY));
+			String parsedDateString = dateGroup.get(0).getText();
+			int fromFieldStartIndex = originalString.indexOf(COMMAND_PREFIX_ENDDATE);
+			int fromFieldEndIndex = originalString.indexOf(parsedDateString)+parsedDateString.length();
+			originalString=originalString.substring(fromFieldStartIndex,fromFieldEndIndex);
+			dateTimeString = originalString;
 		} else{
 			dateGroup = parseAndCheckDate(originalString);
 		}

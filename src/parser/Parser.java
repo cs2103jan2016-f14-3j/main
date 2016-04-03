@@ -67,7 +67,7 @@ public class Parser{
 				AddParser addTaskArgumentParser = new AddParser(commandArgument, POMPOM.LABEL_TASK);
 				return addTaskArgumentParser.getCommand();
 			case CMD_EVENT:
-				AddEventParser addEventArgumentParser = new AddEventParser(commandArgument);
+				AddParser addEventArgumentParser = new AddParser(commandArgument, POMPOM.LABEL_EVENT);
 				return addEventArgumentParser.getCommand();
 			case CMD_DELETE:
 				DeleteParser deleteArgumentParser = new DeleteParser(commandArgument);

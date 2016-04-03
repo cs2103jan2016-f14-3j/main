@@ -61,7 +61,6 @@ public class AddParser extends ArgsParser{
 				case POMPOM.LABEL_EVENT:
 					itemIsEvent=true;
 				case POMPOM.LABEL_TASK:
-	
 					extractDataFromArguments();
 			}
 		}
@@ -176,7 +175,7 @@ public class AddParser extends ArgsParser{
 	}
 	
 	private Command createEventAddCommand(Date currentDate) {
-		if (!hasAllFieldsFilled()){
+		if (!hasStartAndEndDate()){
 			return new InvalidCommand(commandArgumentsString);
 		} else {
 			return new AddCommand(POMPOM.LABEL_EVENT, itemTitle, itemDescription, itemPriority, 
@@ -313,6 +312,7 @@ public class AddParser extends ArgsParser{
 		itemEndDate = endDateTimeParser.getDate();
 		isValidArguments = isValidDate(itemEndDate);
 		itemEndDateTitle= endDateTimeParser.getString();
+
 	}
 	
 	/**
@@ -460,7 +460,7 @@ public class AddParser extends ArgsParser{
 	}
 	
 	private boolean isValidDate(Date parsedDate){
-		return parsedDate==null;
+		return parsedDate!=null;
 	}
 	
 	public boolean isNullTitle(){
@@ -516,12 +516,8 @@ public class AddParser extends ArgsParser{
 				&& isNullEndDate());
 	}
 	
-	public boolean hasAllFieldsFilled(){
+	public boolean hasStartAndEndDate(){
 		return !(isNullTitle()
-				|| isNullDescription() 
-				|| isNullPriority()
-				|| isNullStatus()
-				|| isNullLabel()
 				|| isNullEndDate()
 				|| isNullStartDate());
 	}
