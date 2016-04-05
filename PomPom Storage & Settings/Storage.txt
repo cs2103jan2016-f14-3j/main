@@ -1,0 +1,45 @@
+{
+  "Username": "Not Set",
+  "IdCounter": 6,
+  "TaskList": [
+    {
+      "Id": 1,
+      "Type": "Task",
+      "Title": "project",
+      "Status": "floating",
+      "IsRecurring": false
+    },
+    {
+      "Id": 2,
+      "Type": "Task",
+      "Title": "do project",
+      "Status": "floating",
+      "IsRecurring": false
+    },
+    {
+      "Id": 3,
+      "Type": "Task",
+      "Title": "doproject",
+      "Status": "floating",
+      "IsRecurring": false
+    },
+    {
+      "Id": 4,
+      "Type": "Event",
+      "Title": "lanjiao",
+      "Status": "ongoing",
+      "StartDate": "Tue Apr 05 20:16:26 SGT 2016",
+      "EndDate": "Wed Apr 06 20:16:26 SGT 2016",
+      "IsRecurring": false
+    },
+    {
+      "Id": 5,
+      "Type": "Event",
+      "Title": "lunch with wei lip",
+      "Status": "completed",
+      "StartDate": "Tue Apr 05 12:00:00 SGT 2016",
+      "EndDate": "Tue Apr 05 14:00:00 SGT 2016",
+      "IsRecurring": false
+    }
+  ]
+}

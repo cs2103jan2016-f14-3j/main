@@ -72,45 +72,36 @@ public class POMPOM {
 			Date taskEndDate = currentTask.getEndDate();
 
 			if (currentTask.getType().equals(LABEL_TASK)) {
-
-				if (taskStartDate == null && taskEndDate == null) {
-					currentTask.setStatus(STATUS_FLOATING);
-
-				} else if (taskStartDate == null) {
-
-					if (currentDate.before(taskEndDate)) {
+				
+				if (isNotCompleted(currentTask)) {
+					if (taskStartDate == null && taskEndDate == null) {
+						currentTask.setStatus(STATUS_FLOATING);
+					} else if (taskEndDate == null) {
+						if (currentDate.before(taskStartDate)) {
+							currentTask.setStatus(STATUS_PENDING);
+						} else {
+							currentTask.setStatus(STATUS_ONGOING);
+						}
+					} else if (taskStartDate == null) {
+						if (currentDate.before(taskEndDate)) {
+							currentTask.setStatus(STATUS_ONGOING);
+						} else {
+							currentTask.setStatus(STATUS_OVERDUE);
+						}
+					} else if (currentDate.before(taskStartDate)) {
+						currentTask.setStatus(STATUS_PENDING);
+					} else if (currentDate.after(taskStartDate) && currentDate.before(taskEndDate)) {
 						currentTask.setStatus(STATUS_ONGOING);
-					} else if (!currentTask.getStatus().equals(STATUS_COMPLETED)) {
+					} else if (currentDate.after(taskStartDate) && currentDate.after(taskEndDate)) {
 						currentTask.setStatus(STATUS_OVERDUE);
 					}
-
-				} else if (taskEndDate == null) {
-
-					if (taskStartDate.after(currentDate)) {
-						currentTask.setStatus(STATUS_PENDING);
-					} else if (taskStartDate.before(currentDate) && isNotCompleted(currentTask)) {
-						currentTask.setStatus(STATUS_ONGOING);
-					}
-
-				} else if (currentDate.before(taskStartDate)) {
-					currentTask.setStatus(STATUS_PENDING);
-
-				} else if (currentDate.compareTo(taskStartDate) >= 0 && currentDate.before(taskEndDate)
-						&& isNotCompleted(currentTask)) {
-					currentTask.setStatus(STATUS_ONGOING);
-
-				} else if (currentDate.after(taskEndDate) && isNotCompleted(currentTask)) {
-					currentTask.setStatus(STATUS_OVERDUE);
-
 				}
 
 			} else {
 				
-				if (currentTask.getStatus() != STATUS_COMPLETED) {
+				if (isNotCompleted(currentTask)) {
 					if (currentDate.before(taskStartDate)) {
 						currentTask.setStatus(STATUS_PENDING);
-					} else if (currentDate.after(taskStartDate) && taskEndDate == null) {
-						currentTask.setStatus(STATUS_ONGOING);
 					} else if (currentDate.after(taskStartDate) && currentDate.before(taskEndDate)) {
 						currentTask.setStatus(STATUS_ONGOING);
 					} else if (currentDate.after(taskStartDate) && currentDate.after(taskEndDate)) {
