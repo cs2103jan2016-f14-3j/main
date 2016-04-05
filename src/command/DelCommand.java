@@ -46,8 +46,7 @@ public class DelCommand extends Command {
 		this.taskId = taskId;
 		this.isUndo = isUndo;
 		this.isById = true;
-		this.toDelete = getTask(taskId);
-		
+
 		logger.log(Level.INFO, "Counter action DelCommand initialized");
 	}
 
@@ -108,8 +107,10 @@ public class DelCommand extends Command {
 		if (isById) {
 
 			canDelete = checkExists(taskId);
-
-			if (toDelete.isRecurring() == true)
+			
+			toDelete = getTask(taskId);
+			
+			if (toDelete.getIsRecurring() == true)
 				setProperPointers();
 
 			if (canDelete) {

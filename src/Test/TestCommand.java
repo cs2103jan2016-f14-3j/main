@@ -12,6 +12,7 @@ import command.EditCommand;
 import command.SearchCommand;
 import command.UndoCommand;
 import main.POMPOM;
+import parser.DateTimeParser;
 import utils.Item;
 
 import static org.junit.Assert.assertEquals;
@@ -195,8 +196,10 @@ public class TestCommand {
 	@Test
 	public void testEditStatus() {
 		POMPOM pompom = new POMPOM();
+		DateTimeParser parser = new DateTimeParser("end","3 apr");
+		Date endDate = parser.getDate();
 		AddCommand command = new AddCommand(POMPOM.LABEL_TASK, "do cs3241", "bezier curve", "medium", "ongoing", "lab",
-				currentDate, currentDate);
+				currentDate, endDate);
 
 		ArrayList<Item> taskList = POMPOM.getStorage().getTaskList();
 		taskList.clear();
@@ -211,6 +214,7 @@ public class TestCommand {
 		assertEquals("medium", addedTask.getPriority());
 		assertEquals("ongoing", addedTask.getStatus());
 		assertEquals("lab", addedTask.getLabel());
+		System.out.println("YEAR HERE: " + endDate.getYear() + ", MONTH HERE: " + endDate.getMonth() + ", DAY HERE: " + endDate.getDay() );
 
 		EditCommand edit = new EditCommand(addedTask.getId(), "status", POMPOM.STATUS_COMPLETED);
 

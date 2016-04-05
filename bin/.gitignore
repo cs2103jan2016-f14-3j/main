@@ -1,8 +1,4 @@
-/parser/
-/Test/
 /main/
-/gui/
-/collated/
+/parser/
 /command/
-/storage/
-/utils/
+/Test/
