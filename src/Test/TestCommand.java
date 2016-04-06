@@ -1,5 +1,8 @@
 package Test;
 
+import java.io.InvalidClassException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -10,6 +13,7 @@ import org.junit.Test;
 import command.AddCommand;
 import command.DelCommand;
 import command.EditCommand;
+import command.InvalidCommand;
 import command.MultiDelCommand;
 import command.MultiEditCommand;
 import command.PathCommand;
@@ -29,9 +33,12 @@ import static org.junit.Assert.assertEquals;
 public class TestCommand {
 
 	Date currentDate = new Date();
-	DateTimeParser parser = new DateTimeParser("end", "4 june");
-	Date endDate = parser.getDate();
-	Calendar endCal = dateToCalendar(endDate);
+	DateTimeParser startParser = new DateTimeParser("start", "1 apr");
+	Date startDate = startParser.getDate();
+	
+	
+	DateTimeParser endParser = new DateTimeParser("end", "4 june");
+	Date endDate = endParser.getDate();
 	
 	public static Calendar dateToCalendar(Date date) {
 		Calendar cal = Calendar.getInstance();
@@ -316,6 +323,45 @@ public class TestCommand {
 		assertEquals("deadline", addedTask.getLabel());
 
 	}
+	
+	@Test
+	public void testEditStartDate() {
+		POMPOM pompom = new POMPOM();
+		AddCommand command = new AddCommand(POMPOM.LABEL_TASK, "do cs3241", "bezier curve", "medium", "ongoing", "lab",
+				currentDate, currentDate);
+
+		ArrayList<Item> taskList = POMPOM.getStorage().getTaskList();
+		taskList.clear();
+
+		// check if the add command returns the right status message
+		assertEquals("Task added", command.execute());
+
+		// check if the taskList contain the added task
+		Item addedTask = taskList.get(0);
+		assertEquals("do cs3241", addedTask.getTitle());
+		assertEquals("bezier curve", addedTask.getDescription());
+		assertEquals("medium", addedTask.getPriority());
+		assertEquals("ongoing", addedTask.getStatus());
+		assertEquals("lab", addedTask.getLabel());
+
+		EditCommand edit = new EditCommand(addedTask.getId(), "start date", startDate);
+
+		// check if the edit command returns the right status message
+		assertEquals(addedTask.getId() + ". was successfully edited", edit.execute());
+		try {
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+			Date sdate = sdf.parse(startDate.toString());
+			String date = sdate.toString();
+			
+			// check if the edit command did edit the actual item
+			assertEquals("20160401", date);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+
+	}
 
 	@Test
 	public void testMultiEdit() {
@@ -541,12 +587,12 @@ public class TestCommand {
 
 	}
 
-	/*@Test
+	@Test
 	public void testInvalid() {
 
-		PathCommand InvalidCommand = new PathCommand(currentPath);
-		assertEquals(String.format("Storage path set to: %s", currentPath), path.execute());
+		InvalidCommand invalid = new InvalidCommand("asd");
+		assertEquals("asd is not a valid command", invalid.execute());
 
-	}*/
+	}
 
 }
