@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 public class MultiEditCommand extends Command {
 
-	private static final String MESSAGE_MULTIEDIT = "Multiple fields of task %s has been edited";
+	private static final String MESSAGE_MULTIEDIT = "Multiple fields has been edited";
 	
 	ArrayList<EditCommand> editList;
 	
@@ -20,7 +20,7 @@ public class MultiEditCommand extends Command {
 			editList.get(i).execute();
 		}
 		
-		returnMsg = String.format(MESSAGE_MULTIEDIT, editList.size());
+		returnMsg = MESSAGE_MULTIEDIT;
 		return returnMsg;
 	}
 	
