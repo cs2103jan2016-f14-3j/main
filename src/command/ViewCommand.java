@@ -36,6 +36,7 @@ public class ViewCommand extends Command {
 			return returnMsg;
 		} else if (tab.equalsIgnoreCase(POMPOM.LABEL_SEARCH)) {
 			tab = POMPOM.LABEL_SEARCH;
+			POMPOM.setCurrentTab(tab);
 			returnMsg = String.format(MESSAGE_VIEW, tab);
 			return returnMsg;
 		} else {
