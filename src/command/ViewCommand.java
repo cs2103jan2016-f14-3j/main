@@ -10,24 +10,37 @@ public class ViewCommand extends Command {
 
 	public ViewCommand(String tab) {
 		this.tab = tab;
-	}
-
-	@Override
+	} 
+	
 	public String execute() {
-
-		if (tab.equals(POMPOM.LABEL_COMPLETED_EVENT.toLowerCase())
-				|| tab.equals(POMPOM.LABEL_COMPLETED_TASK.toLowerCase()) || tab.equals(POMPOM.LABEL_EVENT.toLowerCase())
-				|| tab.equals(POMPOM.LABEL_SEARCH.toLowerCase()) || tab.equals(POMPOM.LABEL_TASK.toLowerCase())) {
-
+		
+		if (tab.equalsIgnoreCase(POMPOM.LABEL_COMPLETED_EVENT)) {
+			tab = POMPOM.LABEL_COMPLETED_EVENT;
 			POMPOM.setCurrentTab(tab);
 			returnMsg = String.format(MESSAGE_VIEW, tab);
 			return returnMsg;
-
+		} else if (tab.equalsIgnoreCase(POMPOM.LABEL_COMPLETED_TASK)) {
+			tab = POMPOM.LABEL_COMPLETED_TASK;
+			POMPOM.setCurrentTab(tab);
+			returnMsg = String.format(MESSAGE_VIEW, tab);
+			return returnMsg;
+		} else if (tab.equalsIgnoreCase(POMPOM.LABEL_EVENT)) {
+			tab = POMPOM.LABEL_EVENT;
+			POMPOM.setCurrentTab(tab);
+			returnMsg = String.format(MESSAGE_VIEW, tab);
+			return returnMsg;
+		} else if (tab.equalsIgnoreCase(POMPOM.LABEL_TASK)) {
+			tab = POMPOM.LABEL_TASK;
+			POMPOM.setCurrentTab(tab);
+			returnMsg = String.format(MESSAGE_VIEW, tab);
+			return returnMsg;
+		} else if (tab.equalsIgnoreCase(POMPOM.LABEL_SEARCH)) {
+			tab = POMPOM.LABEL_SEARCH;
+			returnMsg = String.format(MESSAGE_VIEW, tab);
+			return returnMsg;
 		} else {
-
 			returnMsg = String.format(MESSAGE_ERROR, tab);
 			return returnMsg;
-
 		}
 
 	}
