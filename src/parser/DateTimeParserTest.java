@@ -121,7 +121,7 @@ public class DateTimeParserTest {
 	
 	@Test
 	public void testCalculateInterval(){
-		long testOutput = DateTimeParser.calculateInterval("friday");
+		long testOutput = DateTimeParser.calculateInterval("sunday");
 		assertEquals(testOutput,1000*60*60*24*7);	
 	}
 	
@@ -153,6 +153,27 @@ public class DateTimeParserTest {
 		
 	}
 	
+	@Test
+	public void testExtractException2(){
+		DateTimeParser dp = new DateTimeParser("except","e: 28 march except 16 march to 31 march");
+		System.out.println(dp.getExceptStartDateGroup().getDates().get(0).toString());
+		System.out.println(dp.getExceptEndDateGroup().getDates().get(0).toString());
+		
+	}
 	
+	@Test
+	public void testExtractException3(){
+		DateTimeParser dp = new DateTimeParser("except","e: 28 march except 16 march to 31 march");
+		System.out.println(dp.getExceptStartDateGroup().getDates().get(0).toString());
+		System.out.println(dp.getExceptEndDateGroup().getDates().get(0).toString());
+		dp.parseAndCheckDate("every 1 day");
+	}
+
+	@Test
+	public void testPrettyTimeParser(){
+		PrettyTimeParser parser = new PrettyTimeParser();
+		DateGroup dg = parser.parseSyntax("every 1 month").get(0);
+		System.out.println(dg.getRecurInterval());
+	}
 
 }

@@ -3,6 +3,7 @@ package parser;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Scanner;
 
 import org.ocpsoft.prettytime.nlp.parse.DateGroup;
 
@@ -102,7 +103,6 @@ public class AddParser extends ArgsParser{
 	 * 
 	 */
 	private void extractTitle() {
-		
 		if (hasNoTitleToExtract()){
 			itemTitle=itemEndDateTitle;
 			itemEndDate = null;
@@ -137,6 +137,7 @@ public class AddParser extends ArgsParser{
 	private ArrayList<AddCommand> executeRecurring(){
 		
 		String recurDateString = itemRecurringDateGroup.getText();
+		System.out.println(recurDateString);
 		long newRecurInterval=DateTimeParser.calculateInterval(recurDateString);
 		long currentTime = (new Date().getTime());
 		long recurInterval=itemRecurringDateGroup.getRecurInterval();
@@ -200,8 +201,11 @@ public class AddParser extends ArgsParser{
 	private ArrayList<AddCommand> getAddCommandArrayList(long recurInterval, long currentTime,
 															long timeToNextDate) {
 		ArrayList<AddCommand> addCommandArrayList = new ArrayList<AddCommand>();
+		System.out.println(recurInterval+" "+currentTime+ " "+timeToNextDate + " "+itemEndDate);
+		
 		Date mostRecentEnd=new Date(timeToNextDate+currentTime);
 		while (mostRecentEnd.before(itemEndDate)){
+			System.out.println(recurInterval+" "+currentTime+ " "+timeToNextDate);
 			Date mostRecent= mostRecentEnd;
 			timeToNextDate += recurInterval;
 			mostRecentEnd=new Date(timeToNextDate+currentTime);			

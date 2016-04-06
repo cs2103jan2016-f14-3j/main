@@ -60,6 +60,9 @@ public class DateTimeParser{
 		
 		//corrects the string if in a mm/dd/yyyy format
 		originalString=correctDateFormat(commandArgumentsString);
+		System.out.println(originalString);
+		System.out.println(parseType);
+		
 		processFieldByParseType(parseType); 
 		
 		
@@ -246,6 +249,7 @@ public class DateTimeParser{
 			return;
 		} 
 		List<DateGroup> dateGroup=parseAndCheckDate(originalString);
+		System.out.println(originalString);;
 		recurringDateGroup=dateGroup.get(0);
 	}
 	
@@ -267,10 +271,12 @@ public class DateTimeParser{
 		String output="";
 		String initialParsedString = parseDateToString(stringWithDate);
 		if (initialParsedString.equals("")){
+			System.out.println(initialParsedString);
 			return timeParser.parseSyntax("");
 		}
 		String[] rawStringArray = stringWithDate.split(" ");
 		String[] parsedStringArray = initialParsedString.split(" ");
+		System.out.println(Arrays.toString(rawStringArray) + " " + Arrays.toString(parsedStringArray));
 		if (Arrays.equals(rawStringArray, parsedStringArray)){
 			dateTimeString=stringWithDate;
 			return timeParser.parseSyntax(stringWithDate);
@@ -381,9 +387,15 @@ public class DateTimeParser{
 	}
 	
 	public static long calculateInterval(String day){
+		System.out.println(day);
 		Date dateone=timeParser.parseSyntax("last " + day).get(0).getDates().get(0);
 		Date datetwo=timeParser.parseSyntax("next " +day).get(0).getDates().get(0);
 		long interval = datetwo.getTime()-dateone.getTime();
+		System.out.println("int: "+interval);
+		if (interval/10*10 == 0){
+			interval = timeParser.parseSyntax("every " +day).get(0).getRecurInterval();
+			return interval/10*10;
+		}
 		return (interval)/10*10/2;
 	}
 	
