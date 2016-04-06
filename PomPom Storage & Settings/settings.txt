@@ -1,3 +1,8 @@
 {
-  "StoragePath": "PomPom Storage \u0026 Settings/Storage.txt"
+  "storagePath": "PomPom Storage \u0026 Settings/Storage.txt",
+  "backgroundColour": "eff3f6",
+  "tabColour": "FFFFFF",
+  "buttonColour": "FFFFFF",
+  "oddCellColour": "FFFFFF",
+  "evenCellColour": "FFFFFF"
 }

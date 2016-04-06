@@ -28,11 +28,11 @@ public class DateTimeParser{
 	
 	private boolean isFlippedDate=false;
 	
-	private static final String COMMAND_PREFIX_STARTDATE = "f:";
-	private static final String COMMAND_PREFIX_ENDDATE = "e:";
+
 	private static final String COMMAND_PREFIX_RECURRING = "every";
 	private static final String COMMAND_PREFIX_EXCEPT = "except";
-
+	private static final String COMMAND_PREFIX_STARTDATE = "f:";
+	private static final String COMMAND_PREFIX_ENDDATE = "e:";
 	private static final String INDICATOR_START = "start";
 	private static final String INDICATOR_END = "end";
 	private static final String INDICATOR_RECURRING = "recurring";	
@@ -58,8 +58,11 @@ public class DateTimeParser{
 		//extracts the field related to the parse type.
 		commandArgumentsString = extractFieldByParseType(parseType, commandArgumentsString);
 		
-		//corrects the string if
+		//corrects the string if in a mm/dd/yyyy format
 		originalString=correctDateFormat(commandArgumentsString);
+		System.out.println(originalString);
+		System.out.println(parseType);
+		
 		processFieldByParseType(parseType); 
 		
 		
@@ -67,7 +70,6 @@ public class DateTimeParser{
 		if (isFlippedDate){
 			dateTimeString=reverseCorrectDateFormat(dateTimeString);
 		}
-		
 	}
 	
 	private void processFieldByParseType(String parseType) {
@@ -214,9 +216,12 @@ public class DateTimeParser{
 		if (!hasStartPrefix(originalString)){
 			return;
 		}
-		originalString = originalString.replace(COMMAND_PREFIX_STARTDATE,STRING_EMPTY);
-		List<DateGroup> dateGroup = parseAndCheckDate(originalString);
-		dateTimeString = COMMAND_PREFIX_STARTDATE + dateTimeString;
+		List<DateGroup> dateGroup = parseAndCheckDate(originalString.replace(COMMAND_PREFIX_STARTDATE,STRING_EMPTY));
+		String parsedDateString = dateGroup.get(0).getText();
+		int fromFieldStartIndex = originalString.indexOf(COMMAND_PREFIX_STARTDATE);
+		int fromFieldEndIndex = originalString.indexOf(parsedDateString)+parsedDateString.length();
+		originalString=originalString.substring(fromFieldStartIndex,fromFieldEndIndex);
+		dateTimeString = originalString;
 		dateTime = dateGroup.get(0).getDates().get(0);
 	}
 	
@@ -224,9 +229,12 @@ public class DateTimeParser{
 		List<DateGroup> dateGroup;
 		//unique feature of end date: after title:description is the enddate.
 		if (hasEndPrefix(originalString)){
-			originalString = originalString.replace(COMMAND_PREFIX_ENDDATE,STRING_EMPTY);
-			dateGroup = parseAndCheckDate(originalString);
-			dateTimeString = COMMAND_PREFIX_ENDDATE + dateTimeString;
+			dateGroup = parseAndCheckDate(originalString.replace(COMMAND_PREFIX_ENDDATE,STRING_EMPTY));
+			String parsedDateString = dateGroup.get(0).getText();
+			int fromFieldStartIndex = originalString.indexOf(COMMAND_PREFIX_ENDDATE);
+			int fromFieldEndIndex = originalString.indexOf(parsedDateString)+parsedDateString.length();
+			originalString=originalString.substring(fromFieldStartIndex,fromFieldEndIndex);
+			dateTimeString = originalString;
 		} else{
 			dateGroup = parseAndCheckDate(originalString);
 		}
@@ -240,6 +248,12 @@ public class DateTimeParser{
 		if (!originalString.contains(COMMAND_PREFIX_RECURRING)){
 			return;
 		} 
+		
+		//every day change to every 1 day
+		//every one day change to every 1 day
+		
+		
+		
 		List<DateGroup> dateGroup=parseAndCheckDate(originalString);
 		recurringDateGroup=dateGroup.get(0);
 	}
@@ -262,10 +276,12 @@ public class DateTimeParser{
 		String output="";
 		String initialParsedString = parseDateToString(stringWithDate);
 		if (initialParsedString.equals("")){
+			System.out.println(initialParsedString);
 			return timeParser.parseSyntax("");
 		}
 		String[] rawStringArray = stringWithDate.split(" ");
 		String[] parsedStringArray = initialParsedString.split(" ");
+		System.out.println(Arrays.toString(rawStringArray) + " " + Arrays.toString(parsedStringArray));
 		if (Arrays.equals(rawStringArray, parsedStringArray)){
 			dateTimeString=stringWithDate;
 			return timeParser.parseSyntax(stringWithDate);
@@ -376,9 +392,15 @@ public class DateTimeParser{
 	}
 	
 	public static long calculateInterval(String day){
+		System.out.println(day);
 		Date dateone=timeParser.parseSyntax("last " + day).get(0).getDates().get(0);
 		Date datetwo=timeParser.parseSyntax("next " +day).get(0).getDates().get(0);
 		long interval = datetwo.getTime()-dateone.getTime();
+		System.out.println("int: "+interval);
+		if (interval/10*10 == 0){
+			interval = timeParser.parseSyntax("every " +day).get(0).getRecurInterval();
+			return interval/10*10;
+		}
 		return (interval)/10*10/2;
 	}
 	

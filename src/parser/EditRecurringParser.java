@@ -8,7 +8,7 @@ import command.Command;
 import command.EditCommand;
 import command.EditRecurringCommand;
 
-public class EditRParser extends ArgsParser{
+public class EditRecurringParser extends ArgsParser{
 	
 	private final int INDEX_TASK_ID = 0;
 	private final int INDEX_FIELDS = 1;
@@ -21,7 +21,7 @@ public class EditRParser extends ArgsParser{
 	private ArrayList<String> argsArray;
 	
 	
-	public EditRParser(String userCommand){
+	public EditRecurringParser(String userCommand){
 		super(userCommand);
 		
 		argsArray = new ArrayList<String>(Arrays.asList(commandArgumentsString.split(" ")));
