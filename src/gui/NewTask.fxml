@@ -16,12 +16,8 @@
             <Font name="Tw Cen MT Bold" size="18.0" />
          </font>
       </Label>
-      <DatePicker fx:id="newStartDate" layoutX="101.0" layoutY="58.0" prefHeight="22.0" prefWidth="237.0" />
-      <TextField fx:id="newStartHour" layoutX="100.0" layoutY="96.0" prefHeight="26.0" prefWidth="39.0" promptText="HH" />
-      <TextField fx:id="newStartMin" layoutX="143.0" layoutY="96.0" prefHeight="26.0" prefWidth="39.0" promptText="MM" />
-      <DatePicker fx:id="newEndDate" layoutX="101.0" layoutY="141.0" prefHeight="22.0" prefWidth="237.0" />
-      <TextField fx:id="newEndHour" layoutX="100.0" layoutY="179.0" prefHeight="26.0" prefWidth="39.0" promptText="HH" />
-      <TextField fx:id="newEndMin" layoutX="143.0" layoutY="179.0" prefHeight="26.0" prefWidth="39.0" promptText="MM" />
+      <DatePicker fx:id="newStartDate" editable="false" layoutX="101.0" layoutY="58.0" prefHeight="22.0" prefWidth="237.0" />
+      <DatePicker fx:id="newEndDate" editable="false" layoutX="101.0" layoutY="141.0" prefHeight="22.0" prefWidth="237.0" />
       <TextField fx:id="newLabel" layoutX="100.0" layoutY="216.0" prefHeight="26.0" prefWidth="237.0" />
       <Label layoutX="13.0" layoutY="221.0" text="Label:">
          <font>
@@ -38,7 +34,6 @@
             <Font name="Tw Cen MT Bold" size="18.0" />
          </font>
       </Label>
-      <TextField fx:id="newType" layoutX="100.0" layoutY="265.0" prefHeight="26.0" prefWidth="237.0" />
       <ComboBox fx:id="newPriority" layoutX="100.0" layoutY="312.0" prefWidth="150.0" promptText="Select One" />
       <Label layoutX="12.0" layoutY="315.0" text="Priority:">
          <font>
@@ -62,7 +57,12 @@
             <Font name="Tw Cen MT Bold" size="18.0" />
          </font>
       </Label>
-      <Label layoutX="139.0" layoutY="101.0" text=":" />
-      <Label layoutX="139.0" layoutY="184.0" text=":" />
+      <Label layoutX="174.0" layoutY="101.0" text=":" />
+      <ComboBox fx:id="newType" layoutX="100.0" layoutY="265.0" prefWidth="150.0" />
+      <ComboBox fx:id="newStartHour" layoutX="101.0" layoutY="98.0" prefHeight="25.0" prefWidth="59.0" />
+      <ComboBox fx:id="newStartMin" layoutX="189.0" layoutY="97.0" prefHeight="25.0" prefWidth="59.0" />
+      <Label layoutX="174.0" layoutY="183.0" text=":" />
+      <ComboBox fx:id="newEndHour" layoutX="101.0" layoutY="180.0" prefHeight="25.0" prefWidth="59.0" />
+      <ComboBox fx:id="newEndMin" layoutX="189.0" layoutY="179.0" prefHeight="25.0" prefWidth="59.0" />
    </children>
 </Pane>

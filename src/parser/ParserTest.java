@@ -29,6 +29,16 @@ public class ParserTest {
 		Command outputCommand = parser.executeCommand("ad do cs2013");
 		assertTrue(outputCommand instanceof command.InvalidCommand);
 	}
+	
+	/*
+	 * This is the boundary case for the invalid user commands partition
+	 */
+	@Test
+	public void testRecurringCommands() {
+		Command outputCommand = parser.executeCommand("delere recur do cs2013");
+		assertTrue(outputCommand instanceof command.InvalidCommand);
+	}
+	
 
 
 }

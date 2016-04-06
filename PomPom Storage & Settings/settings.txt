@@ -1,3 +1,6 @@
 {
-  "StoragePath": "C:\\Users\\Josh\\workspace\\PomPom\\PomPom Storage \u0026 Settings\\Storage.txt"
+  "storagePath": "PomPom Storage \u0026 Settings/Storage.txt",
+  "backgroundColour": "eff3f6",
+  "displayMsgColour": "ff6666",
+  "inputTxtColour": "e6804d"
 }

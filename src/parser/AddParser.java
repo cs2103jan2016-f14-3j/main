@@ -3,7 +3,8 @@ package parser;
 
 import java.util.ArrayList;
 import java.util.Date;
-import command.InvalidCommand;
+import java.util.Scanner;
+
 import org.ocpsoft.prettytime.nlp.parse.DateGroup;
 
 import static org.junit.Assert.assertNotNull;
@@ -11,6 +12,7 @@ import static org.junit.Assert.assertFalse;
 import command.Command;
 import main.POMPOM;
 import command.AddCommand;
+import command.InvalidCommand;
 import command.AddRecurringCommand;
 
 
@@ -30,21 +32,25 @@ public class AddParser extends ArgsParser{
 	private String itemEndDateTitle=""; //for use if title is empty.
 	private Date exceptStartDate;
 	private Date exceptEndDate;
+	protected boolean isValidArguments = true;
 	
 	private static final int INDEX_INVALID = -1;
 	private static final int INDEX_COMMAND_BEGIN = 0;
 	
 	private final String COMMAND_COMMON_DELIMITER = ":";
 	private final String COMMAND_PREFIX_LABEL = "l:";
-	private final String COMMAND_PREFIX_STATUS = "s:";
 	private final String COMMAND_PREFIX_PRIORITY = "p:";
-	private final String COMMAND_PREFIX_DESCRIPTION = ":";
+	private final String COMMAND_PREFIX_STARTDATE = "f:";
+	private final String COMMAND_PREFIX_ENDDATE = "f:";
 	private final String STRING_SPACE = " ";
 	private final String STRING_EMPTY="";
 	private final String DATETIMEPARSER_INDICATOR_START = "start";
 	private final String DATETIMEPARSER_INDICATOR_END = "end";
 	private final String DATETIMEPARSER_INDICATOR_RECURRING = "recurring";
 	private final String DATETIMEPARSER_INDICATOR_EXCEPT = "except";
+	private final String PRIORITY_CUSTOM1_HIGH = "h";
+	private final String PRIORITY_CUSTOM1_MED = "m";
+	private final String PRIORITY_CUSTOM1_LOW = "l";
 	
 	//Task Constructor
 	public AddParser(String userCommand, String eventMarker){
@@ -57,7 +63,6 @@ public class AddParser extends ArgsParser{
 				case POMPOM.LABEL_EVENT:
 					itemIsEvent=true;
 				case POMPOM.LABEL_TASK:
-	
 					extractDataFromArguments();
 			}
 		}
@@ -77,15 +82,13 @@ public class AddParser extends ArgsParser{
 	 * 
 	 */
 	private void extractDataFromArguments() {
+		
 		extractPriority();
-		extractStatus();
 		extractLabel();
 		extractRecurring();
-		extractStartDate();
-		extractEndDate();	
-		extractDescription();	
+		extractStartDate();		
+		extractEndDate();		
 		extractTitle();
-		
 	}
 	
 	/*
@@ -102,7 +105,7 @@ public class AddParser extends ArgsParser{
 	private void extractTitle() {
 		if (hasNoTitleToExtract()){
 			itemTitle=itemEndDateTitle;
-			itemEndDate = new Date();
+			itemEndDate = null;
 		} else{
 			itemTitle = commandArgumentsString.trim();
 		}
@@ -115,11 +118,15 @@ public class AddParser extends ArgsParser{
 	 * the newly created AddCommand() object.
 	 */
 	protected Command getCommand(){
-		if (itemIsRecurring){
-			ArrayList<AddCommand> addCommandList= executeRecurring();
-			return checkAndReturnAddRecurringCommand(addCommandList);
+		if (isValidArguments){	
+			if (itemIsRecurring){
+				ArrayList<AddCommand> addCommandList= executeRecurring();
+				return checkAndReturnAddRecurringCommand(addCommandList);
+			} else{
+				return getNonRecurringCommand();
+			}
 		} else{
-			return getNonRecurringCommand();
+			return new InvalidCommand(commandArgumentsString);
 		}
 	}
 	
@@ -130,6 +137,7 @@ public class AddParser extends ArgsParser{
 	private ArrayList<AddCommand> executeRecurring(){
 		
 		String recurDateString = itemRecurringDateGroup.getText();
+		System.out.println(recurDateString);
 		long newRecurInterval=DateTimeParser.calculateInterval(recurDateString);
 		long currentTime = (new Date().getTime());
 		long recurInterval=itemRecurringDateGroup.getRecurInterval();
@@ -150,8 +158,6 @@ public class AddParser extends ArgsParser{
 		} else{
 			return createTaskAddCommand(currentDate);
 		}
-		
-		
 	}
 
 
@@ -172,7 +178,7 @@ public class AddParser extends ArgsParser{
 	}
 	
 	private Command createEventAddCommand(Date currentDate) {
-		if (!hasAllFieldsFilled()){
+		if (!hasStartAndEndDate()){
 			return new InvalidCommand(commandArgumentsString);
 		} else {
 			return new AddCommand(POMPOM.LABEL_EVENT, itemTitle, itemDescription, itemPriority, 
@@ -195,8 +201,11 @@ public class AddParser extends ArgsParser{
 	private ArrayList<AddCommand> getAddCommandArrayList(long recurInterval, long currentTime,
 															long timeToNextDate) {
 		ArrayList<AddCommand> addCommandArrayList = new ArrayList<AddCommand>();
+		System.out.println(recurInterval+" "+currentTime+ " "+timeToNextDate + " "+itemEndDate);
+		
 		Date mostRecentEnd=new Date(timeToNextDate+currentTime);
 		while (mostRecentEnd.before(itemEndDate)){
+			System.out.println(recurInterval+" "+currentTime+ " "+timeToNextDate);
 			Date mostRecent= mostRecentEnd;
 			timeToNextDate += recurInterval;
 			mostRecentEnd=new Date(timeToNextDate+currentTime);			
@@ -248,17 +257,6 @@ public class AddParser extends ArgsParser{
 		}
 	}
 	
-	/**
-	 *  This method removes the description field from commandArgumentsString and updates 
-	 *  the description variable (itemDescription).
-	 */
-	private void extractDescription(){
-		int indexOfPrefix = commandArgumentsString.indexOf(COMMAND_PREFIX_DESCRIPTION);
-		if (isValidIndex(indexOfPrefix)){
-			itemDescription = commandArgumentsString.substring(indexOfPrefix+1);
-			commandArgumentsString = commandArgumentsString.substring(0, indexOfPrefix);
-		}
-	}
 
 	/**
 	 *  This method removes the priority field from commandArgumentsString and updates 
@@ -268,25 +266,12 @@ public class AddParser extends ArgsParser{
 		int indexOfPrefix = commandArgumentsString.indexOf(COMMAND_PREFIX_PRIORITY);
 		int indexFieldEnd = getIndexOfNextField(indexOfPrefix, COMMAND_PREFIX_PRIORITY);
 		if (isValidIndex(indexOfPrefix)){
-			itemPriority = extractFieldData(indexOfPrefix, indexFieldEnd, COMMAND_PREFIX_PRIORITY);
-			commandArgumentsString = removeFieldFromArgument(indexOfPrefix, indexFieldEnd
-					);
-		}
-	}
-	
-	/**
-	 *  This method removes the status field from commandArgumentsString and updates 
-	 *  the status variable (itemStatus).
-	 */
-	public void extractStatus(){
-		int indexOfPrefix = commandArgumentsString.indexOf(COMMAND_PREFIX_STATUS); 
-		int indexFieldEnd = getIndexOfNextField(indexOfPrefix, COMMAND_PREFIX_STATUS);
-		if (isValidIndex(indexOfPrefix)){
-			itemStatus = extractFieldData(indexOfPrefix, indexFieldEnd, COMMAND_PREFIX_STATUS);
+			String rawItemPriority = extractFieldData(indexOfPrefix, indexFieldEnd, COMMAND_PREFIX_PRIORITY).trim();
+			itemPriority = parseAndCheckItemPriority(rawItemPriority);
 			commandArgumentsString = removeFieldFromArgument(indexOfPrefix, indexFieldEnd);
 		}
 	}
-	
+
 	/**
 	 *  This method removes the label field from commandArgumentsString and updates 
 	 *  the label variable (itemLabel).
@@ -295,7 +280,7 @@ public class AddParser extends ArgsParser{
 		int indexOfPrefix = commandArgumentsString.indexOf(COMMAND_PREFIX_LABEL);	
 		int indexFieldEnd = getIndexOfNextField(indexOfPrefix, COMMAND_PREFIX_LABEL);
 		if (isValidIndex(indexOfPrefix)){
-			itemLabel = extractFieldData(indexOfPrefix, indexFieldEnd, COMMAND_PREFIX_LABEL);
+			itemLabel = extractFieldData(indexOfPrefix, indexFieldEnd, COMMAND_PREFIX_LABEL).trim();
 			commandArgumentsString = removeFieldFromArgument(indexOfPrefix, indexFieldEnd);
 		}
 	}
@@ -305,9 +290,13 @@ public class AddParser extends ArgsParser{
 	 *  the start date variable (itemStartDate).
 	 */
 	public void extractStartDate(){
-		DateTimeParser startDateTimeParser = new DateTimeParser(DATETIMEPARSER_INDICATOR_START,commandArgumentsString);	
-		commandArgumentsString = commandArgumentsString.replace(startDateTimeParser.getString(), STRING_EMPTY);
-		itemStartDate=startDateTimeParser.getDate();
+		int indexOfPrefix = commandArgumentsString.indexOf(COMMAND_PREFIX_STARTDATE);
+		if (isValidIndex(indexOfPrefix) && isValidArguments){
+			DateTimeParser startDateTimeParser = new DateTimeParser(DATETIMEPARSER_INDICATOR_START,commandArgumentsString);			
+			commandArgumentsString = commandArgumentsString.replace(startDateTimeParser.getString(), STRING_EMPTY);
+			itemStartDate=startDateTimeParser.getDate();
+			isValidArguments = isValidDate(itemStartDate);
+		}
 		
 	}
 	
@@ -316,10 +305,18 @@ public class AddParser extends ArgsParser{
 	 *  the end date variable (itemEndDate).
 	 */
 	public void extractEndDate(){
-		DateTimeParser endDateTimeParser = new DateTimeParser(DATETIMEPARSER_INDICATOR_END,commandArgumentsString);
-		commandArgumentsString = commandArgumentsString.replace(endDateTimeParser.getString(), STRING_EMPTY);
-		itemEndDate = endDateTimeParser.getDate();
-		itemEndDateTitle= endDateTimeParser.getString();
+		//failing condition: got e:, but dont have parsable date.
+		int indexOfPrefix = commandArgumentsString.indexOf(COMMAND_PREFIX_ENDDATE);
+		if (isValidArguments){
+			DateTimeParser endDateTimeParser = new DateTimeParser(DATETIMEPARSER_INDICATOR_END,commandArgumentsString);
+			commandArgumentsString = commandArgumentsString.replace(endDateTimeParser.getString(), STRING_EMPTY);
+			itemEndDate = endDateTimeParser.getDate();
+			itemEndDateTitle= endDateTimeParser.getString();
+			if (!isValidDate(itemEndDate) && isValidIndex(indexOfPrefix)){
+				isValidArguments = isValidDate(itemEndDate);	
+			}
+		}
+
 	}
 	
 	/**
@@ -368,6 +365,25 @@ public class AddParser extends ArgsParser{
 									+ commandArgumentsString.substring(indexSpace);
 	}
 	
+	private String parseAndCheckItemPriority(String rawItemPriority) {
+		rawItemPriority = rawItemPriority.toLowerCase();
+		if (isValidPriority(rawItemPriority)){
+			return rawItemPriority;
+		} else {
+			switch (rawItemPriority){
+				case PRIORITY_CUSTOM1_HIGH:	
+					return POMPOM.PRIORITY_HIGH;
+				case PRIORITY_CUSTOM1_MED:	
+					return POMPOM.PRIORITY_MED;
+				case PRIORITY_CUSTOM1_LOW:	
+					return POMPOM.PRIORITY_LOW;
+			}
+		}
+		isValidArguments=false;
+		return null;
+	}
+
+	
 	/**
 	 * This method returns the data of the specified field. (minus the prefix)
 	 * 	 * 
@@ -392,11 +408,12 @@ public class AddParser extends ArgsParser{
 	 * @param String
 	 * 			is the prefix of the current field
 	 * 
-	 * 
-	 * note: need to reimplement this. -1 is a magic number.
 	 */
 	private int getIndexOfNextField(int indexOfPrefix, String prefix) {
-		return commandArgumentsString.indexOf(COMMAND_COMMON_DELIMITER,indexOfPrefix+prefix.length())-1;
+		int indexOfPrefixEnd = indexOfPrefix+prefix.length(); 
+		int indexOfNextDelimiter = commandArgumentsString.indexOf(COMMAND_COMMON_DELIMITER,indexOfPrefixEnd);
+		int indexOfNextField = commandArgumentsString.lastIndexOf(STRING_SPACE,indexOfNextDelimiter);
+		return indexOfNextField;
 	}
 	
 	private int getPrefixEndIndex(int index, String prefix) {
@@ -433,6 +450,21 @@ public class AddParser extends ArgsParser{
 	
 	public long getRecurringPeriod(){
 		return itemRecurringPeriod;
+	}
+	
+	public DateGroup getItemRecurringDateGroup(){
+		return itemRecurringDateGroup;
+	}
+	
+	private boolean isValidPriority(String priorityString){
+		priorityString = priorityString.toLowerCase();
+		return (priorityString.equals(POMPOM.PRIORITY_HIGH)
+				|| priorityString.equals(POMPOM.PRIORITY_MED)
+				|| priorityString.equals(POMPOM.PRIORITY_LOW));
+	}
+	
+	private boolean isValidDate(Date parsedDate){
+		return parsedDate!=null;
 	}
 	
 	public boolean isNullTitle(){
@@ -488,12 +520,8 @@ public class AddParser extends ArgsParser{
 				&& isNullEndDate());
 	}
 	
-	public boolean hasAllFieldsFilled(){
+	public boolean hasStartAndEndDate(){
 		return !(isNullTitle()
-				|| isNullDescription() 
-				|| isNullPriority()
-				|| isNullStatus()
-				|| isNullLabel()
 				|| isNullEndDate()
 				|| isNullStartDate());
 	}

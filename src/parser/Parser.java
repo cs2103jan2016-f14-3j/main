@@ -4,6 +4,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.LoggingPermission;
 import command.Command;
+import command.DelRecurringCommand;
 import command.PathCommand;
 import main.POMPOM;
 
@@ -20,6 +21,19 @@ public class Parser{
 	private static final String CMD_UNDO ="undo";
 	private static final String CMD_PATH = "setpath";
 	private static final String CMD_EVENT = "event";
+	private static final String CMD_HELP = "help";
+	private static final String CMD_DELETE_RECUR_1 = "delete recur";
+	private static final String CMD_EDIT_RECUR_1= "edit recur";
+	private static final String CMD_DELETE_RECUR_2 = "delete r";
+	private static final String CMD_EDIT_RECUR_2 = "edit r";
+	private static final String CMD_VIEW = "view";	 
+	
+	private static final String[] CMD_ARRAY = {CMD_ADD, CMD_DELETE, CMD_DONE,
+												CMD_EDIT, CMD_EXIT, CMD_SEARCH,
+												CMD_SHOW, CMD_UNDO, CMD_PATH,
+												CMD_EVENT, CMD_HELP, CMD_DELETE_RECUR_1,
+												CMD_EDIT_RECUR_1, CMD_DELETE_RECUR_2,
+												CMD_EDIT_RECUR_2, CMD_VIEW};
 	
 	private static final int COMMAND_ARRAY_SIZE = 2; 
 	private static final int COMMAND_TYPE_INDEX = 0;
@@ -85,12 +99,28 @@ public class Parser{
 				//return exitParser.executeCommand();
 				System.exit(0);
 			case CMD_UNDO:
-				UndoParser undoparser = new UndoParser();
-				return undoparser.executeCommand();
+				UndoParser undoParser = new UndoParser();
+				return undoParser.executeCommand();
+			case CMD_HELP:
+				HelpParser helpParser = new HelpParser();
+				return helpParser.executeCommand();
 			case CMD_PATH:
 				return new PathCommand(commandArgument);
-
-	}
+			case CMD_DELETE_RECUR_1:
+			case CMD_DELETE_RECUR_2:
+				//System.out.println("lolOLOLOL");
+				return new DelRecurringCommand(Long.parseLong(commandArgument));
+			case CMD_EDIT_RECUR_1:
+			case CMD_EDIT_RECUR_2:
+				EditRecurringParser EditRecurringArgumentParser = new EditRecurringParser(commandArgument);
+				return EditRecurringArgumentParser.executeCommand();
+			case CMD_VIEW:
+				ViewParser viewParser = new ViewParser(commandArgument);
+				return viewParser.executeCommand();
+			case CMD_DONE:
+				DoneParser DoneArgumentParser = new DoneParser(commandArgument);
+				return DoneArgumentParser.executeCommand();
+	}	
 		InvalidParser InvalidArgumentParser = new InvalidParser(userCommand);
 		return InvalidArgumentParser.executeCommand();
 
@@ -98,22 +128,14 @@ public class Parser{
 	
 	private String[] splitCommand(String userCommand){
 		String[] outputArray = new String[COMMAND_ARRAY_SIZE];
-		outputArray[COMMAND_TYPE_INDEX] = getCommandType(userCommand);
-		outputArray[COMMAND_ARGUMENT_INDEX] = getArguments(userCommand, outputArray[0]);
-		return outputArray;
-	}
-	
-	private String getCommandType(String userCommand){
-		String[] toSplit = userCommand.split(" ", COMMAND_ARRAY_SIZE);
-		return toSplit[COMMAND_TYPE_INDEX].toLowerCase().trim();
-	}
-	
-	private String getArguments(String userCommand, String commandType) {
-		String[] toSplit = userCommand.split(" ", COMMAND_ARRAY_SIZE);
-		if (toSplit.length==2){
-			return toSplit[COMMAND_ARGUMENT_INDEX].toLowerCase().trim();
+		for (String command: CMD_ARRAY){
+			if (userCommand.indexOf(command)==0){
+				System.out.println(userCommand);
+				outputArray[COMMAND_TYPE_INDEX]=command.trim();
+				outputArray[COMMAND_ARGUMENT_INDEX]=userCommand.substring(command.length()).trim();
+			}
 		}
-		return "";
+		return outputArray;
 	}
 
 }
