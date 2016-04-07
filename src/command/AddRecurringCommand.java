@@ -57,7 +57,7 @@ public class AddRecurringCommand extends Command {
 			
 			logger.log(Level.INFO, "AddRecurringCommand has been executed");
 			returnMsg = MESSAGE_RECURRING;
-			return returnMsg;
+			showCorrectTab(itemList.get(0));
 			
 		} else {
 			
@@ -83,15 +83,16 @@ public class AddRecurringCommand extends Command {
 				}
 				
 				currentTask.setNextId(nextId);
-				System.out.println("CURRENT ID: " + currentId + ", NEXT ID: " + nextId);
+
 			}
 			
 			updateUndoStack();
+			showCorrectTab(getTask(firstId));
 			logger.log(Level.INFO, "AddRecurringCommand has been executed");
 			returnMsg = MESSAGE_RECURRING;
-			return returnMsg;
 		}
-
+		
+		return returnMsg;
 	}
 
 }

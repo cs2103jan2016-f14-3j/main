@@ -18,11 +18,11 @@ import utils.Item;
  */
 public class POMPOM {
 
-	public static final String STATUS_PENDING = "pending";
-	public static final String STATUS_ONGOING = "ongoing";
-	public static final String STATUS_COMPLETED = "completed";
-	public static final String STATUS_OVERDUE = "overdue";
-	public static final String STATUS_FLOATING = "floating";
+	public static final String STATUS_PENDING = "Pending";
+	public static final String STATUS_ONGOING = "Ongoing";
+	public static final String STATUS_COMPLETED = "Completed";
+	public static final String STATUS_OVERDUE = "Overdue";
+	public static final String STATUS_FLOATING = "Floating";
 
 	public static final String LABEL_TASK = "Task";
 	public static final String LABEL_COMPLETED_TASK = "CompletedTask";
@@ -129,7 +129,7 @@ public class POMPOM {
 
 	private static boolean isNotCompleted(Item item) {
 
-		return !item.getStatus().equals(STATUS_COMPLETED);
+		return !item.getStatus().equalsIgnoreCase(STATUS_COMPLETED);
 
 	}
 

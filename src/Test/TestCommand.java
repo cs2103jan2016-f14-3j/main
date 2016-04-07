@@ -12,7 +12,9 @@ import org.junit.Test;
 
 import command.AddCommand;
 import command.DelCommand;
+import command.DelRecurringCommand;
 import command.EditCommand;
+import command.EditRecurringCommand;
 import command.InvalidCommand;
 import command.MultiDelCommand;
 import command.MultiEditCommand;
@@ -32,23 +34,16 @@ import static org.junit.Assert.assertEquals;
  */
 public class TestCommand {
 
+	POMPOM pompom = new POMPOM();
 	Date currentDate = new Date();
-	DateTimeParser startParser = new DateTimeParser("start", "1 apr");
+	DateTimeParser startParser = new DateTimeParser("start", "april 1");
 	Date startDate = startParser.getDate();
-	
-	
+
 	DateTimeParser endParser = new DateTimeParser("end", "4 june");
 	Date endDate = endParser.getDate();
-	
-	public static Calendar dateToCalendar(Date date) {
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(date);
-		return cal;
-	}
 
 	@Test
 	public void testAdd() {
-		POMPOM pompom = new POMPOM();
 		AddCommand command = new AddCommand(POMPOM.LABEL_TASK, "do cs3241", "bezier curve", "medium", "ongoing", "lab",
 				currentDate, currentDate);
 
@@ -62,15 +57,14 @@ public class TestCommand {
 		Item addedTask = taskList.get(0);
 		assertEquals("do cs3241", addedTask.getTitle());
 		assertEquals("bezier curve", addedTask.getDescription());
-		assertEquals("medium", addedTask.getPriority());
-		assertEquals("ongoing", addedTask.getStatus());
+		assertEquals("Medium", addedTask.getPriority());
+		assertEquals("Overdue", addedTask.getStatus());
 		assertEquals("lab", addedTask.getLabel());
 
 	}
 
 	@Test
 	public void testDeleteById() {
-		POMPOM pompom = new POMPOM();
 		AddCommand add = new AddCommand(POMPOM.LABEL_TASK, "do cs3241", "bezier curve", "medium", "ongoing", "lab",
 				currentDate, currentDate);
 
@@ -83,7 +77,7 @@ public class TestCommand {
 		Item addedTask = taskList.get(0);
 		assertEquals("do cs3241", addedTask.getTitle());
 		assertEquals("bezier curve", addedTask.getDescription());
-		assertEquals("medium", addedTask.getPriority());
+		assertEquals("Medium", addedTask.getPriority());
 		assertEquals("ongoing", addedTask.getStatus());
 		assertEquals("lab", addedTask.getLabel());
 
@@ -98,7 +92,6 @@ public class TestCommand {
 
 	@Test
 	public void testDeleteByTitle() {
-		POMPOM pompom = new POMPOM();
 		AddCommand add = new AddCommand(POMPOM.LABEL_TASK, "do cs3241", "bezier curve", "medium", "ongoing", "lab",
 				currentDate, currentDate);
 
@@ -111,7 +104,7 @@ public class TestCommand {
 		Item addedTask = taskList.get(0);
 		assertEquals("do cs3241", addedTask.getTitle());
 		assertEquals("bezier curve", addedTask.getDescription());
-		assertEquals("medium", addedTask.getPriority());
+		assertEquals("Medium", addedTask.getPriority());
 		assertEquals("ongoing", addedTask.getStatus());
 		assertEquals("lab", addedTask.getLabel());
 
@@ -126,7 +119,6 @@ public class TestCommand {
 
 	@Test
 	public void testMultiDelete() {
-		POMPOM pompom = new POMPOM();
 		AddCommand add_0 = new AddCommand(POMPOM.LABEL_TASK, "do cs3241", "2d drawing", "low", "ongoing", "lab 1",
 				currentDate, currentDate);
 		AddCommand add_1 = new AddCommand(POMPOM.LABEL_TASK, "do cs3241", "solar system", "medium", "ongoing", "lab 2",
@@ -176,7 +168,6 @@ public class TestCommand {
 
 	@Test
 	public void testEditTitle() {
-		POMPOM pompom = new POMPOM();
 		AddCommand command = new AddCommand(POMPOM.LABEL_TASK, "do cs3241", "bezier curve", "medium", "ongoing", "lab",
 				currentDate, currentDate);
 
@@ -190,7 +181,7 @@ public class TestCommand {
 		Item addedTask = taskList.get(0);
 		assertEquals("do cs3241", addedTask.getTitle());
 		assertEquals("bezier curve", addedTask.getDescription());
-		assertEquals("medium", addedTask.getPriority());
+		assertEquals("Medium", addedTask.getPriority());
 		assertEquals("ongoing", addedTask.getStatus());
 		assertEquals("lab", addedTask.getLabel());
 
@@ -206,7 +197,6 @@ public class TestCommand {
 
 	@Test
 	public void testEditDescription() {
-		POMPOM pompom = new POMPOM();
 		AddCommand command = new AddCommand(POMPOM.LABEL_TASK, "do cs3241", "bezier curve", "medium", "ongoing", "lab",
 				currentDate, currentDate);
 
@@ -220,7 +210,7 @@ public class TestCommand {
 		Item addedTask = taskList.get(0);
 		assertEquals("do cs3241", addedTask.getTitle());
 		assertEquals("bezier curve", addedTask.getDescription());
-		assertEquals("medium", addedTask.getPriority());
+		assertEquals("Medium", addedTask.getPriority());
 		assertEquals("ongoing", addedTask.getStatus());
 		assertEquals("lab", addedTask.getLabel());
 
@@ -236,7 +226,6 @@ public class TestCommand {
 
 	@Test
 	public void testEditPriority() {
-		POMPOM pompom = new POMPOM();
 		AddCommand command = new AddCommand(POMPOM.LABEL_TASK, "do cs3241", "bezier curve", "medium", "ongoing", "lab",
 				currentDate, currentDate);
 
@@ -250,8 +239,8 @@ public class TestCommand {
 		Item addedTask = taskList.get(0);
 		assertEquals("do cs3241", addedTask.getTitle());
 		assertEquals("bezier curve", addedTask.getDescription());
-		assertEquals("medium", addedTask.getPriority());
-		assertEquals("ongoing", addedTask.getStatus());
+		assertEquals("Medium", addedTask.getPriority());
+		assertEquals("Overdue", addedTask.getStatus());
 		assertEquals("lab", addedTask.getLabel());
 
 		EditCommand edit = new EditCommand(addedTask.getId(), "priority", "high");
@@ -260,13 +249,12 @@ public class TestCommand {
 		assertEquals(addedTask.getId() + ". was successfully edited", edit.execute());
 
 		// check if the edit command did edit the actual item
-		assertEquals("high", addedTask.getPriority());
+		assertEquals("High", addedTask.getPriority());
 
 	}
 
 	@Test
 	public void testEditStatus() {
-		POMPOM pompom = new POMPOM();
 		AddCommand command = new AddCommand(POMPOM.LABEL_TASK, "do cs3241", "bezier curve", "medium", "ongoing", "lab",
 				currentDate, endDate);
 
@@ -280,7 +268,7 @@ public class TestCommand {
 		Item addedTask = taskList.get(0);
 		assertEquals("do cs3241", addedTask.getTitle());
 		assertEquals("bezier curve", addedTask.getDescription());
-		assertEquals("medium", addedTask.getPriority());
+		assertEquals("Medium", addedTask.getPriority());
 		assertEquals("ongoing", addedTask.getStatus());
 		assertEquals("lab", addedTask.getLabel());
 
@@ -296,7 +284,6 @@ public class TestCommand {
 
 	@Test
 	public void testEditLabel() {
-		POMPOM pompom = new POMPOM();
 		AddCommand command = new AddCommand(POMPOM.LABEL_TASK, "do cs3241", "bezier curve", "medium", "ongoing", "lab",
 				currentDate, currentDate);
 
@@ -310,8 +297,8 @@ public class TestCommand {
 		Item addedTask = taskList.get(0);
 		assertEquals("do cs3241", addedTask.getTitle());
 		assertEquals("bezier curve", addedTask.getDescription());
-		assertEquals("medium", addedTask.getPriority());
-		assertEquals("ongoing", addedTask.getStatus());
+		assertEquals("Medium", addedTask.getPriority());
+		assertEquals("Overdue", addedTask.getStatus());
 		assertEquals("lab", addedTask.getLabel());
 
 		EditCommand edit = new EditCommand(addedTask.getId(), "label", "deadline");
@@ -323,10 +310,9 @@ public class TestCommand {
 		assertEquals("deadline", addedTask.getLabel());
 
 	}
-	
+
 	@Test
 	public void testEditStartDate() {
-		POMPOM pompom = new POMPOM();
 		AddCommand command = new AddCommand(POMPOM.LABEL_TASK, "do cs3241", "bezier curve", "medium", "ongoing", "lab",
 				currentDate, currentDate);
 
@@ -340,7 +326,7 @@ public class TestCommand {
 		Item addedTask = taskList.get(0);
 		assertEquals("do cs3241", addedTask.getTitle());
 		assertEquals("bezier curve", addedTask.getDescription());
-		assertEquals("medium", addedTask.getPriority());
+		assertEquals("Medium", addedTask.getPriority());
 		assertEquals("ongoing", addedTask.getStatus());
 		assertEquals("lab", addedTask.getLabel());
 
@@ -348,24 +334,16 @@ public class TestCommand {
 
 		// check if the edit command returns the right status message
 		assertEquals(addedTask.getId() + ". was successfully edited", edit.execute());
-		try {
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-			Date sdate = sdf.parse(startDate.toString());
-			String date = sdate.toString();
-			
-			// check if the edit command did edit the actual item
-			assertEquals("20160401", date);
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+		System.out.println("FUCK THIS IS THE FKIN SHIT: " + sdf);
+		System.out.println(startDate);
+		String date = sdf.format(startDate);
+		assertEquals("01/04/2016 00:00", date);
 
 	}
 
 	@Test
 	public void testMultiEdit() {
-		POMPOM pompom = new POMPOM();
 		AddCommand command = new AddCommand(POMPOM.LABEL_TASK, "do cs3241", "bezier curve", "medium", "ongoing", "lab",
 				currentDate, currentDate);
 
@@ -379,7 +357,7 @@ public class TestCommand {
 		Item addedTask = taskList.get(0);
 		assertEquals("do cs3241", addedTask.getTitle());
 		assertEquals("bezier curve", addedTask.getDescription());
-		assertEquals("medium", addedTask.getPriority());
+		assertEquals("Medium", addedTask.getPriority());
 		assertEquals("ongoing", addedTask.getStatus());
 		assertEquals("lab", addedTask.getLabel());
 
@@ -400,13 +378,12 @@ public class TestCommand {
 		// check if the edit command did edit the actual item
 		assertEquals("do cs3241 lab 5", addedTask.getTitle());
 		assertEquals("build your town", addedTask.getDescription());
-		assertEquals("high", addedTask.getPriority());
+		assertEquals("High", addedTask.getPriority());
 
 	}
 
 	@Test
 	public void testUndoAdd() {
-		POMPOM pompom = new POMPOM();
 		AddCommand command = new AddCommand(POMPOM.LABEL_TASK, "do cs3241", "bezier curve", "medium", "ongoing", "lab",
 				currentDate, currentDate);
 
@@ -420,14 +397,14 @@ public class TestCommand {
 		Item addedTask = taskList.get(0);
 		assertEquals("do cs3241", addedTask.getTitle());
 		assertEquals("bezier curve", addedTask.getDescription());
-		assertEquals("medium", addedTask.getPriority());
+		assertEquals("Medium", addedTask.getPriority());
 		assertEquals("ongoing", addedTask.getStatus());
 		assertEquals("lab", addedTask.getLabel());
 
 		UndoCommand undo = new UndoCommand();
 
 		// check if the undo command returns the right status message
-		assertEquals("Previous action was successfully undone", undo.execute());
+		assertEquals("Previous action has been successfully undone", undo.execute());
 
 		// check if the taskList is empty because add was undid
 		assertEquals(0, taskList.size());
@@ -436,7 +413,6 @@ public class TestCommand {
 
 	@Test
 	public void testUndoDelete() {
-		POMPOM pompom = new POMPOM();
 		AddCommand command = new AddCommand(POMPOM.LABEL_TASK, "do cs3241", "bezier curve", "medium", "ongoing", "lab",
 				currentDate, currentDate);
 
@@ -450,7 +426,7 @@ public class TestCommand {
 		Item addedTask = taskList.get(0);
 		assertEquals("do cs3241", addedTask.getTitle());
 		assertEquals("bezier curve", addedTask.getDescription());
-		assertEquals("medium", addedTask.getPriority());
+		assertEquals("Medium", addedTask.getPriority());
 		assertEquals("ongoing", addedTask.getStatus());
 		assertEquals("lab", addedTask.getLabel());
 
@@ -465,13 +441,13 @@ public class TestCommand {
 		UndoCommand undo = new UndoCommand();
 
 		// check if the undo command returns the right status message
-		assertEquals("Previous action was successfully undone", undo.execute());
+		assertEquals("Previous action has been successfully undone", undo.execute());
 
 		// check if the taskList contain the recovered task
 		Item recoveredTask = taskList.get(0);
 		assertEquals("do cs3241", recoveredTask.getTitle());
 		assertEquals("bezier curve", recoveredTask.getDescription());
-		assertEquals("medium", recoveredTask.getPriority());
+		assertEquals("Medium", recoveredTask.getPriority());
 		assertEquals("ongoing", recoveredTask.getStatus());
 		assertEquals("lab", recoveredTask.getLabel());
 
@@ -479,7 +455,6 @@ public class TestCommand {
 
 	@Test
 	public void testUndoEditTitle() {
-		POMPOM pompom = new POMPOM();
 		AddCommand command = new AddCommand(POMPOM.LABEL_TASK, "do cs3241", "bezier curve", "medium", "ongoing", "lab",
 				currentDate, currentDate);
 
@@ -493,7 +468,7 @@ public class TestCommand {
 		Item addedTask = taskList.get(0);
 		assertEquals("do cs3241", addedTask.getTitle());
 		assertEquals("bezier curve", addedTask.getDescription());
-		assertEquals("medium", addedTask.getPriority());
+		assertEquals("Medium", addedTask.getPriority());
 		assertEquals("ongoing", addedTask.getStatus());
 		assertEquals("lab", addedTask.getLabel());
 
@@ -508,16 +483,24 @@ public class TestCommand {
 		UndoCommand undo = new UndoCommand();
 
 		// check if the undo command returns the right status message
-		assertEquals("Previous action was successfully undone", undo.execute());
+		assertEquals("Previous action has been successfully undone", undo.execute());
 
 		// check if the title changed back to previous title
 		assertEquals("do cs3241", addedTask.getTitle());
 
 	}
+	
+	@Test
+	public void testUndoEmpty() {
+		
+		pompom = new POMPOM();
+		UndoCommand undo = new UndoCommand();
+		assertEquals("There is nothing to undo", undo.execute());
+		
+	}
 
 	@Test
 	public void testSearch() {
-		POMPOM pompom = new POMPOM();
 		AddCommand command_0 = new AddCommand(POMPOM.LABEL_TASK, "do cs3241", "2d drawing", "low", "ongoing", "lab 1",
 				currentDate, currentDate);
 		AddCommand command_1 = new AddCommand(POMPOM.LABEL_TASK, "do cs3241", "solar system", "medium", "ongoing",
@@ -595,4 +578,335 @@ public class TestCommand {
 
 	}
 
+	@Test
+	public void testAddRecurring() {
+
+		ArrayList<Item> taskList = POMPOM.getStorage().getTaskList();
+		taskList.clear();
+
+		String returnMsg = pompom.execute("add do project every monday f:4 apr e:2 may");
+
+		// check if the correct status message is returned
+		assertEquals("Recurring tasks has been added", returnMsg);
+
+		// check if the correct number of tasks has been added
+		assertEquals(3, taskList.size());
+
+	}
+
+	@Test
+	public void testDelRecurringFirstTask() {
+
+		ArrayList<Item> taskList = POMPOM.getStorage().getTaskList();
+		taskList.clear();
+
+		String returnMsg = pompom.execute("add do project every monday f:4 apr e:2 may");
+
+		// check if the correct status message is returned
+		assertEquals("Recurring tasks has been added", returnMsg);
+
+		// check if the correct number of tasks has been added
+		assertEquals(3, taskList.size());
+
+		Item addedTask_1 = taskList.get(0);
+
+		DelRecurringCommand delRecurringCommand = new DelRecurringCommand(addedTask_1.getId());
+		assertEquals("A series of recurring tasks has been deleted", delRecurringCommand.execute());
+		
+		assertEquals(0, taskList.size());
+		
+	}
+	
+	@Test
+	public void testDelRecurringMiddleTask() {
+
+		ArrayList<Item> taskList = POMPOM.getStorage().getTaskList();
+		taskList.clear();
+
+		String returnMsg = pompom.execute("add do project every monday f:4 apr e:2 may");
+
+		// check if the correct status message is returned
+		assertEquals("Recurring tasks has been added", returnMsg);
+
+		// check if the correct number of tasks has been added
+		assertEquals(3, taskList.size());
+
+		Item addedTask_2 = taskList.get(1);
+
+		DelRecurringCommand delRecurringCommand = new DelRecurringCommand(addedTask_2.getId());
+		assertEquals("A series of recurring tasks has been deleted", delRecurringCommand.execute());
+		
+		assertEquals(0, taskList.size());
+		
+	}
+	
+	@Test
+	public void testDelRecurringLastTask() {
+
+		ArrayList<Item> taskList = POMPOM.getStorage().getTaskList();
+		taskList.clear();
+
+		String returnMsg = pompom.execute("add do project every monday f:4 apr e:2 may");
+
+		// check if the correct status message is returned
+		assertEquals("Recurring tasks has been added", returnMsg);
+
+		// check if the correct number of tasks has been added
+		assertEquals(3, taskList.size());
+
+		Item addedTask_3 = taskList.get(2);
+
+		DelRecurringCommand delRecurringCommand = new DelRecurringCommand(addedTask_3.getId());
+		assertEquals("A series of recurring tasks has been deleted", delRecurringCommand.execute());
+		
+		assertEquals(0, taskList.size());
+		
+	}
+	
+	@Test
+	public void testEditRecurringTitle() {
+
+		ArrayList<Item> taskList = POMPOM.getStorage().getTaskList();
+		taskList.clear();
+
+		String returnMsg = pompom.execute("add do project every monday f:4 apr e:2 may");
+
+		// check if the correct status message is returned
+		assertEquals("Recurring tasks has been added", returnMsg);
+
+		// check if the correct number of tasks has been added
+		assertEquals(3, taskList.size());
+
+		Item addedTask_1 = taskList.get(0);
+		Item addedTask_2 = taskList.get(1);
+		Item addedTask_3 = taskList.get(2);
+
+		EditRecurringCommand editRecurringCommand = new EditRecurringCommand(addedTask_1.getId(), "title", "it works perfectly");
+		assertEquals("A series of recurring tasks has been edited", editRecurringCommand.execute());
+		
+		assertEquals("it works perfectly", addedTask_1.getTitle());
+		assertEquals("it works perfectly", addedTask_2.getTitle());
+		assertEquals("it works perfectly", addedTask_3.getTitle());
+		
+	}
+	
+	@Test
+	public void testEditRecurringDescription() {
+
+		ArrayList<Item> taskList = POMPOM.getStorage().getTaskList();
+		taskList.clear();
+
+		String returnMsg = pompom.execute("add do project every monday f:4 apr e:2 may");
+
+		// check if the correct status message is returned
+		assertEquals("Recurring tasks has been added", returnMsg);
+
+		// check if the correct number of tasks has been added
+		assertEquals(3, taskList.size());
+
+		Item addedTask_1 = taskList.get(0);
+		Item addedTask_2 = taskList.get(1);
+		Item addedTask_3 = taskList.get(2);
+
+		EditRecurringCommand editRecurringCommand = new EditRecurringCommand(addedTask_1.getId(), "description", "it works perfectly");
+		assertEquals("A series of recurring tasks has been edited", editRecurringCommand.execute());
+		
+		assertEquals("it works perfectly", addedTask_1.getDescription());
+		assertEquals("it works perfectly", addedTask_2.getDescription());
+		assertEquals("it works perfectly", addedTask_3.getDescription());
+		
+	}
+	
+	@Test
+	public void testEditRecurringLabel() {
+
+		ArrayList<Item> taskList = POMPOM.getStorage().getTaskList();
+		taskList.clear();
+
+		String returnMsg = pompom.execute("add do project every monday f:4 apr e:2 may");
+
+		// check if the correct status message is returned
+		assertEquals("Recurring tasks has been added", returnMsg);
+
+		// check if the correct number of tasks has been added
+		assertEquals(3, taskList.size());
+
+		Item addedTask_1 = taskList.get(0);
+		Item addedTask_2 = taskList.get(1);
+		Item addedTask_3 = taskList.get(2);
+
+		EditRecurringCommand editRecurringCommand = new EditRecurringCommand(addedTask_1.getId(), "label", "work work work");
+		assertEquals("A series of recurring tasks has been edited", editRecurringCommand.execute());
+		
+		assertEquals("work work work", addedTask_1.getLabel());
+		assertEquals("work work work", addedTask_2.getLabel());
+		assertEquals("work work work", addedTask_3.getLabel());
+		
+	}
+	
+	@Test
+	public void testEditRecurringPriority() {
+
+		ArrayList<Item> taskList = POMPOM.getStorage().getTaskList();
+		taskList.clear();
+
+		String returnMsg = pompom.execute("add do project every monday f:4 apr e:2 may");
+
+		// check if the correct status message is returned
+		assertEquals("Recurring tasks has been added", returnMsg);
+
+		// check if the correct number of tasks has been added
+		assertEquals(3, taskList.size());
+
+		Item addedTask_1 = taskList.get(0);
+		Item addedTask_2 = taskList.get(1);
+		Item addedTask_3 = taskList.get(2);
+
+		EditRecurringCommand editRecurringCommand = new EditRecurringCommand(addedTask_1.getId(), "priority", "high");
+		assertEquals("A series of recurring tasks has been edited", editRecurringCommand.execute());
+		
+		assertEquals("High", addedTask_1.getPriority());
+		assertEquals("High", addedTask_2.getPriority());
+		assertEquals("High", addedTask_3.getPriority());
+		
+	}
+	
+	@Test
+	public void testEditRecurringFirstTask() {
+
+		ArrayList<Item> taskList = POMPOM.getStorage().getTaskList();
+		taskList.clear();
+
+		String returnMsg = pompom.execute("add do project every monday f:4 apr e:2 may");
+
+		// check if the correct status message is returned
+		assertEquals("Recurring tasks has been added", returnMsg);
+
+		// check if the correct number of tasks has been added
+		assertEquals(3, taskList.size());
+
+		Item addedTask_1 = taskList.get(0);
+		Item addedTask_2 = taskList.get(1);
+		Item addedTask_3 = taskList.get(2);
+
+		EditRecurringCommand editRecurringCommand = new EditRecurringCommand(addedTask_1.getId(), "title", "it works perfectly");
+		assertEquals("A series of recurring tasks has been edited", editRecurringCommand.execute());
+		
+		assertEquals("it works perfectly", addedTask_1.getTitle());
+		assertEquals("it works perfectly", addedTask_2.getTitle());
+		assertEquals("it works perfectly", addedTask_3.getTitle());
+		
+	}
+	
+	@Test
+	public void testEditRecurringMiddleTask() {
+
+		ArrayList<Item> taskList = POMPOM.getStorage().getTaskList();
+		taskList.clear();
+
+		String returnMsg = pompom.execute("add do project every monday f:4 apr e:2 may");
+
+		// check if the correct status message is returned
+		assertEquals("Recurring tasks has been added", returnMsg);
+
+		// check if the correct number of tasks has been added
+		assertEquals(3, taskList.size());
+
+		Item addedTask_1 = taskList.get(0);
+		Item addedTask_2 = taskList.get(1);
+		Item addedTask_3 = taskList.get(2);
+
+		EditRecurringCommand editRecurringCommand = new EditRecurringCommand(addedTask_2.getId(), "title", "it works perfectly");
+		assertEquals("A series of recurring tasks has been edited", editRecurringCommand.execute());
+		
+		assertEquals("it works perfectly", addedTask_1.getTitle());
+		assertEquals("it works perfectly", addedTask_2.getTitle());
+		assertEquals("it works perfectly", addedTask_3.getTitle());
+		
+	}
+	
+	@Test
+	public void testEditRecurringLastTask() {
+
+		ArrayList<Item> taskList = POMPOM.getStorage().getTaskList();
+		taskList.clear();
+
+		String returnMsg = pompom.execute("add do project every monday f:4 apr e:2 may");
+
+		// check if the correct status message is returned
+		assertEquals("Recurring tasks has been added", returnMsg);
+
+		// check if the correct number of tasks has been added
+		assertEquals(3, taskList.size());
+
+		Item addedTask_1 = taskList.get(0);
+		Item addedTask_2 = taskList.get(1);
+		Item addedTask_3 = taskList.get(2);
+
+		EditRecurringCommand editRecurringCommand = new EditRecurringCommand(addedTask_3.getId(), "title", "it works perfectly");
+		assertEquals("A series of recurring tasks has been edited", editRecurringCommand.execute());
+		
+		assertEquals("it works perfectly", addedTask_1.getTitle());
+		assertEquals("it works perfectly", addedTask_2.getTitle());
+		assertEquals("it works perfectly", addedTask_3.getTitle());
+		
+	}
+
+	@Test
+	public void testUndoAddRecurring() {
+
+		ArrayList<Item> taskList = POMPOM.getStorage().getTaskList();
+		taskList.clear();
+
+		String returnMsg = pompom.execute("add do project every monday f:4 apr e:2 may");
+
+		// check if the correct status message is returned
+		assertEquals("Recurring tasks has been added", returnMsg);
+
+		// check if the correct number of tasks has been added
+		assertEquals(3, taskList.size());
+		
+		UndoCommand undo = new UndoCommand();
+		assertEquals("Previous action has been successfully undone", undo.execute());
+
+	}
+	
+	@Test
+	public void testRecurringLinkage() {
+
+		ArrayList<Item> taskList = POMPOM.getStorage().getTaskList();
+		taskList.clear();
+
+		String returnMsg = pompom.execute("add do project every monday f:4 apr e:2 may");
+
+		// check if the correct status message is returned
+		assertEquals("Recurring tasks has been added", returnMsg);
+
+		// check if the correct number of tasks has been added
+		assertEquals(3, taskList.size());
+		
+		Item addedTask_1 = taskList.get(0);
+		Item addedTask_2 = taskList.get(1);
+		Item addedTask_3 = taskList.get(2);
+		
+		UndoCommand undo = new UndoCommand();
+		DelCommand delete = new DelCommand(addedTask_2.getId());
+		
+		// check if the correct status message is returned
+		assertEquals(addedTask_2.getId() + ". has been deleted from Event", delete.execute());
+		assertEquals(2, taskList.size());
+		
+		DelRecurringCommand delRecurring_1 = new DelRecurringCommand(addedTask_1.getId());
+		assertEquals("A series of recurring tasks has been deleted", delRecurring_1.execute());
+		assertEquals(0, taskList.size());
+
+		assertEquals("Previous action has been successfully undone", undo.execute());
+		assertEquals("Previous action has been successfully undone", undo.execute());
+		
+		// check if linkage is restored if deleted middle task is added back by undo
+		assertEquals(3, taskList.size());
+		DelRecurringCommand delRecurring_2 = new DelRecurringCommand(addedTask_2.getId());
+		assertEquals("A series of recurring tasks has been deleted", delRecurring_2.execute());
+		assertEquals(0, taskList.size());
+	}
 }

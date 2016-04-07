@@ -4,6 +4,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.LoggingPermission;
 import command.Command;
+import command.DelRecurringCommand;
 import command.PathCommand;
 import main.POMPOM;
 
@@ -25,7 +26,7 @@ public class Parser{
 	private static final String CMD_EDIT_RECUR_1= "edit recur";
 	private static final String CMD_DELETE_RECUR_2 = "delete r";
 	private static final String CMD_EDIT_RECUR_2 = "edit r";
-	private static final String CMD_VIEW = "view";	
+	private static final String CMD_VIEW = "view";	 
 	
 	private static final String[] CMD_ARRAY = {CMD_ADD, CMD_DELETE, CMD_DONE,
 												CMD_EDIT, CMD_EXIT, CMD_SEARCH,
@@ -107,12 +108,12 @@ public class Parser{
 				return new PathCommand(commandArgument);
 			case CMD_DELETE_RECUR_1:
 			case CMD_DELETE_RECUR_2:
-				System.out.println("lolOLOLOL");
-			//	return new DelRecurringCommand(Long.parseLong(commandArgument));
+				//System.out.println("lolOLOLOL");
+				return new DelRecurringCommand(Long.parseLong(commandArgument));
 			case CMD_EDIT_RECUR_1:
 			case CMD_EDIT_RECUR_2:
 				EditRecurringParser EditRecurringArgumentParser = new EditRecurringParser(commandArgument);
-				//return EditRArgumentParser.executeCommand();
+				return EditRecurringArgumentParser.executeCommand();
 			case CMD_VIEW:
 				ViewParser viewParser = new ViewParser(commandArgument);
 				return viewParser.executeCommand();

@@ -24,7 +24,7 @@ public class EditCommand extends Command {
 	private static final String FIELD_START_DATE = "start date";
 	private static final String FIELD_END_DATE = "end date";
 	
-	private long taskId;
+	public long taskId;
 	private String field;
 	private String newData;
 	private Date newDate;
@@ -142,23 +142,23 @@ public class EditCommand extends Command {
 		POMPOM.getUndoStack().push(counterAction);
 	}
 	
-	private void showCorrectTab() {
-		
-		if (task.getType().toLowerCase().equals(POMPOM.LABEL_EVENT.toLowerCase())) {
-			if (task.getStatus().equals(POMPOM.STATUS_COMPLETED)) {
-				POMPOM.setCurrentTab(POMPOM.LABEL_COMPLETED_EVENT);
-			} else {
-				POMPOM.setCurrentTab(POMPOM.LABEL_EVENT);
-			}
-		} else {
-			if (task.getStatus().equals(POMPOM.STATUS_COMPLETED)) {
-				POMPOM.setCurrentTab(POMPOM.LABEL_COMPLETED_TASK);
-			} else {
-				POMPOM.setCurrentTab(POMPOM.LABEL_TASK);
-			}
-		}
-		
-	}
+//	/*private void showCorrectTab() {
+//		
+//		if (task.getType().toLowerCase().equals(POMPOM.LABEL_EVENT.toLowerCase())) {
+//			if (task.getStatus().equals(POMPOM.STATUS_COMPLETED)) {
+//				POMPOM.setCurrentTab(POMPOM.LABEL_COMPLETED_EVENT);
+//			} else {
+//				POMPOM.setCurrentTab(POMPOM.LABEL_EVENT);
+//			}
+//		} else {
+//			if (task.getStatus().equals(POMPOM.STATUS_COMPLETED)) {
+//				POMPOM.setCurrentTab(POMPOM.LABEL_COMPLETED_TASK);
+//			} else {
+//				POMPOM.setCurrentTab(POMPOM.LABEL_TASK);
+//			}
+//		}
+//		
+//	}
 	
 	public String execute() {
 		canEdit = checkExists(taskId);
@@ -173,7 +173,8 @@ public class EditCommand extends Command {
 			returnMsg = MESSAGE_TASK_ERROR;
 		}
 		
-		showCorrectTab();
+		POMPOM.refreshStatus();
+		showCorrectTab(task);
 		
 		logger.log(Level.INFO, "EditCommand has be executed");
 		return returnMsg;

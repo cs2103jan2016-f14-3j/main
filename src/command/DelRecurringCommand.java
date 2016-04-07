@@ -3,12 +3,14 @@ package command;
 import java.util.ArrayList;
 import java.util.logging.Level;
 
+import org.omg.CORBA.Current;
+
 import main.POMPOM;
 import utils.Item;
 
 public class DelRecurringCommand extends Command {
 
-	private static final String MESSAGE_DELETE_RECURRING = "A series of recurring tasks has been deleted.";
+	private static final String MESSAGE_DELETE_RECURRING = "A series of recurring tasks has been deleted";
 	private Long taskId;
 	private Long[] idList;
 	boolean isUndo;
@@ -55,6 +57,7 @@ public class DelRecurringCommand extends Command {
 		if (!isUndo) {
 			
 			Long firstId = taskId;
+			Item firstTask = getTask(firstId);
 			while (taskId != null) {
 				Item currentTask = getTask(taskId);
 				addList.add(currentTask);
@@ -68,16 +71,23 @@ public class DelRecurringCommand extends Command {
 			}
 			
 			updateUndoStack();
+			POMPOM.refreshStatus();
+			showCorrectTab(firstTask);
 
 			returnMsg = MESSAGE_DELETE_RECURRING;
 			return returnMsg;
 			
 		} else {
 			
+			//Item toDelete = getTask(taskId);
 			for (int i = 0; i < idList.length; i++) {
 				long currentId = idList[i];
 				removeTask(currentId);
 			}
+			
+			
+			POMPOM.refreshStatus();
+			//showCorrectTab(toDelete);
 			
 			returnMsg = MESSAGE_DELETE_RECURRING;
 			return returnMsg;
