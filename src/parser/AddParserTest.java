@@ -344,8 +344,7 @@ public class AddParserTest{
 	
 	private long getEndDateDifference(Date add, String dateString) {
 		long expectedEndDateInMillis= timeParser.parseSyntax(dateString).get(0).getDates().get(0).getTime();
-		long parsedEndDateInMillis = add.getT
-				ime(); 
+		long parsedEndDateInMillis = add.getTime(); 
 		long endDateDifferenceInSeconds = (expectedEndDateInMillis-parsedEndDateInMillis)/1000;
 		return endDateDifferenceInSeconds;
 	}

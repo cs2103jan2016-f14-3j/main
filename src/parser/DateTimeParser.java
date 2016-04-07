@@ -248,8 +248,13 @@ public class DateTimeParser{
 		if (!originalString.contains(COMMAND_PREFIX_RECURRING)){
 			return;
 		} 
+		
+		//every day change to every 1 day
+		//every one day change to every 1 day
+		
+		
+		
 		List<DateGroup> dateGroup=parseAndCheckDate(originalString);
-		System.out.println(originalString);;
 		recurringDateGroup=dateGroup.get(0);
 	}
 	
@@ -258,6 +263,7 @@ public class DateTimeParser{
 		if (!originalString.contains(COMMAND_PREFIX_EXCEPT)){
 			return;
 		} 
+		
 		String[] datesSplit = originalString.split("to");
 		
 		if (datesSplit.length!=2){
@@ -265,6 +271,14 @@ public class DateTimeParser{
 		}
 		exceptStartDateGroup=parseAndCheckDate(datesSplit[0]).get(0);
 		exceptEndDateGroup=parseAndCheckDate(datesSplit[1]).get(0);
+		
+		int indexStart = originalString.indexOf(exceptStartDateGroup.getText())-8;
+		
+		int indexEnd = originalString.indexOf(exceptEndDateGroup.getText())+
+				exceptEndDateGroup.getText().length();
+		
+		String getContains = originalString.substring(indexStart,indexEnd);
+		dateTimeString = getContains;
 	}
 	
 	public List<DateGroup> parseAndCheckDate(String stringWithDate){

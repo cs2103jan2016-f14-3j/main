@@ -22,20 +22,23 @@ public class DelCommand extends Command {
 	private boolean isUndo;
 	private boolean canDelete;
 	private Item toDelete;
+	ArrayList<Item> taskList = getTaskList();
 
 	public DelCommand(long taskId) {
 		this.taskId = taskId;
 		this.isById = true;
-		isUndo = false;
-
+		this.isUndo = false;
+		this.toDelete = getTask(taskId);
+		
 		logger.log(Level.INFO, "DelCommand with id initialized");
 	}
 
 	public DelCommand(String taskTitle) {
 		this.taskTitle = taskTitle;
 		this.isById = false;
-		isUndo = false;
-
+		this.isUndo = false;
+		this.toDelete = getTask(taskId);
+		
 		logger.log(Level.INFO, "DelCommand with title initialized");
 	}
 
@@ -72,10 +75,10 @@ public class DelCommand extends Command {
 	}
 
 	private Command createCounterAction() {
-		toDelete = getTask(taskId);
 		AddCommand counterAction = new AddCommand(toDelete.getId(), toDelete.getType(), toDelete.getTitle(),
 				toDelete.getDescription(), toDelete.getPriority(), toDelete.getStatus(), toDelete.getLabel(),
-				toDelete.getStartDate(), toDelete.getEndDate());
+				toDelete.getStartDate(), toDelete.getEndDate(), toDelete.getIsRecurring(), toDelete.getPrevId(),
+				toDelete.getNextId());
 		return counterAction;
 	}
 
@@ -84,11 +87,31 @@ public class DelCommand extends Command {
 		POMPOM.getUndoStack().push(counterAction);
 	}
 
-	public String execute() {
+	private void setProperPointers() {
+		Item currentTask = getTask(toDelete.getId());
 		
+		if (!(currentTask.getPrevId() == null)) {
+			Item prevTask = getTask(currentTask.getPrevId());
+			prevTask.setNextId(currentTask.getNextId());
+		} 
+		
+		if (!(currentTask.getNextId() < currentTask.getId())) {
+			Item nextTask = getTask(currentTask.getNextId());
+			nextTask.setPrevId(currentTask.getPrevId());
+		}
+		
+	}
+
+	public String execute() {
+
 		if (isById) {
 
 			canDelete = checkExists(taskId);
+			
+			toDelete = getTask(taskId);
+			
+			if (toDelete.getIsRecurring() == true)
+				setProperPointers();
 
 			if (canDelete) {
 
@@ -117,15 +140,15 @@ public class DelCommand extends Command {
 			} else {
 				returnMsg = String.format(MESSAGE_TASK_ERROR, taskId);
 			}
-			
+
 		} else {
-			
+
 			removeTask();
 			logger.log(Level.INFO, "DelCommand by title has be executed");
 			returnMsg = String.format(MESSAGE_TASK_DELETED_TITLE, taskTitle);
-			
+
 		}
-		
+
 		return returnMsg;
 	}
 

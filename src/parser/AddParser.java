@@ -82,12 +82,12 @@ public class AddParser extends ArgsParser{
 	 * 
 	 */
 	private void extractDataFromArguments() {
-		extractTitle();
 		extractPriority();
 		extractLabel();
 		extractRecurring();
 		extractStartDate();
 		extractEndDate();		
+		extractTitle();
 		
 	}
 	
@@ -293,7 +293,10 @@ public class AddParser extends ArgsParser{
 		int indexOfPrefix = commandArgumentsString.indexOf(COMMAND_PREFIX_STARTDATE);
 		if (isValidIndex(indexOfPrefix) && isValidArguments){
 			DateTimeParser startDateTimeParser = new DateTimeParser(DATETIMEPARSER_INDICATOR_START,commandArgumentsString);			
+			System.out.println(startDateTimeParser.getString()+" LOLOLOL");
+			System.out.println(commandArgumentsString);
 			commandArgumentsString = commandArgumentsString.replace(startDateTimeParser.getString(), STRING_EMPTY);
+			System.out.println(commandArgumentsString);
 			itemStartDate=startDateTimeParser.getDate();
 			isValidArguments = isValidDate(itemStartDate);
 		}
@@ -339,11 +342,16 @@ public class AddParser extends ArgsParser{
 	 *  the excepts variable (exceptStartDate and exceptEndDate).
 	 */
 	private void extractExcept(DateTimeParser recurringTimeParser) {
+		System.out.println(recurringTimeParser.getString()+" looooooolololol");
 		commandArgumentsString=commandArgumentsString.replace(recurringTimeParser.getString(), STRING_EMPTY);
 		DateTimeParser exceptTimeParser = new DateTimeParser(DATETIMEPARSER_INDICATOR_EXCEPT,commandArgumentsString);
+		System.out.println(canGetExceptDateGroups(exceptTimeParser));
 		if (canGetExceptDateGroups(exceptTimeParser)){
 			exceptStartDate=exceptTimeParser.getExceptStartDateGroup().getDates().get(0);
 			exceptEndDate=exceptTimeParser.getExceptEndDateGroup().getDates().get(0);
+			commandArgumentsString = commandArgumentsString.replace(exceptTimeParser.getString(), STRING_EMPTY);
+			System.out.println("before: "+ commandArgumentsString);
+				
 		}
 	}
 
