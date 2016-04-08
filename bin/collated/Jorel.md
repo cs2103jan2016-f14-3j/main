@@ -1,25 +1,489 @@
 # Jorel
-###### gui\Controller.java
+###### gui\EditTaskController.java
 ``` java
  *
  */
-public class Controller implements Initializable {
+public class EditTaskController implements Initializable {
+
+	@FXML
+	TextField newTaskTitle;
+	@FXML
+	DatePicker newStartDate;
+	@FXML
+	ComboBox<String> newStartHour;
+	@FXML
+	ComboBox<String> newStartMin;
+	@FXML
+	TextField newLabel;
+	@FXML
+	DatePicker newEndDate;
+	@FXML
+	ComboBox<String> newEndHour;
+	@FXML
+	ComboBox<String> newEndMin;
+	@FXML
+	ComboBox<String> newPriority;
+	@FXML
+	Button newTaskSave;
+	@FXML
+	Button newTaskCancel;
+	@FXML
+	ComboBox<String> newType;
+
+	private Stage dialogStage;
+	MainController mainControl;
+
+	POMPOM pompom = new POMPOM();
+	String title;
+	LocalDate startDate;
+	String startHour;
+	String startMin;
+	LocalDate endDate;
+	String endHour;
+	String endMin;
+	String label;
+	String priority;
+	String type;
+	Long taskId;
+
+	int year;
+	int month;
+	int day;
+	int hour;
+	int min;
+	ObservableList<String> options = FXCollections.observableArrayList("High",
+			"Medium", "Low");
+	ObservableList<String> itemType = FXCollections.observableArrayList("Task",
+			"Event");
+	ObservableList<String> minutes = FXCollections.observableArrayList("00",
+			"01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11",
+			"12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22",
+			"23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33",
+			"34", "35", "36", "37", "38", "39", "40", "41", "42", "43", "44",
+			"45", "46", "47", "48", "49", "50", "51", "52", "53", "54", "55",
+			"56", "57", "58", "59");
+	ObservableList<String> hours = FXCollections.observableArrayList("00",
+			"01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11",
+			"12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22",
+			"23");
+
+	private Item item;
+
+	@Override
+	public void initialize(URL location, ResourceBundle resources) {
+		assert newTaskTitle != null : "fx:id=\"newTaskTitle\" was not injected: check your FXML file 'POMPOM.fxml'.";
+		assert newStartDate != null : "fx:id=\"newDate\" was not injected: check your FXML file 'POMPOM.fxml'.";
+		assert newStartHour != null : "fx:id=\"newStartHour\" was not injected: check your FXML file 'POMPOM.fxml'.";
+		assert newStartMin != null : "fx:id=\"newStartMin\" was not injected: check your FXML file 'POMPOM.fxml'.";
+		assert newLabel != null : "fx:id=\"newLabel\" was not injected: check your FXML file 'POMPOM.fxml'.";
+		assert newPriority != null : "fx:id=\"newPriority\" was not injected: check your FXML file 'POMPOM.fxml'.";
+		assert newTaskCancel != null : "fx:id=\"newTaskCancel\" was not injected: check your FXML file 'POMPOM.fxml'.";
+		assert newTaskSave != null : "fx:id=\"newTaskSave\" was not injected: check your FXML file 'POMPOM.fxml'.";
+		
+
+		newPriority.setItems(options);
+		newType.setItems(itemType);
+
+		newStartHour.setItems(hours);
+		newStartHour.setValue("00");
+		newStartMin.setItems(minutes);
+		newStartMin.setValue("00");
+		
+		newEndHour.setItems(hours);
+		newEndHour.setValue("00");
+		newEndMin.setItems(minutes);
+		newEndMin.setValue("00");
+	}
+
+	public void setDialogStage(Stage dialogStage) {
+		this.dialogStage = dialogStage;
+	}
+
+	public void setItem(Item item) {
+		this.item = item;
+		newTaskTitle.setText(item.getTitle());
+		newLabel.setText(item.getLabel());
+		newPriority.setValue(item.getPriority());
+		newType.setValue(item.getType());
+		taskId = item.getId();
+		Date retrieveSDate = item.getStartDate();
+		Calendar cal = Calendar.getInstance();
+
+		if (retrieveSDate != null) {
+			cal.setTime(retrieveSDate);
+			year = cal.get(Calendar.YEAR);
+			month = cal.get(Calendar.MONTH);
+			day = cal.get(Calendar.DAY_OF_MONTH);
+			hour = cal.get(Calendar.HOUR_OF_DAY);
+			min = cal.get(Calendar.MINUTE);
+			newStartDate.setValue(LocalDate.of(year, month + 1, day));
+
+			newStartHour.setValue(Integer.toString(hour));
+			newStartMin.setValue(Integer.toString(min));
+		}
+		Date retrieveEDate = item.getEndDate();
+		if (retrieveEDate != null) { 
+			cal.setTime(retrieveEDate);
+			year = cal.get(Calendar.YEAR);
+			month = cal.get(Calendar.MONTH);
+			day = cal.get(Calendar.DAY_OF_MONTH);
+			hour = cal.get(Calendar.HOUR_OF_DAY);
+			min = cal.get(Calendar.MINUTE);
+			newEndDate.setValue(LocalDate.of(year, month + 1, day));
+			
+			newEndHour.setValue(Integer.toString(hour));
+			newEndMin.setValue(Integer.toString(min)); 
+		}
+	}
+
+	@FXML
+	private void handleSave() throws IOException, ParseException {
+		title = newTaskTitle.getText();
+		startDate = newStartDate.getValue();
+		startHour = newStartHour.getValue();
+		startMin = newStartMin.getValue();
+		endDate = newEndDate.getValue();
+		endHour = newEndHour.getValue();
+		endMin = newEndMin.getValue();
+		label = newLabel.getText();
+		priority = newPriority.getValue();
+		type = newType.getValue();
+
+		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+		SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+		Calendar sc = Calendar.getInstance();
+		Date sDate = null;
+		// For start date
+		System.out.println("STARTDATE:" + startDate);
+		if (startDate != null) {
+
+			startDate.getYear();
+			System.out.println(startDate.getYear());
+			sc.set(startDate.getYear(), startDate.getMonthValue() - 1,
+					startDate.getDayOfMonth());
+			Date sd = sc.getTime();
+			String sDateTime = sdf.format(sd) + " " + startHour + ":"
+					+ startMin;
+			sDate = dateFormat.parse(sDateTime);
+
+		}
+		// FOr end date
+		Date eDate = null;
+		if (endDate != null) {
+			Calendar ec = Calendar.getInstance();
+			ec.set(endDate.getYear(), endDate.getMonthValue() - 1,
+					endDate.getDayOfMonth());
+			Date ed = ec.getTime();
+			String eDateTime = sdf.format(ed) + " " + endHour + ":" + endMin;
+			eDate = dateFormat.parse(eDateTime);
+
+		}
+		if (type == "Event") {
+			if (eDate == null || sDate == null) {
+				String msg = "Invalid: EVENT NEEDS START AND END DATE!";
+				Timeline timeline = new Timeline();
+				timeline.getKeyFrames().add(
+						new KeyFrame(Duration.seconds(0), new KeyValue(
+								mainControl.returnMsg.textProperty(), msg)));
+				timeline.getKeyFrames().add(
+						new KeyFrame(Duration.seconds(2), new KeyValue(
+								mainControl.returnMsg.textProperty(), " ")));
+				timeline.play();
+				return;
+			}
+
+		}
+		
+		
+
+		// Edit the respective fields
+		EditCommand editTitle = new EditCommand(taskId, "title", title);
+		EditCommand editPriority = new EditCommand(taskId, "priority", priority);
+		EditCommand editLabel = new EditCommand(taskId, "label", label);
+		EditCommand editStatus = new EditCommand(taskId, "type", type);
+		EditCommand editStartDate = new EditCommand(taskId, "start date", sDate);
+		EditCommand editEndDate = new EditCommand(taskId, "end date", eDate);
+
+		POMPOM.executeCommand(editTitle);
+		POMPOM.executeCommand(editPriority);
+		POMPOM.executeCommand(editLabel);
+		POMPOM.executeCommand(editStatus);
+		POMPOM.executeCommand(editStartDate);
+		POMPOM.executeCommand(editEndDate);
+		POMPOM.getStorage().saveStorage(); 
+
+		mainControl.setNotificationLabels();
+		
+		mainControl.switchToTab(POMPOM.getCurrentTab());
+		dialogStage.close();
+	}
+
+	@FXML
+	private void handleCancel() {
+		dialogStage.close();
+	}
+
+	public MainController getMainControl() {
+		return mainControl;
+	}
+
+	public void setMainControl(MainController mainControl) {
+		this.mainControl = mainControl;
+	}
+
+}
+```
+###### gui\GUIModel.java
+``` java
+ **
+ */
+public class GUIModel {
+	ArrayList<Item> displayList;
+	public static Settings settings;
+	ObservableList<String> taskView = FXCollections.observableArrayList(); 
+	static ObservableList<Item> tableContent;
+	public static ObservableList<Item> taskList;
+	public static ObservableList<Item> taskDoneList;
+	public static ObservableList<Item> eventList;
+	public static ObservableList<Item> eventDoneList;
+	public static ObservableList<Item> searchList;
+	public static String currentTab = "tasks";
+	
+	public static Settings getSettings() {
+		return settings;
+	}
+	public static void setSettings(Settings setting) {
+		settings = setting;
+	}
+	public static ObservableList<Item> getSearchList() {
+		return searchList;
+	}
+	public static void setSearchList(ObservableList<Item> searchList) {
+		GUIModel.searchList = searchList;
+	}
+	public static ObservableList<Item> getTaskList() {
+		return taskList;
+	}
+	public static void setTaskList(ObservableList<Item> taskList) {
+		GUIModel.taskList = taskList;
+	}
+	public static ObservableList<Item> getTaskDoneList() {
+		return taskDoneList;
+	}
+	public static void setTaskDoneList(ObservableList<Item> taskDoneList) {
+		GUIModel.taskDoneList = taskDoneList;
+	}
+	public static ObservableList<Item> getEventList() {
+		return eventList;
+	}
+	public static void setEventList(ObservableList<Item> eventList) {
+		GUIModel.eventList = eventList;
+	}
+	public static ObservableList<Item> getEventDoneList() {
+		return eventDoneList;
+	}
+	public static void setEventDoneList(ObservableList<Item> eventDoneList) {
+		GUIModel.eventDoneList = eventDoneList;
+	}
+	public static void setTableContent(ObservableList<Item> tableContent) {
+		GUIModel.tableContent = tableContent;
+	}
+	public static void setCurrentTab(String type) {
+			currentTab = type;
+		
+	}
+	public static String getCurrentTab() {
+		return currentTab;
+	}
+	public static ObservableList<Item> getTableContent() {
+		return tableContent;
+	}
+	public ArrayList<Item> getDisplayList() {
+		return displayList;
+	}
+	public void setDisplayList(ArrayList<Item> displayList) {
+		this.displayList = displayList;
+	}
+	private static ObservableList<Item> makeObservable(ArrayList<Item> arrayList) {
+		if(arrayList == null){
+			return null;
+		}
+		return FXCollections.observableArrayList(arrayList);		
+	}	
+	public static void taskList(ArrayList<Item> newTaskList) {
+		taskList = makeObservable(newTaskList);
+	}	
+	public static void taskDoneList(ArrayList<Item> newTaskDoneList) {
+		taskDoneList = makeObservable(newTaskDoneList);
+	}
+	public static void eventList(ArrayList<Item> newEventList) {
+		eventList = makeObservable(newEventList);
+	}
+	public static void eventDoneList(ArrayList<Item> newEventDoneList) {
+		eventDoneList = makeObservable(newEventDoneList);
+	}	
+	public static void searchList(ArrayList<Item> newSearchList) {
+		searchList = makeObservable(newSearchList);
+	}
+	public static void update(){
+		currentTab = POMPOM.getCurrentTab();
+		setSettings(POMPOM.getStorage().getSettings());
+		ArrayList<Item> currentList = POMPOM.getStorage().getTaskList();
+		taskList(ListClassifier.getTaskList(currentList));
+		taskDoneList(ListClassifier.getDoneTaskList(currentList));
+		eventList(ListClassifier.getEventList(currentList));
+		eventDoneList(ListClassifier.getDoneEventList(currentList));
+		searchList(POMPOM.getSearchList());
+
+	}
+}
+```
+###### gui\Main.java
+``` java
+ *
+ */
+public class Main extends Application {
+
+	@FXML
+	Pane content; 
+	
+	MainController mainController;
+	public static void main(String[] args) {
+		Application.launch(Main.class, args); 
+	}
+
+	@Override 
+	public void start(Stage stage) throws Exception {
+		getClass();
+		Parent root = FXMLLoader.load(getClass().getResource("POMPOM.fxml"));
+		stage.setTitle("POMPOM");
+		Scene scene = new Scene(root);
+		
+		scene.addEventHandler(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
+
+			@Override
+			public void handle(KeyEvent t) {
+				if (t.getCode() == KeyCode.ESCAPE) { 
+					stage.close(); 
+				}
+			}
+		});
+		stage.setScene(scene);		
+		
+		stage.show();
+		
+	}
+
+	public Stage newTaskDialog(MainController mainControl) {
+		try {
+			FXMLLoader loader = new FXMLLoader(Main.class.getResource("NewTask.fxml"));
+			Pane page = (Pane) loader.load();			
+			
+			Stage dialogStage = new Stage();
+			dialogStage.setTitle("New Task");
+			dialogStage.initModality(Modality.APPLICATION_MODAL);
+			
+			Scene scene = new Scene(page);
+			dialogStage.setScene(scene);
+			NewTaskController newTaskController = loader.getController();
+			newTaskController.setDialogStage(dialogStage);
+			newTaskController.setMainControl(mainControl);		
+			
+			dialogStage.showAndWait(); 
+			return dialogStage;
+
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	
+	public Stage editTaskDialog(Item item, MainController mainControl) {
+		try {
+			FXMLLoader loader = new FXMLLoader(Main.class.getResource("EditTask.fxml"));
+			Pane page = (Pane) loader.load();
+
+			Stage dialogStage = new Stage(); 
+			dialogStage.setTitle("Edit Task");
+			dialogStage.initModality(Modality.APPLICATION_MODAL);
+			Scene scene = new Scene(page);
+			dialogStage.setScene(scene);
+			
+			EditTaskController controller = loader.getController();
+			controller.setDialogStage(dialogStage);
+			controller.setItem(item);
+			
+			controller.setMainControl(mainControl);
+			
+			dialogStage.showAndWait();
+			return dialogStage;
+
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public void helpDialog() {
+		try {
+			FXMLLoader loader = new FXMLLoader(Main.class.getResource("Help.fxml"));
+			Pane page = (Pane) loader.load();
+			
+			Stage dialogStage = new Stage();
+			dialogStage.setTitle("Help");
+			dialogStage.initModality(Modality.APPLICATION_MODAL);
+			Scene scene = new Scene(page);
+			
+			scene.addEventHandler(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
+
+				@Override
+				public void handle(KeyEvent t) {
+					if (t.getCode() == KeyCode.ESCAPE) { 
+						dialogStage.close(); 
+					}
+				}
+			});
+			
+			dialogStage.setScene(scene);
+			dialogStage.showAndWait();			
+	
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+	}
+
+}
+```
+###### gui\MainController.java
+``` java
+ *
+ */
+
+public class MainController implements Initializable {
+	// Pane items in main display
 	@FXML
 	Pane mainContent;
 	@FXML
 	Pane content;
 	@FXML
-	ImageView settings;
+	Button settings;
 	@FXML
 	Button settingBtn;
+	@FXML
+	Button highPBtn;
+	@FXML
+	Button mediumPBtn;
 	@FXML
 	Button newTask;
 	@FXML
 	Button editTask;
 	@FXML
-	Button saveTask;
-	@FXML
 	Button deleteTask;
+	@FXML
+	Button help;
 	@FXML
 	Button enterCommand;
 	@FXML
@@ -32,9 +496,9 @@ public class Controller implements Initializable {
 	TableColumn<Item, Boolean> checkBox;
 
 	@FXML
-	TableColumn<Item, Date> taskStartDateTime;
+	TableColumn<Item, String> taskStartDateTime;
 	@FXML
-	TableColumn<Item, Date> taskEndDateTime;
+	TableColumn<Item, String> taskEndDateTime;
 	@FXML
 	TableColumn<Item, String> taskLabel;
 	@FXML
@@ -42,52 +506,177 @@ public class Controller implements Initializable {
 	@FXML
 	TableColumn<Item, String> taskStatus;
 	@FXML
-	ListView<String> list;
-	@FXML
 	TextField inputCommand;
 	@FXML
 	Label returnMsg;
 	@FXML
 	Label label;
 	@FXML
+	Label priorityLabel;
+	@FXML
 	TabPane tabViews;
 	@FXML
 	private Tab taskTab;
 	@FXML
+	private Tab completedTaskTab;
+	@FXML
 	private Tab eventTab;
+	@FXML
+	private Tab completedEventTab;
 	@FXML
 	private Tab searchTab;
 
-	String msg;
+	// DASHBOARD ITEMS
+	@FXML
+	Label dashboardLbl;
+	@FXML
+	Label settingLbl;
+	@FXML
+	Label lowPriorityLbl;
+	@FXML
+	Label highPriorityLbl;
+	@FXML
+	Label mediumPriorityLbl;
+	@FXML
+	Button dashBoard;
+	@FXML
+	Label taskNo;
+	@FXML
+	Label overdueNo;
+	@FXML
+	Label eventsNo;
+	@FXML
+	Pane mainPane;
+	// Content
 	Stage stage;
 	private Main main = new Main();
 	private boolean initialized = false;
-
-	ArrayList<Item> displayList;
-
-	Node node;
-
+	ObservableList<Item> displayList;
 	ObservableList<String> taskView = FXCollections.observableArrayList();
-	static ObservableList<Item> tableContent;
 	POMPOM pompom;
+	CheckBox selectAll = new CheckBox();
+	MainController currentMainController = this;
 
-	public static ObservableList<Item> getTableContent() {
-		return tableContent;
-	}
+	/** Shortcuts **/
+	private static final String UNDO_COMMAND_STRING = "undo";
+	private static final KeyCodeCombination SWITCH_TAB_SHORTCUT = new KeyCodeCombination(
+			KeyCode.TAB, KeyCombination.CONTROL_DOWN);
+	private static final KeyCodeCombination UNDO_SHORTCUT = new KeyCodeCombination(
+			KeyCode.Z, KeyCombination.CONTROL_DOWN);
+	private static final KeyCodeCombination GOTO_COMMANDLINE_SHORTCUT = new KeyCodeCombination(
+			KeyCode.ENTER);
 
-	public ArrayList<Item> getDisplayList() {
+	private static final KeyCodeCombination GOTO_TABLE_SHORTCUT = new KeyCodeCombination(
+			KeyCode.DOWN);
+
+	private static final KeyCodeCombination GOTO_TABLE_SHORTCUT_2 = new KeyCodeCombination(
+			KeyCode.UP);
+
+	private static final KeyCodeCombination NEW_TASK_SHORTCUT = new KeyCodeCombination(
+			KeyCode.N, KeyCombination.CONTROL_DOWN);	
+	private static final KeyCodeCombination EDIT_TASK_SHORTCUT = new KeyCodeCombination(
+			KeyCode.E, KeyCombination.CONTROL_DOWN);
+	private static final KeyCodeCombination DELETE_SHORTCUT = new KeyCodeCombination(
+			KeyCode.DELETE);
+	
+	private static final KeyCodeCombination NO_FILTER_SHORTCUT = new KeyCodeCombination(
+			KeyCode.DIGIT1, KeyCombination.ALT_DOWN);
+	private static final KeyCodeCombination HIGH_FILTER_SHORTCUT = new KeyCodeCombination(
+			KeyCode.DIGIT2, KeyCombination.ALT_DOWN);
+	private static final KeyCodeCombination MEDIUM_FILTER_SHORTCUT = new KeyCodeCombination(
+			KeyCode.DIGIT3, KeyCombination.ALT_DOWN);
+	private static final KeyCodeCombination LOW_FILTER_SHORTCUT = new KeyCodeCombination(
+			KeyCode.DIGIT4, KeyCombination.ALT_DOWN);
+
+	private final EventHandler<KeyEvent> shortcutHandler = new EventHandler<KeyEvent>() {
+		@Override
+		public void handle(KeyEvent ke) {
+			commonShortCut(ke);			
+			if (GOTO_COMMANDLINE_SHORTCUT.match(ke)) {
+				inputCommand.requestFocus();
+			}
+			
+			if (GOTO_TABLE_SHORTCUT.match(ke)
+					|| GOTO_TABLE_SHORTCUT_2.match(ke)) {
+
+				table.requestFocus();
+
+				table.getSelectionModel().select(0);
+				table.getFocusModel().focus(0);
+				System.out.println("WTTFFFF");
+				return;
+			}
+			
+			else if (NEW_TASK_SHORTCUT.match(ke)) {
+				main.newTaskDialog(currentMainController);
+			}
+			else if (EDIT_TASK_SHORTCUT.match(ke)) {
+				Item item = table.getSelectionModel().getSelectedItem();
+				if (item == null) {
+					return;
+				}
+				main.editTaskDialog(item, currentMainController);
+			} 
+			else {
+				return;
+			}
+		}
+	};
+	private final EventHandler<KeyEvent> tableShortcut = new EventHandler<KeyEvent>() {
+		@Override
+		public void handle(KeyEvent ke) {
+			
+			commonShortCut(ke);
+			if (GOTO_COMMANDLINE_SHORTCUT.match(ke)) {
+				inputCommand.requestFocus();
+			} else {
+				return;
+			}
+		}
+	};
+	private final EventHandler<KeyEvent> inputFieldShortcut = new EventHandler<KeyEvent>() {
+		@Override
+		public void handle(KeyEvent ke) {
+			commonShortCut(ke);
+
+			if (GOTO_TABLE_SHORTCUT.match(ke)
+					|| GOTO_TABLE_SHORTCUT_2.match(ke)) {
+
+				table.requestFocus();
+
+				table.getSelectionModel().select(0);
+				table.getFocusModel().focus(0);
+				System.out.println("WTTFFFF");
+				return;
+			}
+
+		}
+	};
+
+	// String variables
+	public static final String DEFAULT_LABEL_COLOR = "#7d8993";
+	public static final String DEFAULT_HIGHLIGHT_COLOR = "#ffffff";
+	public static final String CSS_STYLE_TEXT = "-fx-text-fill: #";
+
+	public ObservableList<Item> getDisplayList() {
 		return displayList;
 	}
 
-	public void setDisplayList(ArrayList<Item> displayList) {
+	public void setDisplayList(ObservableList<Item> displayList) {
 		this.displayList = displayList;
+	}
+
+	public void formatDate(Date date) {
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+		Date d = new Date();
+		dateFormat.format(d);
+
 	}
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		assert newTask != null : "fx:id=\"newTask\" was not injected: check your FXML file 'POMPOM.fxml'.";
 		assert editTask != null : "fx:id=\"editTask\" was not injected: check your FXML file 'POMPOM.fxml'.";
-		assert saveTask != null : "fx:id=\"saveTask\" was not injected: check your FXML file 'POMPOM.fxml'.";
 		assert deleteTask != null : "fx:id=\"deleteTask\" was not injected: check your FXML file 'POMPOM.fxml'.";
 		assert enterCommand != null : "fx:id=\"enterCommand\" was not injected: check your FXML file 'POMPOM.fxml'.";
 		assert table != null : "fx:id=\"table\" was not injected: check your FXML file 'POMPOM.fxml'.";
@@ -100,412 +689,362 @@ public class Controller implements Initializable {
 		assert taskPriority != null : "fx:id=\"taskPriority\" was not injected: check your FXML file 'POMPOM.fxml'.";
 		assert taskStatus != null : "fx:id=\"taskStatus\" was not injected: check your FXML file 'POMPOM.fxml'.";
 		assert inputCommand != null : "fx:id=\"inputCommand\" was not injected: check your FXML file 'POMPOM.fxml'.";
+
 		// Initialize main logic class
 		pompom = new POMPOM();
+		GUIModel.update();
 
-		System.out.println(this.getClass().getSimpleName() + ".initialize");
-		// Initialize on task tab
+		// Initialize the GUI
 		POMPOM.setCurrentTab(POMPOM.LABEL_TASK);
-		displayList = ListClassifier.getTaskList(POMPOM.getStorage()
-				.getTaskList());
+		displayList = GUIModel.getTaskList();
 		configureButtons();
 		configureTable();
+		setNotificationLabels();
+
+		// Set focus to command text striaght
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				initializeSceneShortcuts();
+				inputCommand.requestFocus();
+			}
+		});
+		setSettingsColours();
 		initialized = true;
 
 	}
 
-	private void configureButtons() {
-		if (newTask != null) {
-			newTask.setDisable(false);
-		}
-		if (saveTask != null) {
-			saveTask.setDisable(true);
-		}
-		if (editTask != null) {
-			editTask.setDisable(true);
-		}
-		if (deleteTask != null) {
-			deleteTask.setDisable(false);
-		}
-		if (enterCommand != null) {
-			enterCommand.setDisable(false);
-		}
-	}
-
 	@FXML
-	private void deleteItems() {
+	private void deleteItems() throws IOException {
 		int rows = table.getItems().size();
-		System.out.println("arara: " + checkBox.getCellData(0));
 		for (int i = 0; i < rows; i++) {
 			if (checkBox.getCellData(i) == true) {
-				// Change to logger
-				System.out.println("ID Deleted: "
-						+ Long.parseLong(taskID.getCellData(i).toString()));
+
 				DelCommand delCommand = new DelCommand(Long.parseLong(taskID
 						.getCellData(i).toString()));
 				POMPOM.executeCommand(delCommand);
+				configureTable();
+				POMPOM.getStorage().saveStorage();
 			}
 		}
+		selectAll.selectedProperty().set(false);;
 		switchToTab(POMPOM.getCurrentTab().toLowerCase());
 	}
 
-	void configureTable() {
-		table.setEditable(true);
-		taskID.setCellValueFactory(new PropertyValueFactory<Item, Number>("id"));
-		taskName.setCellValueFactory(new PropertyValueFactory<Item, String>(
-				"title"));
-
-		//Checkbox init
-		checkBox.setCellFactory(CheckBoxTableCell.forTableColumn(checkBox));
-		checkBox.setCellValueFactory(c -> c.getValue().checkedProperty());
-		
-		taskStartDateTime
-				.setCellValueFactory(new PropertyValueFactory<Item, Date>(
-						"startDate"));
-		taskEndDateTime
-				.setCellValueFactory(new PropertyValueFactory<Item, Date>(
-						"endDate"));
-		taskLabel.setCellValueFactory(new PropertyValueFactory<Item, String>(
-				"label"));
-		taskPriority
-				.setCellValueFactory(new PropertyValueFactory<Item, String>(
-						"priority"));
-		taskStatus.setCellValueFactory(new PropertyValueFactory<Item, String>(
-				"status"));
-
-		tableContent = FXCollections.observableArrayList(displayList);
-		table.setItems(tableContent);
-		table.refresh();
-
+	@FXML
+	private void editItem() throws IOException {
+		Item item = table.getSelectionModel().getSelectedItem();
+		main.editTaskDialog(item, this);
 	}
 
-	public void newTaskFired(ActionEvent event) {
-		main.newTaskDialog();
+	@FXML
+	public void enableEditBtn(MouseEvent event) {
+		if (event.isPrimaryButtonDown() && event.getClickCount() == 1) {
+			editTask.setDisable(false);
+		}
 	}
 
-	public void toSettingsView(MouseEvent event) throws IOException {
-		node = (Node) FXMLLoader.load(getClass().getResource("Settings.fxml"));
+	@FXML
+	public void newTaskFired(ActionEvent event) throws IOException {
+		main.newTaskDialog(this);
+	}
+
+	@FXML
+	public void helpFired(ActionEvent event) {
+		main.helpDialog();
+	}
+
+	@FXML
+	public void changeToSettings(ActionEvent event) throws IOException {
+
+		highLightLabel(settingLbl);
+
+		content.getChildren().clear();
+		Node node = (Node) FXMLLoader.load(getClass().getResource(
+				"Settings.fxml"));
 		content.getChildren().setAll(node);
 	}
 
-	public void toDashBoardView(MouseEvent event) throws IOException {
-		node = (Node) FXMLLoader.load(getClass().getResource("Dashboard.fxml"));
-		content.getChildren().setAll(node);
-	}
-
-	// New methods by wei lip
-
-	public void switchToTab(String inputTab) {
-		String tabName = inputTab.toLowerCase();
-		SingleSelectionModel<Tab> selectionModel = tabViews.getSelectionModel();
-		
-		if (tabName.equals(POMPOM.LABEL_TASK.toLowerCase())) {
-			System.out.println("Teasdat :" + tabName);
-			selectionModel.select(taskTab);
-			taskTabAction();
-		} else if (tabName.equals(POMPOM.LABEL_COMPLETED_TASK.toLowerCase())) {
-			selectionModel.select(taskTab);
-			completedTaskTabAction();
-		} else if (tabName.equals(POMPOM.LABEL_EVENT.toLowerCase())) {
-			System.out.println("evenets");
-			selectionModel.select(eventTab);
-			eventTabAction();
-		} else if (tabName.equals(POMPOM.LABEL_COMPLETED_EVENT.toLowerCase())) {
-			selectionModel.select(eventTab);
-			completedEventTabAction();
-		} else if (tabName.equals(POMPOM.LABEL_SEARCH.toLowerCase())) {
-			System.out.println("SEARCH TESET");
-			selectionModel.select(searchTab);
-			searchTabAction();
-		}
-	}
 	@FXML
-	public void taskTabAction() {
-		if (!initialized)
-			return;
+	public void changeToDashboard(ActionEvent event) throws IOException {
 
-		displayList = ListClassifier.getTaskList(POMPOM.getStorage()
-				.getTaskList());
-		configureTable();
-		POMPOM.setCurrentTab(POMPOM.LABEL_TASK.toLowerCase());
-	}
-	@FXML
-	public void completedTaskTabAction() {
-		if (!initialized) {
-			return;
-		}
-		displayList = ListClassifier.getDoneTaskList(POMPOM.getStorage()
-				.getTaskList());
-		configureTable();
-		POMPOM.setCurrentTab(POMPOM.LABEL_COMPLETED_TASK.toLowerCase());
-	}
-	@FXML
-	public void eventTabAction() {
-		System.out.println("cleared");
-		displayList = ListClassifier.getEventList(POMPOM.getStorage()
-				.getTaskList());
-		configureTable();
-		POMPOM.setCurrentTab(POMPOM.LABEL_EVENT.toLowerCase());
-		System.out.println("eventtabaction: " + POMPOM.getCurrentTab());
-	}
-	@FXML	
-	public void completedEventTabAction() {
-		displayList = ListClassifier.getDoneEventList(POMPOM.getStorage()
-				.getTaskList());
-		configureTable();
-		POMPOM.setCurrentTab(POMPOM.LABEL_COMPLETED_EVENT.toLowerCase());
-	}
+		highLightLabel(dashboardLbl);
 
-	public void searchTabAction() {
-		if (POMPOM.getSearchList() != null) {
-			displayList = POMPOM.getSearchList();
-		}
-		configureTable();
-		POMPOM.setCurrentTab(POMPOM.LABEL_SEARCH.toLowerCase());
-	}
-
-	// ////////// Wei LIP ////////////
-
-	public void enterCommandFired(ActionEvent event) throws IOException {
-		Timeline timeline = new Timeline();
-		String input = inputCommand.getText();
-		inputCommand.clear();
-		msg = pompom.execute(input);
-		switchToTab(POMPOM.getCurrentTab().toLowerCase());
-
-		timeline.getKeyFrames().add(
-				new KeyFrame(Duration.seconds(0), new KeyValue(returnMsg
-						.textProperty(), msg)));
-		timeline.getKeyFrames().add(
-				new KeyFrame(Duration.seconds(2), new KeyValue(returnMsg
-						.textProperty(), " ")));
-		timeline.play();
-		configureTable();
-		POMPOM.getStorage().saveStorage();
-		inputCommand.setPromptText("Command:");
-	}
-
-	public void enterCommandKey(KeyEvent event) throws IOException {
-		Timeline timeline = new Timeline();
-		if (event.getCode().equals(KeyCode.ENTER)) {
-			String input = inputCommand.getText();
-			msg = pompom.execute(input);
-			switchToTab(POMPOM.getCurrentTab().toLowerCase());
-			timeline.getKeyFrames().add(
-					new KeyFrame(Duration.seconds(2), new KeyValue(returnMsg
-							.textProperty(), msg)));
-			timeline.play();
-			returnMsg.setText("");
-			POMPOM.getStorage().saveStorage();
-			inputCommand.clear();
-			inputCommand.setPromptText("Command:");
-
-		}
-
-	}
-
-}
-```
-###### gui\Main.java
-``` java
- *
- */
-public class Main extends Application {
-	
-	
-	@FXML
-	Pane content;
-	public static void main(String[] args) {
-		Application.launch(Main.class, args);
-	}
-
-	@Override
-	public void start(Stage stage) throws Exception {
-		getClass();
-		FXMLLoader loader = new FXMLLoader(getClass()
+		Node node = (Node) FXMLLoader.load(getClass()
 				.getResource("POMPOM.fxml"));
-		Parent root = FXMLLoader.load(getClass().getResource("POMPOM.fxml"));
-		stage.setTitle("POMPOM");
-		stage.setScene(new Scene(root, 800, 556));
-		
-		stage.show();
+		mainPane.getChildren().setAll(node);
+
+		// content.getChildren().setAll(node);
+
 	}
 
-	public boolean newTaskDialog() {
-		try {
-			FXMLLoader loader = new FXMLLoader(
-					Main.class.getResource("NewTask.fxml"));
-			Pane page = (Pane) loader.load();
-
-			Stage dialogStage = new Stage();
-			dialogStage.setTitle("New Task");
-			dialogStage.initModality(Modality.WINDOW_MODAL);
-			Scene scene = new Scene(page);
-			dialogStage.setScene(scene);
-
-			NewTaskController newTaskController = loader.getController();
-			newTaskController.setDialogStage(dialogStage);
-
-			dialogStage.showAndWait();
-
-			return newTaskController.isOkClicked();
-
-		} catch (IOException e) {
-			e.printStackTrace();
-			return false;
-		}
-	}
-
-}
+	/**
 ```
 ###### gui\NewTaskController.java
 ``` java
  *
  */
-public class NewTaskController implements Initializable{
+public class NewTaskController implements Initializable {
 
 	@FXML
 	TextField newTaskTitle;
 	@FXML
 	DatePicker newStartDate;
 	@FXML
-	TextField newStartTime;
+	ComboBox<String> newStartHour;
+	@FXML
+	ComboBox<String> newStartMin;
 	@FXML
 	TextField newLabel;
 	@FXML
 	DatePicker newEndDate;
 	@FXML
-	TextField newEndTime;
+	ComboBox<String> newEndHour;
 	@FXML
-	SplitMenuButton newPriority;
+	ComboBox<String> newEndMin;
 	@FXML
-	MenuItem highSelected;
-	@FXML
-	MenuItem mediumSelected;
-	@FXML
-	MenuItem lowSelected;
+	ComboBox<String> newPriority;
 	@FXML
 	Button newTaskSave;
 	@FXML
 	Button newTaskCancel;
 	@FXML
-	TextField newType;
-	
+	ComboBox<String> newType;
+
 	private Stage dialogStage;
-	Controller control = new Controller();
-    POMPOM pompom = new POMPOM();
-	private Controller controller;
-	private boolean okClicked = false;
-    String title;
-    LocalDate startDate;
-    String startTime;
-    LocalDate endDate;
-    String endTime;
-    String label;
-    String priority;
-    String type;
+	MainController mainControl;
+
+	public MainController getMainControl() {
+		return mainControl;
+	}
+
+	public void setMainControl(MainController mainControl) {
+		this.mainControl = mainControl;
+	}
+
+	POMPOM pompom = new POMPOM();
+	String title;
+	LocalDate startDate;
+	String startHour;
+	String startMin;
+	LocalDate endDate;
+	String endHour;
+	String endMin;
+	String label;
+	String priority;
+	String type;
+
+	boolean okClicked;
+
+	ObservableList<String> options = FXCollections.observableArrayList("High",
+			"Medium", "Low");
+	ObservableList<String> itemType = FXCollections.observableArrayList("Task",
+			"Event");
+	ObservableList<String> minutes = FXCollections.observableArrayList("00",
+			"01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11",
+			"12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22",
+			"23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33",
+			"34", "35", "36", "37", "38", "39", "40", "41", "42", "43", "44",
+			"45", "46", "47", "48", "49", "50", "51", "52", "53", "54", "55", 
+			"56", "57", "58", "59");
+	ObservableList<String> hours = FXCollections.observableArrayList("00",
+			"01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11",
+			"12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22",
+			"23");
+
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-        assert newTaskTitle != null : "fx:id=\"newTaskTitle\" was not injected: check your FXML file 'POMPOM.fxml'.";
-        assert newStartDate != null : "fx:id=\"newDate\" was not injected: check your FXML file 'POMPOM.fxml'.";
-        assert newStartTime != null : "fx:id=\"newTime\" was not injected: check your FXML file 'POMPOM.fxml'.";
-        assert newLabel != null : "fx:id=\"newLabel\" was not injected: check your FXML file 'POMPOM.fxml'.";
-        assert newPriority != null : "fx:id=\"newPriority\" was not injected: check your FXML file 'POMPOM.fxml'.";
-        assert highSelected != null : "fx:id=\"highSelected\" was not injected: check your FXML file 'POMPOM.fxml'.";
-        assert mediumSelected != null : "fx:id=\"mediumSelected\" was not injected: check your FXML file 'POMPOM.fxml'.";
-        assert lowSelected != null : "fx:id=\"lowSelected\" was not injected: check your FXML file 'POMPOM.fxml'.";
-        assert newTaskCancel != null : "fx:id=\"newTaskCancel\" was not injected: check your FXML file 'POMPOM.fxml'.";
-        assert newTaskSave != null : "fx:id=\"newTaskSave\" was not injected: check your FXML file 'POMPOM.fxml'.";
-        System.out.println(this.getClass().getSimpleName() + ".initialize");
+		assert newTaskTitle != null : "fx:id=\"newTaskTitle\" was not injected: check your FXML file 'POMPOM.fxml'.";
+		assert newStartDate != null : "fx:id=\"newDate\" was not injected: check your FXML file 'POMPOM.fxml'.";
+		assert newStartHour != null : "fx:id=\"newStartHour\" was not injected: check your FXML file 'POMPOM.fxml'.";
+		assert newStartMin != null : "fx:id=\"newStartMin\" was not injected: check your FXML file 'POMPOM.fxml'.";
+		assert newLabel != null : "fx:id=\"newLabel\" was not injected: check your FXML file 'POMPOM.fxml'.";
+		assert newPriority != null : "fx:id=\"newPriority\" was not injected: check your FXML file 'POMPOM.fxml'.";
+		assert newTaskCancel != null : "fx:id=\"newTaskCancel\" was not injected: check your FXML file 'POMPOM.fxml'.";
+		assert newTaskSave != null : "fx:id=\"newTaskSave\" was not injected: check your FXML file 'POMPOM.fxml'.";
+		
+		newPriority.setItems(options);
+		newType.setItems(itemType);
+		newType.setValue("Task");
+
+		newStartHour.setItems(hours);
+		newStartHour.setValue("00");
+		newStartMin.setItems(minutes);
+		newStartMin.setValue("00");
+
+		newEndHour.setItems(hours);
+		newEndHour.setValue("00");
+		newEndMin.setItems(minutes);
+		newEndMin.setValue("00");
+
 	}
-	
+
 	public void setDialogStage(Stage dialogStage) {
-		
-		this.dialogStage = dialogStage;					
-	}	
-	
-//	1. add <task>
-//	2. add <task> <mmm dd>
-//	3. add <task> <dd/mm/yyyy>
-//	4. add <task> <f:mmm dd> <mmm dd>
-//	5. add <task> <f:dd/mm/yyyy> <mmm dd>
-//	6. add <task> <f:mmm dd> <dd/mm/yyyy>
-//	7. add <task> <today/tomorrow/this week/month/year/ next week/month/year>
-//	8. add <task> <today/tomorrow/this week/month/year/ next week/month/year> <f:today/tomorrow/this week/month/year/ next week/month/year>
-//	9. add <task> <dd/mm/yyyy> <f:today/tomorrow/this week/month/year/ next week/month/year>
-//	10. add <task> <dd mmm> <f:today/tomorrow/this week/month/year/ next week/month/year>
-//	11. add <task> <today/tomorrow/this week/month/year/ next week/month/year><f:dd mmm>
-//	12.add <task> <today/tomorrow/this week/month/year/ next week/month/year><f:dd/mm/yyyy>
+
+		this.dialogStage = dialogStage;
+	}
+
 	@FXML
-	private void handleSave() throws IOException, ParseException{
-		controller = new Controller();
+	private void handleSave() throws IOException, ParseException {
 		title = newTaskTitle.getText();
+
 		startDate = newStartDate.getValue();
-		startTime = newStartTime.getText();
+		startHour = newStartHour.getValue();
+		startMin = newStartMin.getValue();
 		endDate = newEndDate.getValue();
-		endTime = newEndTime.getText();
+		endHour = newEndHour.getValue();
+		endMin = newEndMin.getValue();
+
 		label = newLabel.getText();
-		priority = newPriority.getText();
-		type = newType.getText();
-		System.out.println(startDate);
-		
-		Instant instantSD = startDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant();
-		Date sDate = Date.from(instantSD);
-		
-		Instant instantED = startDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant();
-		Date eDate = Date.from(instantED);
-		
-		AddCommand addCommand = new AddCommand(type, title, "", "", "", label, sDate, eDate);
+		priority = newPriority.getValue();
+		type = newType.getValue();
+
+		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+		SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+		Calendar startCal = Calendar.getInstance();
+		Date sDate = null;
+		// For start date
+		if (startDate != null) {
+
+			startDate.getYear();
+			
+			startCal.set(startDate.getYear(), startDate.getMonthValue() - 1,
+					startDate.getDayOfMonth());
+			Date sd = startCal.getTime();
+			String sDateTime = sdf.format(sd) + " " + startHour + ":"
+					+ startMin;
+			sDate = dateFormat.parse(sDateTime);
+ 
+		}
+		// FOr end date
+		Date eDate = null;
+		Calendar endCal = Calendar.getInstance();
+		if (endDate != null) {	
+			endCal.set(endDate.getYear(), endDate.getMonthValue()  - 1,
+					endDate.getDayOfMonth());
+			Date ed = endCal.getTime();
+			String eDateTime = sdf.format(ed) + " " + endHour + ":" + endMin;
+			eDate = dateFormat.parse(eDateTime);
+
+		}
+		if (type == "Event") {
+			if (eDate == null || sDate == null) {
+				String msg = "Invalid inputs: EVENT NEEDS START AND END DATE!";
+				Timeline timeline = new Timeline();
+				timeline.getKeyFrames().add(
+						new KeyFrame(Duration.seconds(0), new KeyValue(
+								mainControl.returnMsg.textProperty(), msg)));
+				timeline.getKeyFrames().add(
+						new KeyFrame(Duration.seconds(2), new KeyValue(
+								mainControl.returnMsg.textProperty(), " ")));
+				timeline.play();
+				return;
+			}
+
+		}
+		AddCommand addCommand = new AddCommand(type, title, "", priority, "",
+				label, sDate, eDate);
 		POMPOM.executeCommand(addCommand);
-		
-//		String input = "add " + "f:";
-//		String input = "add " + title + " null " + priority + " Upcoming " + label  + " " + startDate + "/" + startTime + " " + endDate + "/" + endTime;
-//		System.out.println(input);
-//		pompom.execute(input);
-		okClicked = true;
-		
 		POMPOM.getStorage().saveStorage();
+
+		
+		// Refresh Table
+		mainControl.switchToTab(POMPOM.getCurrentTab());
+		mainControl.setNotificationLabels();
+		okClicked = true;
 		dialogStage.close();
 	}
-	
+
 	@FXML
 	private void handleCancel() {
 		dialogStage.close();
 	}
-
+	
 	public boolean isOkClicked() {
-		return false;
+		return okClicked;
 	}
-	
 
+	public boolean checkDateValues() {
+		return false;
 
+	}
 
-	
 }
 ```
 ###### gui\SettingsController.java
 ``` java
  **
  */
-public class SettingsController {
+public class SettingsController implements Initializable {
 	@FXML
 	Button saveFile;
 	@FXML
 	Button selectFile;
 	@FXML
 	TextField storageLocationString;
+	@FXML
+	ColorPicker backgroundColour;
+	@FXML
+	ColorPicker displayMsgColor;
+	@FXML
+	ColorPicker commandTextColor;
+	@FXML
+	Pane mainPane;
+	@FXML
+	Label displayMsg;
+	
+	Settings currentSettings;
+	public static final String RETURN_MSG = "Settings Saved";
+	@Override
+	public void initialize(URL location, ResourceBundle resources) {
+		assert saveFile != null : "fx:id=\"saveFile\" was not injected: check your FXML file 'Settings.fxml'.";
+		assert selectFile != null : "fx:id=\"selectFile\" was not injected: check your FXML file 'Settings.fxml'.";
+		assert storageLocationString != null : "fx:id=\"storageLocationString\" was not injected: check your FXML file 'Settings.fxml'.";
+		assert backgroundColour != null : "fx:id=\"backgroundColour\" was not injected: check your FXML file 'Settings.fxml'.";
+		assert displayMsgColor != null : "fx:id=\"tabColour\" was not injected: check your FXML file 'Settings.fxml'.";
+		
+		init();
+	}
+	//Set the current display colours if not set to white
+	public void init() {
+		currentSettings = GUIModel.getSettings();
+		storageLocationString.setText(currentSettings.getStoragePath());
+		backgroundColour.setValue(Color.valueOf(currentSettings.getBackgroundColour())); 
+		displayMsgColor.setValue(Color.valueOf(currentSettings.getReturnMsgColour()));
+		commandTextColor.setValue(Color.valueOf(currentSettings.getInputTxtColour()));
+	}
+	public String getColorString(ColorPicker picker){
+		String hex = picker.getValue().toString();
+		String color = hex.substring(2, hex.length() -2);
+		return color;
+	} 
 	
     public void clickSave(ActionEvent event) throws IOException {
-    	String storageFilePath = storageLocationString.getText();
-    	storageLocationString.clear();
+    	String storageFilePath = storageLocationString.getText(); 
+//    	storageLocationString.clear();
+    	
+    	saveSettings();    	
+/*    	BackgroundFill myBF = new BackgroundFill(Color.valueOf(getColorString(backgroundColour)),
+				CornerRadii.EMPTY, Insets.EMPTY);
+		mainPane.setBackground(new Background(myBF));*/
+		
+    	displayMsg.setStyle(MainController.CSS_STYLE_TEXT + getColorString(displayMsgColor));
+    	displayMsg.setText(RETURN_MSG);
+    	
         POMPOM.saveSettings(storageFilePath);
     }  
 	
+    
 
 	public void showSingleFileChooser() {
 		FileChooser fileChooser = new FileChooser(); 
 		File selectedPath = fileChooser.showOpenDialog(null);
 		storageLocationString.setText(selectedPath.getPath());
+	}
+	public void saveSettings(){
+    	currentSettings.setBackgroundColour(getColorString(backgroundColour));
+    	currentSettings.setReturnMsgColour(getColorString(displayMsgColor));
+    	currentSettings.setInputTxtColour(getColorString(commandTextColor));
 	}
 
 }
