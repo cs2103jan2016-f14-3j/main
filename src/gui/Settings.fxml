@@ -24,6 +24,6 @@
       <ColorPicker fx:id="displayMsgColor" layoutX="170.0" layoutY="102.0" />
       <Label layoutX="24.0" layoutY="144.0" text="Command Text Colour:" />
       <ColorPicker fx:id="commandTextColor" layoutX="171.0" layoutY="140.0" />
-      <TextField fx:id="displayMsg" layoutX="27.0" layoutY="252.0" />
+      <Label fx:id="displayMsg" layoutX="24.0" layoutY="252.0" prefHeight="28.0" prefWidth="130.0" />
    </children>
 </Pane>

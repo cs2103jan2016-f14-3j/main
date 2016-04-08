@@ -1,10 +1,13 @@
 package parser;
 
 import command.Command;
-
+/**
+ *  @@author Josh
+ *
+ */
 public class HelpParser{
 	public HelpParser(){
-		//execute helpCommand
+		
 	}
 	public Command executeCommand(){
 		return null;

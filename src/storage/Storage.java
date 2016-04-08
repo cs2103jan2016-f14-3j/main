@@ -32,7 +32,8 @@ import utils.SettingsAdapter;
 import utils.UserItemList;
 
 /**
- * @@author A0121628L This Class contains all the methods for users to read and
+ * @@author A0121628L 
+ * This Class contains all the methods for users to read and
  *          write their storage.txt file and their settings.txt file.
  */
 public class Storage {
@@ -305,11 +306,8 @@ public class Storage {
 			alert.setContentText("ERROR READING STORAGE FILE! STORAGE FILE WAS MODIFIED WRONGlY!"
 					+ "PLEASE REMOVE ILLEGAL FILE OR MODIFY FILE");
 			
-			alert.showAndWait();
-			
+			alert.showAndWait();			
 		}
-		
-
 		return userTaskList;
 	}
 
@@ -339,8 +337,7 @@ public class Storage {
 			alert.setTitle("Error Dialog");
 			alert.setHeaderText("Look, an Error Dialog");
 			alert.setContentText("ERROR READING SETTINGS FILE! SETTINGS FILE WAS MODIFIED WRONGlY!"
-					+ "PLEASE REMOVE ILLEGAL FILE OR MODIFY FILE");
-			
+					+ "PLEASE REMOVE ILLEGAL FILE OR MODIFY FILE");			
 			alert.showAndWait();
 			System.err.println("ERROR IN SETTINGS (deserializeSettingsString): " + e);
 			

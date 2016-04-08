@@ -5,6 +5,8 @@ package command;
  */
 import java.util.ArrayList;
 
+import main.POMPOM;
+
 public class MultiEditCommand extends Command {
 
 	private static final String MESSAGE_MULTIEDIT = "Multiple fields has been edited";
@@ -20,6 +22,8 @@ public class MultiEditCommand extends Command {
 			editList.get(i).execute();
 		}
 		
+		POMPOM.refreshStatus();
+		showCorrectTab(getTask(editList.get(0).taskId));
 		returnMsg = MESSAGE_MULTIEDIT;
 		return returnMsg;
 	}

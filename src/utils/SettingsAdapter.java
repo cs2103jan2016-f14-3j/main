@@ -7,7 +7,8 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 
 /**
- * @@author A0121628L This method helps write Settings into json string and read
+ * @@author A0121628L 
+ * This method helps write Settings into json string and read
  *          Json string to create Settings object
  */
 public class SettingsAdapter extends TypeAdapter<Settings> {

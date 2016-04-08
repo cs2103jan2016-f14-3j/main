@@ -39,8 +39,6 @@ public class Main extends Application {
 	@Override 
 	public void start(Stage stage) throws Exception {
 		getClass();
-		
-
 		Parent root = FXMLLoader.load(getClass().getResource("POMPOM.fxml"));
 		stage.setTitle("POMPOM");
 		Scene scene = new Scene(root);
@@ -120,8 +118,20 @@ public class Main extends Application {
 			dialogStage.setTitle("Help");
 			dialogStage.initModality(Modality.APPLICATION_MODAL);
 			Scene scene = new Scene(page);
+			
+			scene.addEventHandler(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
+
+				@Override
+				public void handle(KeyEvent t) {
+					if (t.getCode() == KeyCode.ESCAPE) { 
+						dialogStage.close(); 
+					}
+				}
+			});
+			
 			dialogStage.setScene(scene);
-			dialogStage.showAndWait();
+			dialogStage.showAndWait();			
+	
 
 		} catch (IOException e) {
 			e.printStackTrace();

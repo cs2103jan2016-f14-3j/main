@@ -1,16 +1,6 @@
-package utils;
-
-import java.text.SimpleDateFormat;
-import java.util.Comparator;
-import java.util.Date;
-
-import org.ocpsoft.prettytime.shade.org.apache.commons.lang.WordUtils;
-
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.scene.control.CheckBox;
-
-/**
- * @@author A0121628L This is a holder object to contain the event or task
+# A0121628L This is a holder object to contain the event or task
+###### utils\Item.java
+``` java
  *          details contains getters and setters and constructor only
  */
 // implements Comparator<Item>
@@ -235,3 +225,4 @@ public class Item {
 	// return 0;
 	// }
 }
+```

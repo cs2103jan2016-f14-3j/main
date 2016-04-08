@@ -14,8 +14,8 @@ import utils.Item;
 public class DelCommand extends Command {
 
 	private static final String MESSAGE_TASK_DELETED_ID = "%1s has been deleted from %2s";
-	private static final String MESSAGE_TASK_DELETED_TITLE = "All tasks with title \"%s\" have been deleted";
-	private static final String MESSAGE_TASK_ERROR = "Unable to delete task %s";
+	private static final String MESSAGE_TASK_ERROR = "Unable to delete";
+
 	private long taskId;
 	private String taskTitle;
 	private boolean isById;
@@ -29,7 +29,7 @@ public class DelCommand extends Command {
 		this.isById = true;
 		this.isUndo = false;
 		this.toDelete = getTask(taskId);
-		
+
 		logger.log(Level.INFO, "DelCommand with id initialized");
 	}
 
@@ -38,7 +38,7 @@ public class DelCommand extends Command {
 		this.isById = false;
 		this.isUndo = false;
 		this.toDelete = getTask(taskId);
-		
+
 		logger.log(Level.INFO, "DelCommand with title initialized");
 	}
 
@@ -77,7 +77,7 @@ public class DelCommand extends Command {
 	private Command createCounterAction() {
 		AddCommand counterAction = new AddCommand(toDelete.getId(), toDelete.getType(), toDelete.getTitle(),
 				toDelete.getDescription(), toDelete.getPriority(), toDelete.getStatus(), toDelete.getLabel(),
-				toDelete.getStartDate(), toDelete.getEndDate(), toDelete.getIsRecurring(), toDelete.getPrevId(),
+				toDelete.getStartDate(), toDelete.getEndDate(), toDelete.isRecurring(), toDelete.getPrevId(),
 				toDelete.getNextId());
 		return counterAction;
 	}
@@ -89,66 +89,67 @@ public class DelCommand extends Command {
 
 	private void setProperPointers() {
 		Item currentTask = getTask(toDelete.getId());
-		
+
 		if (!(currentTask.getPrevId() == null)) {
 			Item prevTask = getTask(currentTask.getPrevId());
 			prevTask.setNextId(currentTask.getNextId());
-		} 
-		
+		}
+
 		if (!(currentTask.getNextId() < currentTask.getId())) {
 			Item nextTask = getTask(currentTask.getNextId());
 			nextTask.setPrevId(currentTask.getPrevId());
 		}
-		
+
+	}
+
+	private void setProperReturnMessage() {
+
+		if (canDelete) {
+
+			if (toDelete.getType().toLowerCase().equals(POMPOM.LABEL_EVENT.toLowerCase())) {
+				if (toDelete.getStatus().equals(POMPOM.STATUS_COMPLETED)) {
+					returnMsg = String.format(MESSAGE_TASK_DELETED_ID, taskId, POMPOM.LABEL_COMPLETED_EVENT);
+				} else {
+					returnMsg = String.format(MESSAGE_TASK_DELETED_ID, taskId, POMPOM.LABEL_EVENT);
+				}
+			} else {
+				if (toDelete.getStatus().equals(POMPOM.STATUS_COMPLETED)) {
+					returnMsg = String.format(MESSAGE_TASK_DELETED_ID, taskId, POMPOM.LABEL_COMPLETED_TASK);
+				} else {
+					returnMsg = String.format(MESSAGE_TASK_DELETED_ID, taskId, POMPOM.LABEL_TASK);
+				}
+			}
+
+		} else {
+			returnMsg = MESSAGE_TASK_ERROR;
+		}
+
 	}
 
 	public String execute() {
 
-		if (isById) {
+		canDelete = checkExists(taskId);
 
-			canDelete = checkExists(taskId);
-			
-			toDelete = getTask(taskId);
-			
-			if (toDelete.getIsRecurring() == true)
-				setProperPointers();
+		toDelete = getTask(taskId);
 
-			if (canDelete) {
+		if (toDelete.isRecurring()) {
+			setProperPointers();
+		}
 
-				if (!isUndo) {
-					updateUndoStack();
-					returnMsg = String.format(MESSAGE_TASK_DELETED_ID, (taskId + "."), toDelete.getType());
+		if (canDelete) {
 
-					if (toDelete.getType().equals(POMPOM.LABEL_EVENT)) {
-						if (toDelete.getStatus().equals(POMPOM.STATUS_OVERDUE)) {
-							POMPOM.setCurrentTab(POMPOM.LABEL_COMPLETED_EVENT);
-						} else {
-							POMPOM.setCurrentTab(POMPOM.LABEL_EVENT);
-						}
-					} else {
-						if (toDelete.getStatus().equals(POMPOM.STATUS_OVERDUE)) {
-							POMPOM.setCurrentTab(POMPOM.LABEL_COMPLETED_TASK);
-						} else {
-							POMPOM.setCurrentTab(POMPOM.LABEL_TASK);
-						}
-					}
-				}
-
-				removeTask();
-				logger.log(Level.INFO, "DelCommand by Id has be executed");
-
-			} else {
-				returnMsg = String.format(MESSAGE_TASK_ERROR, taskId);
+			if (!isUndo) {
+				updateUndoStack();
 			}
 
-		} else {
-
 			removeTask();
-			logger.log(Level.INFO, "DelCommand by title has be executed");
-			returnMsg = String.format(MESSAGE_TASK_DELETED_TITLE, taskTitle);
+			logger.log(Level.INFO, "DelCommand by Id has be executed");
 
 		}
 
+		POMPOM.refreshStatus();
+		showCorrectTab(toDelete);
+		setProperReturnMessage();
 		return returnMsg;
 	}
 

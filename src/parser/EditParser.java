@@ -8,7 +8,10 @@ import org.ocpsoft.prettytime.shade.edu.emory.mathcs.backport.java.util.Arrays;
 import command.Command;
 import command.EditCommand;
 import main.POMPOM;
-
+/**
+ *  @@author Josh
+ *
+ */
 public class EditParser extends ArgsParser{
 	
 	private final int INDEX_TASK_ID = 0;
@@ -16,14 +19,15 @@ public class EditParser extends ArgsParser{
 	private final int INDEX_NEW_DATAS = 2; 
 	
 	private static final String FIELD_PRIORITY = "priority";
+	private static final String FIELD_TITLE = "title";	
 	private static final String FIELD_STATUS = "status";
 	private static final String FIELD_LABEL = "label";
 	private static final String FIELD_START_DATE = "start date";
 	private static final String FIELD_END_DATE = "end date";
 
-	private static final String[] FIELD_ARRAY = {FIELD_PRIORITY, FIELD_STATUS,
-												 FIELD_LABEL, FIELD_START_DATE,
-												 FIELD_END_DATE};
+	private static final String[] FIELD_ARRAY = {FIELD_PRIORITY, FIELD_TITLE, 
+												 FIELD_STATUS, FIELD_LABEL, 
+												 FIELD_START_DATE, FIELD_END_DATE};
 	
 	private int taskID;
 	private String field;

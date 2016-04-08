@@ -4,10 +4,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.LoggingPermission;
 import command.Command;
-import command.DelRecurringCommand;
 import command.PathCommand;
 import main.POMPOM;
-
+/**
+ *  @@author Josh
+ *
+ */
 public class Parser{
 	
 	/** List of Command types */
@@ -21,19 +23,22 @@ public class Parser{
 	private static final String CMD_UNDO ="undo";
 	private static final String CMD_PATH = "setpath";
 	private static final String CMD_EVENT = "event";
-	private static final String CMD_HELP = "help";
+	private static final String CMD_HELP_1 = "help";
+	private static final String CMD_HELP_2 = "?";
 	private static final String CMD_DELETE_RECUR_1 = "delete recur";
 	private static final String CMD_EDIT_RECUR_1= "edit recur";
 	private static final String CMD_DELETE_RECUR_2 = "delete r";
 	private static final String CMD_EDIT_RECUR_2 = "edit r";
-	private static final String CMD_VIEW = "view";	 
 	
 	private static final String[] CMD_ARRAY = {CMD_ADD, CMD_DELETE, CMD_DONE,
 												CMD_EDIT, CMD_EXIT, CMD_SEARCH,
 												CMD_SHOW, CMD_UNDO, CMD_PATH,
-												CMD_EVENT, CMD_HELP, CMD_DELETE_RECUR_1,
+												CMD_EVENT, CMD_HELP_1, CMD_HELP_2, CMD_DELETE_RECUR_1,
 												CMD_EDIT_RECUR_1, CMD_DELETE_RECUR_2,
-												CMD_EDIT_RECUR_2, CMD_VIEW};
+												CMD_EDIT_RECUR_2};
+	
+
+	private static final String CMD_VIEW = "view";	
 	
 	private static final int COMMAND_ARRAY_SIZE = 2; 
 	private static final int COMMAND_TYPE_INDEX = 0;
@@ -74,7 +79,6 @@ public class Parser{
 		String commandType = parsedCommandArray[COMMAND_TYPE_INDEX];
 		String commandArgument = parsedCommandArray[COMMAND_ARGUMENT_INDEX];
 
-		
 		switch (commandType){
 			case CMD_ADD:
 				AddParser addTaskArgumentParser = new AddParser(commandArgument, POMPOM.LABEL_TASK);
@@ -101,15 +105,15 @@ public class Parser{
 			case CMD_UNDO:
 				UndoParser undoParser = new UndoParser();
 				return undoParser.executeCommand();
-			case CMD_HELP:
+			case CMD_HELP_1:
+			case CMD_HELP_2:
 				HelpParser helpParser = new HelpParser();
 				return helpParser.executeCommand();
 			case CMD_PATH:
 				return new PathCommand(commandArgument);
 			case CMD_DELETE_RECUR_1:
 			case CMD_DELETE_RECUR_2:
-				//System.out.println("lolOLOLOL");
-				return new DelRecurringCommand(Long.parseLong(commandArgument));
+				return new command.DelRecurringCommand(Long.parseLong(commandArgument));
 			case CMD_EDIT_RECUR_1:
 			case CMD_EDIT_RECUR_2:
 				EditRecurringParser EditRecurringArgumentParser = new EditRecurringParser(commandArgument);

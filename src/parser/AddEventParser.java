@@ -12,6 +12,10 @@ import main.POMPOM;
 import command.AddCommand;
 import command.AddRecurringCommand;
 
+/**
+ * @@author Josh
+ *
+ */
 public class AddEventParser extends ArgsParser {
 
 	private String itemTitle = null;

@@ -24,7 +24,7 @@ public class EditCommand extends Command {
 	private static final String FIELD_START_DATE = "start date";
 	private static final String FIELD_END_DATE = "end date";
 	
-	private long taskId;
+	public long taskId;
 	private String field;
 	private String newData;
 	private Date newDate;
@@ -75,28 +75,28 @@ public class EditCommand extends Command {
 	private void updateChanges() {		
 		
 		switch (field.toLowerCase()) {
-		case FIELD_TITLE:
+		case FIELD_TITLE :
 			task.setTitle(newData);			
 			break;
-		case FIELD_TYPE:
+		case FIELD_TYPE :
 			task.setType(newData);
 			break;
-		case FIELD_DESCRIPTION:
+		case FIELD_DESCRIPTION :
 			task.setDescription(newData);
 			break;
-		case FIELD_PRIORITY:
+		case FIELD_PRIORITY :
 			task.setPriority(newData);
 			break;
-		case FIELD_STATUS:
+		case FIELD_STATUS :
 			task.setStatus(newData);
 			break;
-		case FIELD_LABEL:
+		case FIELD_LABEL :
 			task.setLabel(newData);
 			break;
-		case FIELD_START_DATE:
+		case FIELD_START_DATE :
 			task.setStartDate(newDate);
 			break;
-		case FIELD_END_DATE:
+		case FIELD_END_DATE :
 			task.setEndDate(newDate);
 			break;
 		}
@@ -142,24 +142,6 @@ public class EditCommand extends Command {
 		POMPOM.getUndoStack().push(counterAction);
 	}
 	
-	private void showCorrectTab() {
-		
-		if (task.getType().toLowerCase().equals(POMPOM.LABEL_EVENT.toLowerCase())) {
-			if (task.getStatus().equals(POMPOM.STATUS_COMPLETED)) {
-				POMPOM.setCurrentTab(POMPOM.LABEL_COMPLETED_EVENT);
-			} else {
-				POMPOM.setCurrentTab(POMPOM.LABEL_EVENT);
-			}
-		} else {
-			if (task.getStatus().equals(POMPOM.STATUS_COMPLETED)) {
-				POMPOM.setCurrentTab(POMPOM.LABEL_COMPLETED_TASK);
-			} else {
-				POMPOM.setCurrentTab(POMPOM.LABEL_TASK);
-			}
-		}
-		
-	}
-	
 	public String execute() {
 		canEdit = checkExists(taskId);
 		
@@ -173,7 +155,8 @@ public class EditCommand extends Command {
 			returnMsg = MESSAGE_TASK_ERROR;
 		}
 		
-		showCorrectTab();
+		POMPOM.refreshStatus();
+		showCorrectTab(task);
 		
 		logger.log(Level.INFO, "EditCommand has be executed");
 		return returnMsg;

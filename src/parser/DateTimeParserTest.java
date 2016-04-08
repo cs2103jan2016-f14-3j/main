@@ -7,7 +7,10 @@ import java.util.List;
 import org.junit.Test;
 import org.ocpsoft.prettytime.nlp.PrettyTimeParser;
 import org.ocpsoft.prettytime.nlp.parse.DateGroup;
-
+/**
+ *  @@author Josh
+ *
+ */
 public class DateTimeParserTest {
 
 	PrettyTimeParser timeParser = new PrettyTimeParser();
@@ -172,8 +175,9 @@ public class DateTimeParserTest {
 	@Test
 	public void testPrettyTimeParser(){
 		PrettyTimeParser parser = new PrettyTimeParser();
-		DateGroup dg = parser.parseSyntax("every 1 month").get(0);
-		System.out.println(dg.getRecurInterval());
+		DateGroup dg = parser.parseSyntax("every 1 month except 10 april to 30 april").get(1);
+		System.out.println(dg.getDates().toString()
+				);
 	}
 
 }

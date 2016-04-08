@@ -15,11 +15,13 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
@@ -32,6 +34,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
@@ -138,26 +142,116 @@ public class MainController implements Initializable {
 	Label eventsNo;
 	@FXML
 	Pane mainPane;
-	//Content
+	// Content
 	Stage stage;
 	private Main main = new Main();
-	private boolean initialized = false;	
+	private boolean initialized = false;
 	ObservableList<Item> displayList;
 	ObservableList<String> taskView = FXCollections.observableArrayList();
-	ObservableList<Item> tableContent;
 	POMPOM pompom;
 	CheckBox selectAll = new CheckBox();
+	MainController currentMainController = this;
+
+	/** Shortcuts **/
+	private static final String UNDO_COMMAND_STRING = "undo";
+	private static final KeyCodeCombination SWITCH_TAB_SHORTCUT = new KeyCodeCombination(
+			KeyCode.TAB, KeyCombination.CONTROL_DOWN);
+	private static final KeyCodeCombination UNDO_SHORTCUT = new KeyCodeCombination(
+			KeyCode.Z, KeyCombination.CONTROL_DOWN);
+	private static final KeyCodeCombination GOTO_COMMANDLINE_SHORTCUT = new KeyCodeCombination(
+			KeyCode.ENTER);
+
+	private static final KeyCodeCombination GOTO_TABLE_SHORTCUT = new KeyCodeCombination(
+			KeyCode.DOWN);
+
+	private static final KeyCodeCombination GOTO_TABLE_SHORTCUT_2 = new KeyCodeCombination(
+			KeyCode.UP);
+
+	private static final KeyCodeCombination NEW_TASK_SHORTCUT = new KeyCodeCombination(
+			KeyCode.N, KeyCombination.CONTROL_DOWN);	
+	private static final KeyCodeCombination EDIT_TASK_SHORTCUT = new KeyCodeCombination(
+			KeyCode.E, KeyCombination.CONTROL_DOWN);
+	private static final KeyCodeCombination DELETE_SHORTCUT = new KeyCodeCombination(
+			KeyCode.DELETE);
 	
+	private static final KeyCodeCombination NO_FILTER_SHORTCUT = new KeyCodeCombination(
+			KeyCode.DIGIT1, KeyCombination.ALT_DOWN);
+	private static final KeyCodeCombination HIGH_FILTER_SHORTCUT = new KeyCodeCombination(
+			KeyCode.DIGIT2, KeyCombination.ALT_DOWN);
+	private static final KeyCodeCombination MEDIUM_FILTER_SHORTCUT = new KeyCodeCombination(
+			KeyCode.DIGIT3, KeyCombination.ALT_DOWN);
+	private static final KeyCodeCombination LOW_FILTER_SHORTCUT = new KeyCodeCombination(
+			KeyCode.DIGIT4, KeyCombination.ALT_DOWN);
+
+	private final EventHandler<KeyEvent> shortcutHandler = new EventHandler<KeyEvent>() {
+		@Override
+		public void handle(KeyEvent ke) {
+			commonShortCut(ke);			
+			if (GOTO_COMMANDLINE_SHORTCUT.match(ke)) {
+				inputCommand.requestFocus();
+			}
+			
+			if (GOTO_TABLE_SHORTCUT.match(ke)
+					|| GOTO_TABLE_SHORTCUT_2.match(ke)) {
+
+				table.requestFocus();
+
+				table.getSelectionModel().select(0);
+				table.getFocusModel().focus(0);
+				System.out.println("WTTFFFF");
+				return;
+			}
+			
+			else if (NEW_TASK_SHORTCUT.match(ke)) {
+				main.newTaskDialog(currentMainController);
+			}
+			else if (EDIT_TASK_SHORTCUT.match(ke)) {
+				Item item = table.getSelectionModel().getSelectedItem();
+				if (item == null) {
+					return;
+				}
+				main.editTaskDialog(item, currentMainController);
+			} 
+			else {
+				return;
+			}
+		}
+	};
+	private final EventHandler<KeyEvent> tableShortcut = new EventHandler<KeyEvent>() {
+		@Override
+		public void handle(KeyEvent ke) {
+			
+			commonShortCut(ke);
+			if (GOTO_COMMANDLINE_SHORTCUT.match(ke)) {
+				inputCommand.requestFocus();
+			} else {
+				return;
+			}
+		}
+	};
+	private final EventHandler<KeyEvent> inputFieldShortcut = new EventHandler<KeyEvent>() {
+		@Override
+		public void handle(KeyEvent ke) {
+			commonShortCut(ke);
+
+			if (GOTO_TABLE_SHORTCUT.match(ke)
+					|| GOTO_TABLE_SHORTCUT_2.match(ke)) {
+
+				table.requestFocus();
+
+				table.getSelectionModel().select(0);
+				table.getFocusModel().focus(0);
+				System.out.println("WTTFFFF");
+				return;
+			}
+
+		}
+	};
+
 	// String variables
-	public static final String DEFAULT_LABEL_COLOR = "#ffffff";
-	public static final String DEFAULT_HIGHLIGHT_COLOR = "#7d8993";
+	public static final String DEFAULT_LABEL_COLOR = "#7d8993";
+	public static final String DEFAULT_HIGHLIGHT_COLOR = "#ffffff";
 	public static final String CSS_STYLE_TEXT = "-fx-text-fill: #";
-	
-
-
-	public ObservableList<Item> getTableContent() {
-		return tableContent;
-	}
 
 	public ObservableList<Item> getDisplayList() {
 		return displayList;
@@ -194,25 +288,292 @@ public class MainController implements Initializable {
 		// Initialize main logic class
 		pompom = new POMPOM();
 		GUIModel.update();
-		System.out.println(this.getClass().getSimpleName() + ".initialize");
 
 		// Initialize the GUI
 		POMPOM.setCurrentTab(POMPOM.LABEL_TASK);
-		displayList = GUIModel.getTaskList();		
+		displayList = GUIModel.getTaskList();
 		configureButtons();
 		configureTable();
 		setNotificationLabels();
-		//Set focus to command text striaght
+
+		// Set focus to command text striaght
 		Platform.runLater(new Runnable() {
 			@Override
 			public void run() {
+				initializeSceneShortcuts();
 				inputCommand.requestFocus();
 			}
 		});
 		setSettingsColours();
-		initialized = true;		
+		initialized = true;
 
 	}
+
+	@FXML
+	private void deleteItems() throws IOException {
+		int rows = table.getItems().size();
+		for (int i = 0; i < rows; i++) {
+			if (checkBox.getCellData(i) == true) {
+
+				DelCommand delCommand = new DelCommand(Long.parseLong(taskID
+						.getCellData(i).toString()));
+				POMPOM.executeCommand(delCommand);
+				configureTable();
+				POMPOM.getStorage().saveStorage();
+			}
+		}
+		selectAll.selectedProperty().set(false);;
+		switchToTab(POMPOM.getCurrentTab().toLowerCase());
+	}
+
+	@FXML
+	private void editItem() throws IOException {
+		Item item = table.getSelectionModel().getSelectedItem();
+		main.editTaskDialog(item, this);
+	}
+
+	@FXML
+	public void enableEditBtn(MouseEvent event) {
+		if (event.isPrimaryButtonDown() && event.getClickCount() == 1) {
+			editTask.setDisable(false);
+		}
+	}
+
+	@FXML
+	public void newTaskFired(ActionEvent event) throws IOException {
+		main.newTaskDialog(this);
+	}
+
+	@FXML
+	public void helpFired(ActionEvent event) {
+		main.helpDialog();
+	}
+
+	@FXML
+	public void changeToSettings(ActionEvent event) throws IOException {
+
+		highLightLabel(settingLbl);
+
+		content.getChildren().clear();
+		Node node = (Node) FXMLLoader.load(getClass().getResource(
+				"Settings.fxml"));
+		content.getChildren().setAll(node);
+	}
+
+	@FXML
+	public void changeToDashboard(ActionEvent event) throws IOException {
+
+		highLightLabel(dashboardLbl);
+
+		Node node = (Node) FXMLLoader.load(getClass()
+				.getResource("POMPOM.fxml"));
+		mainPane.getChildren().setAll(node);
+
+		// content.getChildren().setAll(node);
+
+	}
+
+	/**
+	 * @@author A0121628L
+	 * 
+	 * @param event
+	 */
+	@FXML
+	public void changeToHighPriority(ActionEvent event) {
+
+		highLightLabel(highPriorityLbl);
+		//Filter the list and configure the table
+		filterList("high");
+		
+	}
+
+	/**
+	 * @@author A0121628L
+	 * @param event
+	 */
+	@FXML
+	public void changeToMediumPriority(ActionEvent event) {
+		highLightLabel(mediumPriorityLbl);
+		//Filter the list and configure the table
+		filterList("medium");
+	}
+
+	/**
+	 * @@author A0121628L
+	 * @param event
+	 */
+	@FXML
+	public void changeToLowPriority(ActionEvent event) {
+		highLightLabel(lowPriorityLbl);
+		//Filter the list and configure the table
+		filterList("low");
+	}
+
+	/**
+	 * Select inputTab
+	 * 
+	 * @@author A0121628L
+	 * @param inputTab
+	 */
+	public void switchToTab(String inputTab) {
+		String tabName = inputTab.toLowerCase();
+		SingleSelectionModel<Tab> selectionModel = tabViews.getSelectionModel();
+
+		if (tabName.equals(POMPOM.LABEL_TASK.toLowerCase())) {
+			selectionModel.select(taskTab);
+			taskTabAction();
+		} else if (tabName.equals(POMPOM.LABEL_COMPLETED_TASK.toLowerCase())) {
+			selectionModel.select(completedTaskTab);
+			completedTaskTabAction();
+		} else if (tabName.equals(POMPOM.LABEL_EVENT.toLowerCase())) {
+			selectionModel.select(eventTab);
+			eventTabAction();
+		} else if (tabName.equals(POMPOM.LABEL_COMPLETED_EVENT.toLowerCase())) {
+			selectionModel.select(completedEventTab);
+			completedEventTabAction();
+		} else if (tabName.equals(POMPOM.LABEL_SEARCH.toLowerCase())) {
+			selectionModel.select(searchTab);
+			searchTabAction();
+		}
+	}
+
+	/**
+	 * @@author A0121628L
+	 */
+	@FXML
+	public void taskTabAction() {
+		if (!initialized)
+			return;
+		GUIModel.update();
+		displayList = GUIModel.getTaskList();
+		configureTable();
+		POMPOM.setCurrentTab(POMPOM.LABEL_TASK);
+	}
+
+	/**
+	 * @@author A0121628L
+	 */
+	@FXML
+	public void completedTaskTabAction() {
+		GUIModel.update();
+		displayList = GUIModel.getTaskDoneList();
+		configureTable();
+		POMPOM.setCurrentTab(POMPOM.LABEL_COMPLETED_TASK);
+	}
+
+	/**
+	 * @@author A0121628L
+	 */
+	@FXML
+	public void eventTabAction() {
+		GUIModel.update();
+		displayList = GUIModel.getEventList();
+		configureTable();
+		POMPOM.setCurrentTab(POMPOM.LABEL_EVENT);
+	}
+
+	/**
+	 * @@author A0121628L
+	 */
+	@FXML
+	public void completedEventTabAction() {
+		GUIModel.update();
+		displayList = GUIModel.getEventDoneList();
+		configureTable();
+		POMPOM.setCurrentTab(POMPOM.LABEL_COMPLETED_EVENT);
+	}
+
+	/**
+	 * @@author A0121628L
+	 */
+	public void searchTabAction() {
+		displayList = GUIModel.getSearchList();
+
+		configureTable();
+		POMPOM.setCurrentTab(POMPOM.LABEL_SEARCH);
+	}
+
+	/**
+	 * Command triggered when enter button is pressed
+	 * 
+	 * @param event
+	 * @throws IOException
+	 */
+	/**
+	 * @@author A0121628L
+	 * @param event
+	 * @throws IOException
+	 */
+	public void enterCommandFired(ActionEvent event) throws IOException {
+		// Clear input string
+		String input = inputCommand.getText();
+		inputCommand.clear();
+		// Execute command
+		String msg = pompom.execute(input);
+		switchToTab(POMPOM.getCurrentTab().toLowerCase());
+		POMPOM.getStorage().saveStorage();
+		// Update Gui
+		lanuchHelp(POMPOM.showHelp);
+		displayReturnMessage(msg);
+		configureTable();
+		setNotificationLabels();
+		selectRow(input);
+		inputCommand.setPromptText("Command:");
+	}
+
+	/**
+	 * @@author A0121628L When you hit the enter key on the keyboard
+	 * 
+	 * @param event
+	 * @throws IOException
+	 */
+	@FXML
+	public void enterCommandKey(KeyEvent event) throws IOException {
+		if (event.getCode().equals(KeyCode.ENTER)) {
+			// clear input string
+			String input = inputCommand.getText();
+			// Execute command
+			String msg = pompom.execute(input);
+			switchToTab(POMPOM.getCurrentTab().toLowerCase());
+			POMPOM.getStorage().saveStorage();
+
+			// Update GUI
+			displayReturnMessage(msg);
+			configureTable();
+			setNotificationLabels();
+			selectRow(input);
+			lanuchHelp(POMPOM.showHelp);
+			inputCommand.clear();
+			inputCommand.setPromptText("Command:");
+
+		}
+
+	}
+
+	/*********************************** Helper methods **********************************/
+
+	/**
+	 * @@author A0121628L
+	 */
+	private void configureButtons() {
+		if (newTask != null) {
+			newTask.setDisable(false);
+		}
+		if (editTask != null) {
+			editTask.setDisable(true);
+		}
+		if (deleteTask != null) {
+			deleteTask.setDisable(false);
+		}
+		if (enterCommand != null) {
+			enterCommand.setDisable(false);
+		}
+	}
+
+	/**
+	 * @@author A0121628L Configure the table view with the latest and correct
+	 *          information
+	 */
 	void configureTable() {
 		table.setEditable(true);
 
@@ -222,7 +583,6 @@ public class MainController implements Initializable {
 
 		// Checkbox init
 		checkBox.setGraphic(selectAll);
-
 		checkBox.setCellFactory(CheckBoxTableCell.forTableColumn(checkBox));
 		checkBox.setCellValueFactory(c -> c.getValue().checkedProperty());
 		taskStartDateTime
@@ -241,279 +601,39 @@ public class MainController implements Initializable {
 
 		GUIModel.update();
 
-		selectAll(selectAll);
+		selectAllCheckBox(selectAll);
+		// Populate data
 
-		tableContent = FXCollections.observableArrayList(displayList);
 		table.setItems(displayList);
-
 		table.refresh();
-		inputCommand.requestFocus();
 
 	}
 
-
-
-
-
-	@FXML
-	private void deleteItems() throws IOException {
-		int rows = table.getItems().size();
-		for (int i = 0; i < rows; i++) {
-			if (checkBox.getCellData(i) == true) {
-				
-				DelCommand delCommand = new DelCommand(Long.parseLong(taskID
-						.getCellData(i).toString()));
-				POMPOM.executeCommand(delCommand);
-				configureTable();
-				POMPOM.getStorage().saveStorage();
-			}
-		}
-		switchToTab(POMPOM.getCurrentTab().toLowerCase());
-	}
-
-	@FXML
-	private void editItem() throws IOException {
-		Item item = table.getSelectionModel().getSelectedItem();
-		if (item != null) {
-			Stage dialogStage = main.editTaskDialog(item, this);
-
-		}
-	}
-
-	public void enableEditBtn(MouseEvent event) {
-		if (event.isPrimaryButtonDown() && event.getClickCount() == 1) {
-			editTask.setDisable(false);
-		}
-	}
-
-
-
-	public void newTaskFired(ActionEvent event) throws IOException {
-		Stage dialogStage = main.newTaskDialog(this);
-		System.out.println(dialogStage);
-
-	}
-
-	public void helpFired(ActionEvent event) {
-		main.helpDialog();
-	}
-	
-
-	public void changeToSettings(ActionEvent event) throws IOException {
-
-		highLightLabel(settingLbl);
-		
-		content.getChildren().clear();
-		Node node = (Node) FXMLLoader.load(getClass().getResource("Settings.fxml"));
-		content.getChildren().setAll(node);
-	}
-
-	
-	public void changeToDashboard(ActionEvent event) throws IOException {
-
-		highLightLabel(dashboardLbl);
-
-		Node node = (Node) FXMLLoader.load(getClass().getResource("POMPOM.fxml"));
-		mainPane.getChildren().setAll(node);
-
-		// content.getChildren().setAll(node);
-
-	}
-	
-	
-	@FXML
-	public void changeToHighPriority(ActionEvent event) {
-
-		highLightLabel(highPriorityLbl);
-		GUIModel.update();
-
-		// Filter
-		switchToTab(GUIModel.getCurrentTab());
-		for (Item item : displayList) {
-			System.out.println(item.getTitle());
-		}
-		displayList = ListClassifier
-				.getSpecifiedPrirorirty(displayList, "high");
-		configureTable();
-	}
-
-	
-	@FXML
-	public void changeToMediumPriority(ActionEvent event) {
-		highLightLabel(mediumPriorityLbl);
-		// Filter
-		switchToTab(GUIModel.getCurrentTab());
-		displayList = ListClassifier.getSpecifiedPrirorirty(displayList,
-				"medium");
-
-		configureTable();
-	}
-
-	
-	@FXML
-	public void changeToLowPriority(ActionEvent event) {
-		highLightLabel(lowPriorityLbl);
-		// Filter
-		switchToTab(GUIModel.getCurrentTab());
-		displayList = ListClassifier.getSpecifiedPrirorirty(displayList, "low");
-
-		configureTable();
-	}
-
-
-	/**
-	 * Select inputTab 
-	 * @param inputTab
-	 */
-	public void switchToTab(String inputTab) {
-		String tabName = inputTab.toLowerCase();
-		SingleSelectionModel<Tab> selectionModel = tabViews.getSelectionModel();
-
-		if (tabName.equals(POMPOM.LABEL_TASK.toLowerCase())) {
-			selectionModel.select(taskTab);
-			taskTabAction();
-		} else if (tabName.equals(POMPOM.LABEL_COMPLETED_TASK.toLowerCase())) {
-			selectionModel.select(completedTaskTab);
-			completedTaskTabAction();
-		} else if (tabName.equals(POMPOM.LABEL_EVENT.toLowerCase()	)) {
-			selectionModel.select(eventTab);
-			eventTabAction();
-		} else if (tabName.equals(POMPOM.LABEL_COMPLETED_EVENT.toLowerCase())) {
-			selectionModel.select(completedEventTab);
-			completedEventTabAction();
-		} else if (tabName.equals(POMPOM.LABEL_SEARCH.toLowerCase())) {
-			selectionModel.select(searchTab);
-			searchTabAction();
-		}
-	}
-
-	@FXML
-	public void taskTabAction() {
-		if (!initialized)
-			return;
-		GUIModel.update();
-		displayList = GUIModel.getTaskList();
-		configureTable();
-		POMPOM.setCurrentTab(POMPOM.LABEL_TASK.toLowerCase());
-	}
-
-	@FXML
-	public void completedTaskTabAction() {
-		GUIModel.update();
-		displayList = GUIModel.getTaskDoneList();
-		configureTable();
-		POMPOM.setCurrentTab(POMPOM.LABEL_COMPLETED_TASK.toLowerCase());
-	}
-
-	@FXML
-	public void eventTabAction() {
-		GUIModel.update();
-		displayList = GUIModel.getEventList();
-		configureTable();
-		POMPOM.setCurrentTab(POMPOM.LABEL_EVENT.toLowerCase());
-	}
-
-	@FXML
-	public void completedEventTabAction() {
-		GUIModel.update();
-		displayList = GUIModel.getEventDoneList();
-		configureTable();
-		POMPOM.setCurrentTab(POMPOM.LABEL_COMPLETED_EVENT.toLowerCase());
-	}
-	
-	public void searchTabAction() {
-		if (POMPOM.getSearchList() != null) {
-			displayList = FXCollections.observableArrayList(POMPOM
-					.getSearchList());
-		}
-		configureTable();
-		POMPOM.setCurrentTab(POMPOM.LABEL_SEARCH.toLowerCase());
-	}
-
-	/**
-	 * Command triggered when enter button is pressed
-	 * 
-	 * @param event
-	 * @throws IOException
-	 */
-	public void enterCommandFired(ActionEvent event) throws IOException {
-		//Clear input string
-		String input = inputCommand.getText();
-		inputCommand.clear();
-		//Execute command
-		String msg = pompom.execute(input);
-		switchToTab(POMPOM.getCurrentTab().toLowerCase());
-		POMPOM.getStorage().saveStorage();
-		//Update Gui
-		displayReturnMessage(msg);		
-		configureTable();
-		setNotificationLabels();		
-		selectRow(input);
-		inputCommand.setPromptText("Command:");
-	}
-
-	/**
-	 * When you hit the enter key on the keyboard
-	 * 
-	 * @param event
-	 * @throws IOException
-	 */
-	@FXML
-	public void enterCommandKey(KeyEvent event) throws IOException {
-		if (event.getCode().equals(KeyCode.ENTER)) {
-			//clear input string
-			String input = inputCommand.getText();
-			//Execute command
-			String msg = pompom.execute(input);
-			switchToTab(POMPOM.getCurrentTab().toLowerCase());			
-			POMPOM.getStorage().saveStorage();
-			
-			//Update GUI
-			displayReturnMessage(msg);
-			configureTable();
-			setNotificationLabels();			
-			selectRow(input);
-			inputCommand.clear();
-			inputCommand.setPromptText("Command:");
-
-		}
-
-	}
-
-	/***********************************Helper methods**********************************/
-	
-	private void configureButtons() {
-		if (newTask != null) {
-			newTask.setDisable(false);
-		}
-		if (editTask != null) {
-			editTask.setDisable(true);
-		}
-		if (deleteTask != null) {
-			deleteTask.setDisable(false);
-		}
-		if (enterCommand != null) {
-			enterCommand.setDisable(false);
-		}
-	}
 	/**
 	 * Highlight the item which has just been added or modified
+	 * 
+	 * @@author A0121628L
 	 * @param input
 	 */
 	public void selectRow(String input) {
 		int i = input.indexOf(' ');
-		if (i < 0)
+		if (i < 0) {
 			return;
+		}
 		String command = input.substring(0, i);
 		String restOfAction = input.substring(i + 1);
 		int rowNo = table.getItems().size();
 		if (command.equals("add") || command.equals("event")) {
 			table.getSelectionModel().select(rowNo - 1);
 			table.scrollTo(rowNo - 1);
+
 		}
 		if (command.equals("edit")) {
 			int z;
 			int j = restOfAction.indexOf(' ');
+			if (j < 0) {
+				return;
+			}
 			int itemNo = Integer.parseInt(restOfAction.substring(0, j));
 			for (z = 0; z < rowNo - 1; z++) {
 				int searchItemNo = taskID.getCellData(z).intValue();
@@ -524,11 +644,13 @@ public class MainController implements Initializable {
 			table.getSelectionModel().select(z);
 			table.scrollTo(z);
 		}
+
 	}
+
 	/**
-	 * Select all for checkbox
+	 * @@author A0121628L Select all for checkbox
 	 */
-	public void selectAll(CheckBox cb){
+	public void selectAllCheckBox(CheckBox cb) {
 		cb.selectedProperty().addListener(new ChangeListener<Boolean>() {
 			public void changed(ObservableValue<? extends Boolean> ov,
 					Boolean old_val, Boolean new_val) {
@@ -538,12 +660,16 @@ public class MainController implements Initializable {
 					boolean preVal = displayList.get(i).getChecked();
 
 					displayList.get(i).setChecked(!preVal);
-					
+
 				}
 			}
 		});
 	}
 
+	/**
+	 * @@author A0121628L
+	 * @param color
+	 */
 	private void setBackgroundColor(String color) {
 
 		BackgroundFill myBF = new BackgroundFill(Color.valueOf(color),
@@ -553,8 +679,8 @@ public class MainController implements Initializable {
 	}
 
 	/**
-	 * Set the notification numbers in the labels
-	 * Eg. Number of task today
+	 * @@author A0121628L Set the notification numbers in the labels Eg. Number
+	 *          of task today
 	 */
 	public void setNotificationLabels() {
 		GUIModel.update();
@@ -565,37 +691,41 @@ public class MainController implements Initializable {
 		eventsNo.setText(ListClassifier.getTodayEvent(POMPOM.getStorage()
 				.getTaskList()));
 	}
+
 	/**
-	 * Displays Notification Message
+	 * @@author A0121628L Displays Notification Message
 	 */
-	public void displayReturnMessage(String message){
+	public void displayReturnMessage(String message) {
 		Timeline timeline = new Timeline();
 		timeline.getKeyFrames().add(
 				new KeyFrame(Duration.seconds(0), new KeyValue(returnMsg
 						.textProperty(), message)));
 		timeline.getKeyFrames().add(
-				new KeyFrame(Duration.seconds(2), new KeyValue(returnMsg
+				new KeyFrame(Duration.seconds(4), new KeyValue(returnMsg
 						.textProperty(), " ")));
 		timeline.play();
 	}
-	
+
 	/**
 	 * HighLight the clicked label
+	 * 
+	 * @@author A0121628L
 	 * @param label
 	 */
-	public void highLightLabel(Label label){
+	public void highLightLabel(Label label) {
 		dashboardLbl.setTextFill(Color.web(DEFAULT_LABEL_COLOR));
 		settingLbl.setTextFill(Color.web(DEFAULT_LABEL_COLOR));
 		highPriorityLbl.setTextFill(Color.web(DEFAULT_LABEL_COLOR));
 		mediumPriorityLbl.setTextFill(Color.web(DEFAULT_LABEL_COLOR));
 		lowPriorityLbl.setTextFill(Color.web(DEFAULT_LABEL_COLOR));
-		
+
 		label.setTextFill(Color.web(DEFAULT_HIGHLIGHT_COLOR));
 	}
+
 	/**
-	 * Set the colours gotten from the settings text file
+	 * @@author A0121628L Set the colours gotten from the settings text file
 	 */
-	public void setSettingsColours(){
+	public void setSettingsColours() {
 		Settings setting = GUIModel.getSettings();
 		Platform.runLater(new Runnable() {
 			@Override
@@ -608,6 +738,130 @@ public class MainController implements Initializable {
 
 			}
 		});
+	}
+
+	/**
+	 * @@author A0121628L
+	 */
+	private void initializeSceneShortcuts() {
+		Scene scene = mainPane.getScene();
+		scene.setOnKeyPressed(shortcutHandler);
+		inputCommand.addEventHandler(KeyEvent.KEY_PRESSED, inputFieldShortcut);
+		table.addEventHandler(KeyEvent.KEY_PRESSED, tableShortcut);
+
+	}
+
+	/**
+	 * Common shortcut command that shares across all items in the view
+	 * 
+	 * @param ke Keyevent
+	 */
+	public void commonShortCut(KeyEvent ke)  {
+		if (UNDO_SHORTCUT.match(ke)) {
+			String msg = pompom.execute(UNDO_COMMAND_STRING);
+			switchToTab(POMPOM.getCurrentTab().toLowerCase());
+			displayReturnMessage(msg);
+			try {
+				POMPOM.getStorage().saveStorage();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			configureTable();
+		} else if (SWITCH_TAB_SHORTCUT.match(ke)) {
+			hotkeySwitchTab();
+		}		
+		else if (DELETE_SHORTCUT.match(ke)) {
+			Item item = table.getSelectionModel().getSelectedItem();
+			if (item != null) {
+				pompom.execute("delete " + item.getId());
+				configureTable();
+				try {
+					POMPOM.getStorage().saveStorage();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				switchToTab(GUIModel.getCurrentTab());
+				return;
+			}
+
+		}
+		else if(NO_FILTER_SHORTCUT.match(ke)){
+			switchToTab(GUIModel.getCurrentTab());
+			
+		}
+		else if(LOW_FILTER_SHORTCUT.match(ke)){
+			switchToTab(GUIModel.getCurrentTab());
+			filterList("low");
+		}
+		else if(MEDIUM_FILTER_SHORTCUT.match(ke)){
+			switchToTab(GUIModel.getCurrentTab());
+			filterList("medium");
+		}
+		else if(HIGH_FILTER_SHORTCUT.match(ke)){
+			switchToTab(GUIModel.getCurrentTab());
+			filterList("high");
+		}
+	}
+
+	/**
+	 * Switch to next tab
+	 */
+	public void hotkeySwitchTab() {
+		System.out.println("WORKING");
+		System.out.println(GUIModel.getCurrentTab());
+		System.out.println("LABEL: " + POMPOM.LABEL_TASK);
+
+		if (GUIModel.getCurrentTab().equals(POMPOM.LABEL_TASK)) {
+			System.out.println("Test");
+			switchToTab(POMPOM.LABEL_COMPLETED_TASK);
+			GUIModel.setCurrentTab(POMPOM.LABEL_COMPLETED_TASK);
+		} 
+		else if (GUIModel.getCurrentTab().equals(POMPOM.LABEL_COMPLETED_TASK)) {
+			switchToTab(POMPOM.LABEL_EVENT);
+			GUIModel.setCurrentTab(POMPOM.LABEL_EVENT);
+		} 
+		else if (GUIModel.getCurrentTab().equals(POMPOM.LABEL_EVENT)) {
+			switchToTab(POMPOM.LABEL_COMPLETED_EVENT);
+			GUIModel.setCurrentTab(POMPOM.LABEL_COMPLETED_EVENT);
+
+		}  
+		else if (GUIModel.getCurrentTab()
+				.equals(POMPOM.LABEL_COMPLETED_EVENT)) {
+			switchToTab(POMPOM.LABEL_SEARCH);
+			GUIModel.setCurrentTab(POMPOM.LABEL_SEARCH);
+
+		} 
+		else if (GUIModel.getCurrentTab().equals(POMPOM.LABEL_SEARCH)) {
+			switchToTab(POMPOM.LABEL_TASK);
+			GUIModel.setCurrentTab(POMPOM.LABEL_TASK);
+		}
+	}
+
+	/**
+	 * filter the list
+	 * @param priority
+	 */
+	public void filterList(String priority){
+		GUIModel.update();
+		// Filter
+		switchToTab(GUIModel.getCurrentTab());
+		displayList = ListClassifier
+				.getSpecifiedPrirorirty(displayList, priority);
+		configureTable();
+	}
+	/**
+	 * Check whether help dialog is required to launch a not
+	 * @param launched
+	 */
+	public void lanuchHelp(boolean launched) {
+		if (launched == true) {
+			POMPOM.showHelp = false;
+			main.helpDialog();
+		} else {
+			return;
+		}
 	}
 
 }

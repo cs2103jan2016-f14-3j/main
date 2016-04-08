@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
+import main.POMPOM;
 import javafx.collections.ObservableList;
 
 /**
- * @@author A0121628L These static methods help to return filtered list.
+ * @@author A0121628L 
+ * These static methods help to return filtered list.
  */
 public class ListClassifier {
 
@@ -99,8 +101,7 @@ public class ListClassifier {
 			if (currentTask.getType() == null)
 				continue;
 			if (currentTask.getType().toLowerCase().equals("task")
-					&& !currentTask.getStatus().toLowerCase()
-							.equals("completed")) {
+					&& !currentTask.getStatus().equals(POMPOM.STATUS_COMPLETED)) {
 				result.add(currentTask);
 			}
 		}
@@ -146,8 +147,8 @@ public class ListClassifier {
 			Item currentTask = lst.get(i);
 			if (currentTask.getType() == null)
 				continue;
-			if (currentTask.getType().toLowerCase().equals("event")
-					&& !currentTask.getStatus().equals("completed")) {
+			if (currentTask.getType().equals("Event")
+					&& !currentTask.getStatus().equals(POMPOM.STATUS_COMPLETED)) {
 				result.add(currentTask);
 			}
 		}
@@ -168,8 +169,8 @@ public class ListClassifier {
 			if (currentTask.getType() == null) {
 				continue;
 			}
-			if (currentTask.getType().toLowerCase().equals("event")
-					&& currentTask.getStatus().equals("completed")) {
+			if (currentTask.getType().equals("Event")
+					&& currentTask.getStatus().equals(POMPOM.STATUS_COMPLETED)) {
 				result.add(currentTask);
 			}
 		}

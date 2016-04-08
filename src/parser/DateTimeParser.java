@@ -15,7 +15,10 @@ import org.ocpsoft.prettytime.nlp.PrettyTimeParser;
 import org.ocpsoft.prettytime.nlp.parse.DateGroup;
 
 import command.InvalidCommand;
-
+/**
+ *  @@author Josh
+ *
+ */
 public class DateTimeParser{
 	
 	private String originalString="";
@@ -263,6 +266,7 @@ public class DateTimeParser{
 		if (!originalString.contains(COMMAND_PREFIX_EXCEPT)){
 			return;
 		} 
+		
 		String[] datesSplit = originalString.split("to");
 		
 		if (datesSplit.length!=2){
@@ -270,6 +274,14 @@ public class DateTimeParser{
 		}
 		exceptStartDateGroup=parseAndCheckDate(datesSplit[0]).get(0);
 		exceptEndDateGroup=parseAndCheckDate(datesSplit[1]).get(0);
+		
+		int indexStart = originalString.indexOf(exceptStartDateGroup.getText())-8;
+		
+		int indexEnd = originalString.indexOf(exceptEndDateGroup.getText())+
+				exceptEndDateGroup.getText().length();
+		
+		String getContains = originalString.substring(indexStart,indexEnd);
+		dateTimeString = getContains;
 	}
 	
 	public List<DateGroup> parseAndCheckDate(String stringWithDate){

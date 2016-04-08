@@ -7,7 +7,10 @@ import org.junit.Test;
 import command.Command;
 import main.POMPOM;
 import command.AddCommand;
-
+/**
+ *  @@author Josh
+ *
+ */
 public class ParserTest {
 	POMPOM pompom = new POMPOM();
 	Parser parser = Parser.getInstance();

@@ -13,6 +13,7 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.ColorPicker;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -43,7 +44,7 @@ public class SettingsController implements Initializable {
 	@FXML
 	Pane mainPane;
 	@FXML
-	TextField displayMsg;
+	Label displayMsg;
 	
 	Settings currentSettings;
 	public static final String RETURN_MSG = "Settings Saved";
@@ -75,14 +76,10 @@ public class SettingsController implements Initializable {
     	String storageFilePath = storageLocationString.getText(); 
 //    	storageLocationString.clear();
     	
-    	
-    	currentSettings.setBackgroundColour(getColorString(backgroundColour));
-    	currentSettings.setReturnMsgColour(getColorString(displayMsgColor));
-    	currentSettings.setInputTxtColour(getColorString(commandTextColor));
-    	
-    	BackgroundFill myBF = new BackgroundFill(Color.valueOf(getColorString(backgroundColour)),
+    	saveSettings();    	
+/*    	BackgroundFill myBF = new BackgroundFill(Color.valueOf(getColorString(backgroundColour)),
 				CornerRadii.EMPTY, Insets.EMPTY);
-		mainPane.setBackground(new Background(myBF));
+		mainPane.setBackground(new Background(myBF));*/
 		
     	displayMsg.setStyle(MainController.CSS_STYLE_TEXT + getColorString(displayMsgColor));
     	displayMsg.setText(RETURN_MSG);
@@ -96,6 +93,11 @@ public class SettingsController implements Initializable {
 		FileChooser fileChooser = new FileChooser(); 
 		File selectedPath = fileChooser.showOpenDialog(null);
 		storageLocationString.setText(selectedPath.getPath());
+	}
+	public void saveSettings(){
+    	currentSettings.setBackgroundColour(getColorString(backgroundColour));
+    	currentSettings.setReturnMsgColour(getColorString(displayMsgColor));
+    	currentSettings.setInputTxtColour(getColorString(commandTextColor));
 	}
 
 }

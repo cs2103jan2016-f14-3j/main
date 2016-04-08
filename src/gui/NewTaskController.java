@@ -110,7 +110,7 @@ public class NewTaskController implements Initializable {
 		assert newPriority != null : "fx:id=\"newPriority\" was not injected: check your FXML file 'POMPOM.fxml'.";
 		assert newTaskCancel != null : "fx:id=\"newTaskCancel\" was not injected: check your FXML file 'POMPOM.fxml'.";
 		assert newTaskSave != null : "fx:id=\"newTaskSave\" was not injected: check your FXML file 'POMPOM.fxml'.";
-		System.out.println(this.getClass().getSimpleName() + ".initialize");
+		
 		newPriority.setItems(options);
 		newType.setItems(itemType);
 		newType.setValue("Task");
@@ -190,8 +190,6 @@ public class NewTaskController implements Initializable {
 			}
 
 		}
-		System.out.println("STARTDATE: " + sDate);
-		System.out.println("ENDDATE: " + eDate);
 		AddCommand addCommand = new AddCommand(type, title, "", priority, "",
 				label, sDate, eDate);
 		POMPOM.executeCommand(addCommand);
@@ -200,6 +198,7 @@ public class NewTaskController implements Initializable {
 		
 		// Refresh Table
 		mainControl.switchToTab(POMPOM.getCurrentTab());
+		mainControl.setNotificationLabels();
 		okClicked = true;
 		dialogStage.close();
 	}
@@ -208,7 +207,7 @@ public class NewTaskController implements Initializable {
 	private void handleCancel() {
 		dialogStage.close();
 	}
-
+	
 	public boolean isOkClicked() {
 		return okClicked;
 	}
