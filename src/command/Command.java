@@ -33,15 +33,38 @@ public abstract class Command {
 		return POMPOM.getStorage().getTaskList();		
 	}
 	
-	protected boolean checkExists(long taskId) {
-		boolean exists;
+	protected boolean checkExists(long taskId) { 
+		
+		Item toDelete =null;
 		try {
-			Item toDelete = getTask(taskId);
-			exists = true;
+			toDelete = getTask(taskId);
+			
 		} catch (IndexOutOfBoundsException e) {
-			exists =  false;
+			
 		}
-		return exists;
+		if(toDelete==null){
+			return false;
+		}else{
+			return true;
+		}
+	}
+	
+	protected void showCorrectTab(Item item) {
+		
+		if (item.getType().toLowerCase().equals(POMPOM.LABEL_EVENT.toLowerCase())) {
+			if (item.getStatus().equals(POMPOM.STATUS_COMPLETED)) {
+				POMPOM.setCurrentTab(POMPOM.LABEL_COMPLETED_EVENT);
+			} else {
+				POMPOM.setCurrentTab(POMPOM.LABEL_EVENT);
+			}
+		} else {
+			if (item.getStatus().equals(POMPOM.STATUS_COMPLETED)) {
+				POMPOM.setCurrentTab(POMPOM.LABEL_COMPLETED_TASK);
+			} else {
+				POMPOM.setCurrentTab(POMPOM.LABEL_TASK);
+			}
+		}
+		
 	}
 	
 	public abstract String execute();

@@ -4,6 +4,8 @@ package command;
  * @@author wen hao
  *
  */
+import gui.GUIModel;
+
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
@@ -127,6 +129,7 @@ public class SearchCommand extends Command {
 
 		POMPOM.setSearchList(search());
 		POMPOM.setCurrentTab(POMPOM.LABEL_SEARCH);
+		GUIModel.update();
 		logger.log(Level.INFO, "SearchCommand has be executed");
 		returnMsg = String.format(MESSAGE_SEARCH, searchResults.size());
 		return returnMsg;

@@ -9,7 +9,7 @@ import utils.Item;
 
 public class EditRecurringCommand extends Command {
 
-	private static final String MESSAGE_DELETE_RECURRING = "A series of recurring tasks has been edited.";
+	private static final String MESSAGE_DELETE_RECURRING = "A series of recurring tasks has been edited";
 	
 	private static final String FIELD_TYPE = "type";
 	private static final String FIELD_TITLE = "title";
@@ -21,7 +21,7 @@ public class EditRecurringCommand extends Command {
 	private Long taskId;
 	boolean isUndo;
 	private String field;
-	private String newData;
+	private String newData; 
 	ArrayList<String> oldData;
 	ArrayList<Item> taskList = getTaskList();
 
@@ -100,34 +100,38 @@ private void updateChanges(Long taskId, String oldData) {
 		POMPOM.getUndoStack().push(counterAction);
 	}
 	
-	private void showCorrectTab() {
-		
-		Item task = getTask(firstId);
-		
-		if (task.getType().toLowerCase().equals(POMPOM.LABEL_EVENT.toLowerCase())) {
-			if (task.getStatus().equals(POMPOM.STATUS_COMPLETED)) {
-				POMPOM.setCurrentTab(POMPOM.LABEL_COMPLETED_EVENT);
-			} else {
-				POMPOM.setCurrentTab(POMPOM.LABEL_EVENT);
-			}
-		} else {
-			if (task.getStatus().equals(POMPOM.STATUS_COMPLETED)) {
-				POMPOM.setCurrentTab(POMPOM.LABEL_COMPLETED_TASK);
-			} else {
-				POMPOM.setCurrentTab(POMPOM.LABEL_TASK);
-			}
-		}
-		
-	}
+//	private void showCorrectTab() {
+//		
+//		Item task = getTask(firstId);
+//		
+//		if (task.getType().toLowerCase().equals(POMPOM.LABEL_EVENT.toLowerCase())) {
+//			if (task.getStatus().equals(POMPOM.STATUS_COMPLETED)) {
+//				POMPOM.setCurrentTab(POMPOM.LABEL_COMPLETED_EVENT);
+//			} else {
+//				POMPOM.setCurrentTab(POMPOM.LABEL_EVENT);
+//			}
+//		} else {
+//			if (task.getStatus().equals(POMPOM.STATUS_COMPLETED)) {
+//				POMPOM.setCurrentTab(POMPOM.LABEL_COMPLETED_TASK);
+//			} else {
+//				POMPOM.setCurrentTab(POMPOM.LABEL_TASK);
+//			}
+//		}
+//		
+//	}
 
 	public String execute() {
-
+		
 		if (!isUndo) {
 			
 			this.firstId = taskId;
 			while (taskId != null) {
 				Item currentTask = getTask(taskId);
-				Long nextId = getTask(taskId).getNextId();
+				//Wei lip added proteciton mechanism
+				if(currentTask == null){
+					break;
+				}
+				Long nextId = currentTask.getNextId();
 				updateChanges(taskId);
 				taskId = nextId;
 				
@@ -137,7 +141,9 @@ private void updateChanges(Long taskId, String oldData) {
 			}
 			
 			updateUndoStack();
-			showCorrectTab();
+			POMPOM.refreshStatus();
+			Item firstTask = getTask(firstId);
+			showCorrectTab(firstTask);
 			
 			returnMsg = MESSAGE_DELETE_RECURRING;
 			return returnMsg;
@@ -158,8 +164,10 @@ private void updateChanges(Long taskId, String oldData) {
 				}
 			}
 			
-			showCorrectTab();
-			
+			POMPOM.refreshStatus();
+			Item firstTask = getTask(firstId);
+			showCorrectTab(firstTask);
+
 			returnMsg = MESSAGE_DELETE_RECURRING;
 			return returnMsg;
 			

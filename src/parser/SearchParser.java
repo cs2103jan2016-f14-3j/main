@@ -2,20 +2,27 @@ package parser;
 
 import command.Command;
 import command.DelCommand;
+import command.InvalidCommand;
 import command.SearchCommand;
-
+/**
+ *  @@author A0121760R
+ */
 public class SearchParser extends ArgsParser{
-	String keyWord;
+	private String keyWord;
 	public SearchParser(String commandArguments) {
 		super(commandArguments);
 		keyWord = commandArguments;
 	}
-	public Command executeCommand(){
-		
-			System.out.println(commandArgumentsString + "lol");
+	
+	public Command parse(){
+			if(isInvalidKeyword()){
+				return new InvalidCommand("Search must have arguments");
+			}
 			return new SearchCommand(keyWord);
-		
-		
+	}
+	
+	private boolean isInvalidKeyword() {
+		return keyWord == null || keyWord.equals("");
 	}
 
 }

@@ -109,7 +109,7 @@ public class EditTaskController implements Initializable {
 		assert newPriority != null : "fx:id=\"newPriority\" was not injected: check your FXML file 'POMPOM.fxml'.";
 		assert newTaskCancel != null : "fx:id=\"newTaskCancel\" was not injected: check your FXML file 'POMPOM.fxml'.";
 		assert newTaskSave != null : "fx:id=\"newTaskSave\" was not injected: check your FXML file 'POMPOM.fxml'.";
-		System.out.println(this.getClass().getSimpleName() + ".initialize");
+		
 
 		newPriority.setItems(options);
 		newType.setItems(itemType);
@@ -242,7 +242,8 @@ public class EditTaskController implements Initializable {
 		POMPOM.executeCommand(editEndDate);
 		POMPOM.getStorage().saveStorage(); 
 
-		mainControl.setLabels();
+		mainControl.setNotificationLabels();
+		
 		mainControl.switchToTab(POMPOM.getCurrentTab());
 		dialogStage.close();
 	}

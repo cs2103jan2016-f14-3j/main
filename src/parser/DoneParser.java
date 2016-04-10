@@ -3,35 +3,55 @@ package parser;
 import command.Command;
 import command.EditCommand;
 import main.POMPOM;
-import java.util.logging.Level;
 
+import java.security.PublicKey;
+import java.util.logging.Level;
+/**
+ *  @@author A0121760R
+ *
+ */
 
 public class DoneParser extends ArgsParser{
 	
+	public static final String INVALID_DONE_ARGUMENT_RETURN_MESSAGE = "%s: Is not a valid ID Number";
 	private int itemID;
-	private Command outputCommand = null;
+	private Command invalidCommand = null; 
 	
 	public DoneParser(String userCommand){
 		super(userCommand);
 		getItemId();
 	}
 	
-	public Command executeCommand(){
-		if (outputCommand == null){
+	/**
+	 * This method will return the appropriate Command to be processed
+	 * by the Command class.
+	 * 
+	 * @return DelCommand() if the ID is an integer. InvalidCommand if it is not.
+	 */
+	public Command parse(){
+		if (isNullInvalidCommand()){
 			return new EditCommand(itemID, "status", POMPOM.STATUS_COMPLETED);
 		} else{
-			return outputCommand;
+			return invalidCommand;
 		}
 		
 	}
-	
+
+	/**
+	 * This method attempts to see if the ID is a valid integer or not. If it is,
+	 * the itemID field is set. Else, the invalidCommand field will be set.
+	 */
 	public void getItemId(){
 		try{
 			itemID = Integer.parseInt(commandArgumentsString);
 		} catch (Exception e){
-			InvalidParser InvalidArgumentParser = new InvalidParser(commandArgumentsString);
-			outputCommand = InvalidArgumentParser.executeCommand();
-			logger.log(Level.INFO,"tried to parse '"+commandArgumentsString+"' into integer but failed.");
+			String returnMsg = String.format(INVALID_DONE_ARGUMENT_RETURN_MESSAGE, commandArgumentsString);
+			InvalidParser InvalidArgumentParser = new InvalidParser(returnMsg);
+			invalidCommand = InvalidArgumentParser.executeCommand();
 		}
-	}	
+	}
+	
+	private boolean isNullInvalidCommand() {
+		return invalidCommand == null;
+	}
 }

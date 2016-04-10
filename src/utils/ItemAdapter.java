@@ -10,7 +10,8 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 
 /**
- * @@author A0121628L This method helps write UserItemList into json string and
+ * @@author
+ *  A0121628L This method helps write UserItemList into json string and
  *          read Json string to create UserItemList object
  */
 
@@ -139,7 +140,7 @@ public class ItemAdapter extends TypeAdapter<UserItemList> {
 				if (task.getEndDate() != null) {
 					out.name("EndDate").value(task.getEndDate().toString());
 				}
-				out.name("IsRecurring").value(task.getIsRecurring());
+				out.name("IsRecurring").value(task.isRecurring());
 				out.name("PrevId").value(task.getPrevId());
 				out.name("NextId").value(task.getNextId());
 				out.endObject();

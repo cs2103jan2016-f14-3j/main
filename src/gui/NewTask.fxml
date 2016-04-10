@@ -11,13 +11,17 @@
 <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="384.0" prefWidth="409.0" styleClass="content" stylesheets="@application.css" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.NewTaskController">
    <children>
       <TextField fx:id="newTaskTitle" layoutX="100.0" layoutY="18.0" prefHeight="26.0" prefWidth="237.0" />
-      <Label layoutX="14.0" layoutY="21.0" text="Task:">
+      <Label layoutX="14.0" layoutY="21.0" text="Title:">
          <font>
             <Font name="Tw Cen MT Bold" size="18.0" />
          </font>
       </Label>
       <DatePicker fx:id="newStartDate" editable="false" layoutX="101.0" layoutY="58.0" prefHeight="22.0" prefWidth="237.0" />
+      <ComboBox fx:id="newStartHour" layoutX="101.0" layoutY="98.0" prefHeight="25.0" prefWidth="59.0" />
+      <ComboBox fx:id="newStartMin" layoutX="189.0" layoutY="97.0" prefHeight="25.0" prefWidth="59.0" />
       <DatePicker fx:id="newEndDate" editable="false" layoutX="101.0" layoutY="141.0" prefHeight="22.0" prefWidth="237.0" />
+      <ComboBox fx:id="newEndHour" layoutX="101.0" layoutY="180.0" prefHeight="25.0" prefWidth="59.0" />
+      <ComboBox fx:id="newEndMin" layoutX="189.0" layoutY="179.0" prefHeight="25.0" prefWidth="59.0" />
       <TextField fx:id="newLabel" layoutX="100.0" layoutY="216.0" prefHeight="26.0" prefWidth="237.0" />
       <Label layoutX="13.0" layoutY="221.0" text="Label:">
          <font>
@@ -34,6 +38,7 @@
             <Font name="Tw Cen MT Bold" size="18.0" />
          </font>
       </Label>
+      <ComboBox fx:id="newType" layoutX="100.0" layoutY="265.0" prefWidth="150.0" />
       <ComboBox fx:id="newPriority" layoutX="100.0" layoutY="312.0" prefWidth="150.0" promptText="Select One" />
       <Label layoutX="12.0" layoutY="315.0" text="Priority:">
          <font>
@@ -51,18 +56,13 @@
          </font>
       </Label>
       <Button fx:id="newTaskSave" layoutX="260.0" layoutY="346.0" mnemonicParsing="false" onAction="#handleSave" text="Save" />
-      <Button fx:id="newTaskCancel" layoutX="327.0" layoutY="346.0" mnemonicParsing="false" onAction="#handleCancel" text="Cancel" />
+      <Button fx:id="newTaskCancel" cancelButton="true" layoutX="327.0" layoutY="346.0" mnemonicParsing="false" onAction="#handleCancel" text="Cancel" />
       <Label layoutX="13.0" layoutY="268.0" text="Type:">
          <font>
             <Font name="Tw Cen MT Bold" size="18.0" />
          </font>
       </Label>
       <Label layoutX="174.0" layoutY="101.0" text=":" />
-      <ComboBox fx:id="newType" layoutX="100.0" layoutY="265.0" prefWidth="150.0" />
-      <ComboBox fx:id="newStartHour" layoutX="101.0" layoutY="98.0" prefHeight="25.0" prefWidth="59.0" />
-      <ComboBox fx:id="newStartMin" layoutX="189.0" layoutY="97.0" prefHeight="25.0" prefWidth="59.0" />
       <Label layoutX="174.0" layoutY="183.0" text=":" />
-      <ComboBox fx:id="newEndHour" layoutX="101.0" layoutY="180.0" prefHeight="25.0" prefWidth="59.0" />
-      <ComboBox fx:id="newEndMin" layoutX="189.0" layoutY="179.0" prefHeight="25.0" prefWidth="59.0" />
    </children>
 </Pane>

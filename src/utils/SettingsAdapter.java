@@ -7,7 +7,8 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 
 /**
- * @@author A0121628L This method helps write Settings into json string and read
+ * @@author A0121628L 
+ * This method helps write Settings into json string and read
  *          Json string to create Settings object
  */
 public class SettingsAdapter extends TypeAdapter<Settings> {
@@ -24,17 +25,11 @@ public class SettingsAdapter extends TypeAdapter<Settings> {
 			case "backgroundColour":
 				settings.setBackgroundColour(in.nextString());
 				break;
-			case "tabColour":
-				settings.setTabColour(in.nextString());
+			case "displayMsgColour":
+				settings.setReturnMsgColour(in.nextString());
 				break;
-			case "buttonColour":
-				settings.setButtonColour(in.nextString());
-				break;
-			case "oddCellColour":
-				settings.setOddCellColour(in.nextString());
-				break;
-			case "evenCellColour":
-				settings.setEvenCellColour(in.nextString());
+			case "inputTxtColour":
+				settings.setInputTxtColour(in.nextString());
 				break;
 			}
 		}
@@ -48,11 +43,9 @@ public class SettingsAdapter extends TypeAdapter<Settings> {
 
 		out.name("storagePath").value(settings.getStoragePath());
 		out.name("backgroundColour").value(settings.getBackgroundColour());
-		out.name("tabColour").value(settings.getTabColour());
-		out.name("buttonColour").value(settings.getButtonColour());
-		out.name("oddCellColour").value(settings.getOddCellColour());
-		out.name("evenCellColour").value(settings.getEvenCellColour());
-
+		out.name("displayMsgColour").value(settings.getReturnMsgColour());
+		out.name("inputTxtColour").value(settings.getInputTxtColour());
+		
 		out.endObject();
 		out.close();
 	}

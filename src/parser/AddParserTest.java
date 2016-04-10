@@ -9,7 +9,10 @@ import java.util.Date;
 import java.util.List;
 
 import org.junit.Test;
-
+/**
+ * @@author A0121760R
+ *
+ */
 public class AddParserTest{
 
 	Parser parser = Parser.getInstance();
@@ -20,7 +23,7 @@ public class AddParserTest{
 	 */
 	@Test
 	public void testAddCommandTitleOnly(){
-		AddParser add = new AddParser("do project",POMPOM.LABEL_TASK);
+		AddParser add = new AddParser("do project",false);
 		assertEquals("do project",add.getTitle());
 		assertNull(add.getEndDate());
 		assertNull(add.getStartDate());

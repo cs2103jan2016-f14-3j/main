@@ -11,7 +11,7 @@ import main.POMPOM;
 
 public class UndoCommand extends Command {
 
-	private static final String MESSAGE_UNDO = "Previous action was successfully undone";
+	private static final String MESSAGE_UNDO = "Previous action has been successfully undone";
 	private static final String MESSAGE_ERROR = "There is nothing to undo";
 
 	public String execute() {

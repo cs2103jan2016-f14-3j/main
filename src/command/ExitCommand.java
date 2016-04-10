@@ -7,7 +7,7 @@ import main.POMPOM;
  * @@author wen hao
  *
  */
-public class ExitCommand {
+public class ExitCommand extends Command{
 	
 	public ExitCommand() {
 		try {
@@ -16,6 +16,12 @@ public class ExitCommand {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+	}
+
+	@Override
+	public String execute() {
 		System.exit(0);
+		return returnMsg;
 	}
 }

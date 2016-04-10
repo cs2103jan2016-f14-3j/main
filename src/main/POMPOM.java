@@ -18,11 +18,11 @@ import utils.Item;
  */
 public class POMPOM {
 
-	public static final String STATUS_PENDING = "pending";
-	public static final String STATUS_ONGOING = "ongoing";
-	public static final String STATUS_COMPLETED = "completed";
-	public static final String STATUS_OVERDUE = "overdue";
-	public static final String STATUS_FLOATING = "floating";
+	public static final String STATUS_PENDING = "Pending";
+	public static final String STATUS_ONGOING = "Ongoing";
+	public static final String STATUS_COMPLETED = "Completed";
+	public static final String STATUS_OVERDUE = "Overdue";
+	public static final String STATUS_FLOATING = "Floating";
 
 	public static final String LABEL_TASK = "Task";
 	public static final String LABEL_COMPLETED_TASK = "CompletedTask";
@@ -39,7 +39,7 @@ public class POMPOM {
 	public static PrettyTimeParser timeParser;
 	public static ArrayList<Item> searchList;
 	public static String currentTab;
-
+	public static boolean showHelp = false;
 	public POMPOM() {
 		try {
 			init();
@@ -100,6 +100,7 @@ public class POMPOM {
 			} else {
 				
 				if (isNotCompleted(currentTask)) {
+					System.out.println(taskStartDate + "ASDAS");
 					if (currentDate.before(taskStartDate)) {
 						currentTask.setStatus(STATUS_PENDING);
 					} else if (currentDate.after(taskStartDate) && currentDate.before(taskEndDate)) {
@@ -115,7 +116,7 @@ public class POMPOM {
 
 	public String execute(String input) {
 		Parser parser = Parser.getInstance();
-		Command command = parser.executeCommand(input);
+		Command command = parser.parse(input);
 		String returnMsg = command.execute();
 		refreshStatus();
 		return returnMsg;
@@ -128,8 +129,8 @@ public class POMPOM {
 	}
 
 	private static boolean isNotCompleted(Item item) {
-
-		return !item.getStatus().equals(STATUS_COMPLETED);
+		
+		return !item.getStatus().equalsIgnoreCase(STATUS_COMPLETED);
 
 	}
 

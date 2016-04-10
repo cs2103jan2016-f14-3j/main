@@ -175,7 +175,7 @@ public class Item {
 		this.checkBox = checkBox;
 	}
 
-	public boolean getIsRecurring() {
+	public boolean isRecurring() {
 		return isRecurring;
 	}
 

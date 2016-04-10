@@ -12,6 +12,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.LoggingPermission;
 
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+
 import javax.naming.InitialContext;
 import javax.swing.text.html.HTMLDocument.HTMLReader.PreAction;
 
@@ -34,7 +37,6 @@ import utils.UserItemList;
  */
 public class Storage {
 
-
 	private final String DEFAULT_FILE_DIRECTORY = "PomPom Storage & Settings";
 	private final String DEFAULT_FILE_NAME = "Storage.txt";
 	private final String DEFAULT_STORAGE_FILE_PATH = DEFAULT_FILE_DIRECTORY
@@ -51,6 +53,13 @@ public class Storage {
 
 	private final File settingsFile = new File(SETTINGS_FILE_PATH);
 	private Settings settings;
+
+	private final String ERROR_DIALOG_TITLE = "Error Dialog";
+	private final String ERROR_DIALOG_HEADER = "Storage settings or file error";
+	private final String FILE_READ_ERROR_MESSAGE = "ERROR READING %s FILE! SETTINGS FILE WAS MODIFIED ILLEGAL!"
+			+ "PLEASE REMOVE ILLEGAL FILE OR MODIFY FILE. REMOVE/EDIT SETTINGS FILE TO RESET";
+	private final String CREATE_FILE_DIRECTORY_ERROR_MESSAGE = "ERROR IN CREATING DIRERCTORY. "
+			+ "FILE DIRECTORY ALREADY EXSITS. REMOVE/EDIT SETTINGS FILE TO RESET";
 
 	/** The main data that is being extracted to this objects */
 	private UserItemList userItemList;
@@ -119,7 +128,7 @@ public class Storage {
 	}
 
 	public void setStorageFilePath(String storageFilePath) {
-		if (storageFilePath.trim().equals("")|| storageFilePath == null) {
+		if (storageFilePath.trim().equals("") || storageFilePath == null) {
 			storageFilePath = DEFAULT_STORAGE_FILE_PATH;
 			return;
 		}
@@ -129,6 +138,7 @@ public class Storage {
 	public String getStorageFilePath() {
 		return storageFilePath;
 	}
+
 	public Settings getSettings() {
 		return settings;
 	}
@@ -136,6 +146,7 @@ public class Storage {
 	public void setSettings(Settings settings) {
 		this.settings = settings;
 	}
+
 	/**
 	 * This method initialize the GSON objects to read the storage text data
 	 * file in JSON
@@ -156,7 +167,8 @@ public class Storage {
 	/**
 	 * This method initialize the settings if the settings.txt exist if not it
 	 * creates a new file
-	 * @throws IOException 
+	 * 
+	 * @throws IOException
 	 */
 	private void initializeSettings() throws IOException {
 		/** Check set directory folder exist a not if not create folder */
@@ -170,12 +182,7 @@ public class Storage {
 			e.printStackTrace();
 		}
 		String settingsString = null;
-		try {
-			settingsString = FileHandler.getStringFromFile(SETTINGS_FILE_PATH);
-		} catch (IOException e) {
-			logger.log(Level.SEVERE, "Failure Reading Settings ");
-			e.printStackTrace();
-		}
+		settingsString = FileHandler.getStringFromFile(SETTINGS_FILE_PATH);
 		settings = deserializeSettingsString(settingsString);
 	}
 
@@ -235,10 +242,28 @@ public class Storage {
 	 */
 	private boolean checkStorageFile() throws IOException {
 		if (!storageFile.exists()) {
-			if(storageFile.getParentFile() != null){
-				storageFile.getParentFile().mkdirs();
+			if (storageFile.getParentFile() != null) {
+				boolean madeDirs = storageFile.getParentFile().mkdirs();
+				String orginalPath = storageFile.getParentFile().toString();
+				
+				if(DEFAULT_FILE_DIRECTORY.equals(orginalPath)){
+					storageFilePath = DEFAULT_STORAGE_FILE_PATH;
+					storageFile.createNewFile();
+					return false;
+				}
+				if (!madeDirs) {
+					logger.log(Level.WARNING, CREATE_FILE_DIRECTORY_ERROR_MESSAGE);
+					storageFilePath = DEFAULT_STORAGE_FILE_PATH;
+					Alert alert = new Alert(AlertType.ERROR);
+					alert.setTitle(ERROR_DIALOG_TITLE);
+					alert.setHeaderText(ERROR_DIALOG_HEADER);
+					alert.setContentText(CREATE_FILE_DIRECTORY_ERROR_MESSAGE);
+
+					alert.showAndWait();
+					return false;
+				}
 			}
-		
+
 			storageFile.createNewFile();
 			return false;
 		}
@@ -253,7 +278,7 @@ public class Storage {
 	private void checkSettingsFile() throws IOException {
 		if (!settingsFile.exists()) {
 			settingsFile.createNewFile();
-			
+
 		}
 		return;
 	}
@@ -273,13 +298,16 @@ public class Storage {
 
 	}
 
-	
 	/**
 	 * This method Use the Gson library to get a Storage object from String
+	 * 
 	 * @param jsonString
 	 * @return
+	 * @throws IOException
 	 */
-	private UserItemList deserializeStorageString(String jsonString) {
+	private UserItemList deserializeStorageString(String jsonString)
+			throws IOException {
+		UserItemList userTaskList = null;
 		if (checkEmptyString(jsonString)) {
 			UserItemList utl = new UserItemList("Not Set",
 					new ArrayList<Item>());
@@ -287,32 +315,61 @@ public class Storage {
 			taskList = new ArrayList<Item>();
 			return utl;
 		}
-		UserItemList userTaskList = gsonItem.fromJson(jsonString,
-				UserItemList.class);
+		try {
+			userTaskList = gsonItem.fromJson(jsonString, UserItemList.class);
+		} //Prints out error dialog when error occurs
+		catch (Exception e) {
+			System.err.println("ERROR IN STORAGE (deserializeStorageString): "
+					+ e);
+			Alert alert = new Alert(AlertType.ERROR);
+			alert.setTitle(ERROR_DIALOG_TITLE);
+			alert.setHeaderText(ERROR_DIALOG_HEADER);
+			alert.setContentText(String.format(FILE_READ_ERROR_MESSAGE,
+					"STORAGE"));
 
+			alert.showAndWait();
+		}
 		return userTaskList;
 	}
 
 	/**
 	 * This method Use the Gson library to get a Settings object from String
+	 * 
 	 * @param jsonString
 	 * @return
-	 * @throws IOException 
+	 * @throws IOException
 	 */
-	private Settings deserializeSettingsString(String jsonString) throws IOException {
+	private Settings deserializeSettingsString(String jsonString)
+			throws IOException {
 		if (checkEmptyString(jsonString)) {
 			Settings defaultSettings = new Settings(DEFAULT_STORAGE_FILE_PATH,
-					"eff3f6","FFFFFF","FFFFFF","FFFFFF","FFFFFF");
+					"eff3f6", "616060", "000000");
 			defaultSettings.setStoragePath(DEFAULT_STORAGE_FILE_PATH);
 			final String json = gsonSettings.toJson(defaultSettings);
 			FileHandler.writeStringToFile(settingsFile, json);
 			return defaultSettings;
+		}
+		//Prints out error dialog when error occurs
+		try {
+			settings = gsonSettings.fromJson(jsonString, Settings.class);
+		} catch (Exception e) {
+			Alert alert = new Alert(AlertType.ERROR);
+			alert.setTitle(ERROR_DIALOG_TITLE);
+			alert.setHeaderText(ERROR_DIALOG_HEADER);
+			alert.setContentText(String.format(FILE_READ_ERROR_MESSAGE,
+					"SETTINGS"));
+			alert.showAndWait();
+			System.err
+					.println("ERROR IN SETTINGS (deserializeSettingsString): "
+							+ e);
+
 		}
 		return gsonSettings.fromJson(jsonString, Settings.class);
 	}
 
 	/**
 	 * This method save the current userTaskList to the storage text file
+	 * 
 	 * @throws IOException
 	 */
 	public void saveStorage() throws IOException {
@@ -324,6 +381,7 @@ public class Storage {
 
 	/**
 	 * This method save the current Settings to the settings text file
+	 * 
 	 * @throws IOException
 	 */
 	public void saveSettings() throws IOException {

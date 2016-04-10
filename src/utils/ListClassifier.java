@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
+import main.POMPOM;
 import javafx.collections.ObservableList;
 
 /**
- * @@author A0121628L These static methods help to return filtered list.
+ * @@author A0121628L 
+ * These static methods help to return filtered list.
  */
 public class ListClassifier {
 
@@ -75,7 +77,7 @@ public class ListClassifier {
 		for (int i = 0; i < lst.size(); i++) {
 			Item currentTask = lst.get(i);
 			if(currentTask.getType().toLowerCase().equals("task")
-					&& currentTask.getStatus().equals("overdue")){
+					&& currentTask.getStatus().equals("Overdue")){
 				counter++;
 			}
 		
@@ -93,14 +95,14 @@ public class ListClassifier {
 	 */
 	public static ArrayList<Item> getTaskList(ArrayList<Item> lst) {
 		ArrayList<Item> result = new ArrayList<Item>();
+		
 		for (int i = 0; i < lst.size(); i++) {
 			Item currentTask = lst.get(i);
 			// Remove this line after proper init of task and event
 			if (currentTask.getType() == null)
 				continue;
 			if (currentTask.getType().toLowerCase().equals("task")
-					&& !currentTask.getStatus().toLowerCase()
-							.equals("completed")) {
+					&& !currentTask.getStatus().equals(POMPOM.STATUS_COMPLETED)) {
 				result.add(currentTask);
 			}
 		}
@@ -146,8 +148,8 @@ public class ListClassifier {
 			Item currentTask = lst.get(i);
 			if (currentTask.getType() == null)
 				continue;
-			if (currentTask.getType().toLowerCase().equals("event")
-					&& !currentTask.getStatus().equals("completed")) {
+			if (currentTask.getType().equals("Event")
+					&& !currentTask.getStatus().equals(POMPOM.STATUS_COMPLETED)) {
 				result.add(currentTask);
 			}
 		}
@@ -168,8 +170,8 @@ public class ListClassifier {
 			if (currentTask.getType() == null) {
 				continue;
 			}
-			if (currentTask.getType().toLowerCase().equals("event")
-					&& currentTask.getStatus().equals("completed")) {
+			if (currentTask.getType().equals("Event")
+					&& currentTask.getStatus().equals(POMPOM.STATUS_COMPLETED)) {
 				result.add(currentTask);
 			}
 		}

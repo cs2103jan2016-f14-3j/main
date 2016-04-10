@@ -11,7 +11,10 @@ import org.junit.Test;
 
 import main.POMPOM;
 import utils.Item;
-
+/**
+ * @@author wen hao
+ *
+ */
 public class TestSystem {
 
 	POMPOM main = new POMPOM();
