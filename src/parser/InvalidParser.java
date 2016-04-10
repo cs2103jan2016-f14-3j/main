@@ -3,14 +3,14 @@ package parser;
 import command.Command;
 import command.InvalidCommand;
 /**
- * @@author Josh
+ * @@author A0121760R
  *
  */
 public class InvalidParser {
 	
 	private String invalidCommand;
 	public InvalidParser(String userCommand){
-		invalidCommand = userCommand;
+		invalidCommand = userCommand; 	
 	}
 	
 	public Command executeCommand(){

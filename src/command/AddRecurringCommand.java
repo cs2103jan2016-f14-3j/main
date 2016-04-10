@@ -14,7 +14,7 @@ import utils.Item;
 public class AddRecurringCommand extends Command {
 
 	/** Messaging **/
-	private static final String MESSAGE_RECURRING = "Recurring tasks has been added";
+	public static final String MESSAGE_RECURRING = "Recurring tasks has been added";
 
 	/** Command Parameters **/
 	ArrayList<AddCommand> addList;
@@ -40,7 +40,7 @@ public class AddRecurringCommand extends Command {
 	
 	
 	/**
-	 * Constructor for a undo AddRecurringCommand object
+	 * Constructor for an undo AddRecurringCommand object
 	 * 
 	 * @param itemList
 	 * @param isUndo
@@ -54,7 +54,8 @@ public class AddRecurringCommand extends Command {
 	
 	
 	/**
-	 * Creates the reverse action for undo. For AddRecurringCommand, the reverse would be DelRecurringCommand.
+	 * Creates the reverse action for undo. 
+	 * For AddRecurringCommand, the reverse would be DelRecurringCommand.
 	 * 
 	 * @return the reverse command
 	 */
@@ -69,7 +70,7 @@ public class AddRecurringCommand extends Command {
 	private void updateUndoStack() {
 		Command counterAction = createCounterAction();
 		POMPOM.getUndoStack().push(counterAction);
-	}
+	} 
 
 	
 	/**
@@ -93,7 +94,7 @@ public class AddRecurringCommand extends Command {
 		} else {
 			
 			for (int i = 0; i < addList.size(); i++) {
-
+				
 				addList.get(i).execute();
 				Item currentTask = taskList.get(taskList.size() - 1);
 				currentId = currentTask.getId();
@@ -111,17 +112,19 @@ public class AddRecurringCommand extends Command {
 				
 				if (i == addList.size() - 1) {
 					nextId = firstId;
+					getTask(firstId).setPrevId(currentId);
+				
 				} else {
 					nextId = currentId + 1;
 				}
 				
 				currentTask.setNextId(nextId);
-
+				
 			}
 			
 			updateUndoStack();
 			POMPOM.refreshStatus();
-			//showCorrectTab(getTask(firstId));
+			showCorrectTab(getTask(firstId));
 			logger.log(Level.INFO, "AddRecurringCommand has been executed");
 			returnMsg = MESSAGE_RECURRING;
 		}

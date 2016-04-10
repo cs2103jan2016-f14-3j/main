@@ -8,7 +8,7 @@ import command.Command;
 import main.POMPOM;
 import command.AddCommand;
 /**
- *  @@author Josh
+ *  @@author A0121760R
  *
  */
 public class ParserTest {
@@ -20,7 +20,7 @@ public class ParserTest {
 	 */
 	@Test
 	public void testAddCommand() {
-		Command outputCommand = parser.executeCommand("add do cs2013");
+		Command outputCommand = parser.parse("add do cs2013");
 		assertTrue(outputCommand instanceof command.AddCommand);
 	}
 	
@@ -29,7 +29,7 @@ public class ParserTest {
 	 */
 	@Test
 	public void testFailCommand() {
-		Command outputCommand = parser.executeCommand("ad do cs2013");
+		Command outputCommand = parser.parse("ad do cs2013");
 		assertTrue(outputCommand instanceof command.InvalidCommand);
 	}
 	
@@ -38,7 +38,7 @@ public class ParserTest {
 	 */
 	@Test
 	public void testRecurringCommands() {
-		Command outputCommand = parser.executeCommand("delere recur do cs2013");
+		Command outputCommand = parser.parse("delere recur do cs2013");
 		assertTrue(outputCommand instanceof command.InvalidCommand);
 	}
 	

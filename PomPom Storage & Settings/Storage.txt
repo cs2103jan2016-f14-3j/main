@@ -1,101 +1,34 @@
 {
   "Username": "Not Set",
-  "IdCounter": 17,
+  "IdCounter": 393,
   "TaskList": [
     {
-      "Id": 1,
-      "Type": "Task",
-      "Title": "test example",
-      "Priority": "Low",
+      "Id": 389,
+      "Type": "Event",
+      "Title": "Test 4",
       "Label": "test",
+      "Status": "Completed",
+      "StartDate": "Mon Dec 28 03:35:10 SGT 2015",
+      "EndDate": "Thu Jan 28 03:35:10 SGT 2016",
+      "IsRecurring": true
+    },
+    {
+      "Id": 392,
+      "Type": "Event",
+      "Title": "today",
       "Status": "Ongoing",
-      "StartDate": "Fri Apr 08 03:24:54 SGT 2016",
-      "IsRecurring": false
+      "StartDate": "Mon Apr 11 03:51:35 SGT 2016",
+      "EndDate": "Tue Apr 12 03:51:35 SGT 2016",
+      "IsRecurring": true
     },
     {
-      "Id": 2,
-      "Type": "Task",
-      "Title": "testing",
-      "Priority": "Medium",
-      "Status": "Ongoing",
-      "StartDate": "Fri Apr 08 03:25:22 SGT 2016",
-      "EndDate": "Sun Apr 10 03:25:22 SGT 2016",
-      "IsRecurring": false
-    },
-    {
-      "Id": 3,
-      "Type": "Task",
-      "Title": "tester",
-      "Priority": "High",
-      "Status": "Pending",
-      "StartDate": "Tue Apr 12 03:26:31 SGT 2016",
-      "EndDate": "Sun Apr 10 03:26:31 SGT 2016",
-      "IsRecurring": false
-    },
-    {
-      "Id": 4,
-      "Type": "Task",
-      "Title": "final test",
-      "Priority": "High",
-      "Status": "Floating",
-      "IsRecurring": false
-    },
-    {
-      "Id": 5,
+      "Id": 393,
       "Type": "Event",
-      "Title": "testing event",
-      "Priority": "Low",
-      "Status": "Ongoing",
-      "StartDate": "Fri Apr 08 03:27:05 SGT 2016",
-      "EndDate": "Mon Apr 11 03:27:05 SGT 2016",
-      "IsRecurring": false
-    },
-    {
-      "Id": 6,
-      "Type": "Event",
-      "Title": "test",
-      "Priority": "Low",
-      "Status": "Pending",
-      "StartDate": "Tue Apr 12 03:27:57 SGT 2016",
-      "EndDate": "Tue Apr 19 03:27:57 SGT 2016",
-      "IsRecurring": true,
-      "NextId": 7
-    },
-    {
-      "Id": 7,
-      "Type": "Event",
-      "Title": "test",
-      "Priority": "Low",
-      "Status": "Pending",
-      "StartDate": "Tue Apr 19 03:27:57 SGT 2016",
-      "EndDate": "Tue Apr 26 03:27:57 SGT 2016",
-      "IsRecurring": true,
-      "PrevId": 6,
-      "NextId": 8
-    },
-    {
-      "Id": 8,
-      "Type": "Event",
-      "Title": "test",
-      "Priority": "Low",
-      "Status": "Pending",
-      "StartDate": "Tue Apr 26 03:27:57 SGT 2016",
-      "EndDate": "Tue May 03 03:27:57 SGT 2016",
-      "IsRecurring": true,
-      "PrevId": 7,
-      "NextId": 9
-    },
-    {
-      "Id": 9,
-      "Type": "Event",
-      "Title": "test",
-      "Priority": "Low",
-      "Status": "Pending",
-      "StartDate": "Tue May 03 03:27:57 SGT 2016",
-      "EndDate": "Tue May 10 03:27:57 SGT 2016",
-      "IsRecurring": true,
-      "PrevId": 8,
-      "NextId": 6
+      "Title": "ponit",
+      "Status": "Completed",
+      "StartDate": "Sun Apr 10 04:16:57 SGT 2016",
+      "EndDate": "Mon Apr 11 04:16:57 SGT 2016",
+      "IsRecurring": true
     }
   ]
 }

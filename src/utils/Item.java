@@ -10,8 +10,10 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.scene.control.CheckBox;
 
 /**
- * @@author A0121628L This is a holder object to contain the event or task
- *          details contains getters and setters and constructor only
+ * This is a holder object to contain the event or task details contains getters
+ * and setters and constructor only
+ * 
+ * @@author A0121628L
  */
 // implements Comparator<Item>
 public class Item {
@@ -62,6 +64,15 @@ public class Item {
 		this.label = label;
 		this.startDate = startDate;
 		this.endDate = endDate;
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+		if (this.startDate != null) {
+			setSd(sdf.format(startDate));
+		}
+		if (this.endDate != null) {
+			setEd(sdf.format(endDate));
+		}
+		
+		
 	}
 
 	public Item() {
@@ -111,7 +122,7 @@ public class Item {
 	}
 
 	public void setPriority(String priority) {
-		
+
 		this.priority = WordUtils.capitalize(priority);
 	}
 
@@ -198,40 +209,20 @@ public class Item {
 	public void setNextId(Long nextId) {
 		this.nextId = nextId;
 	}
+
 	// Debugging Method
-	// public void printInfo() {
-	// System.out.println("");
-	// System.out.println("Task ID: " + getId());
-	// System.out.println("Type: " + getType());
-	// System.out.println("Title: " + getTitle());
-	// System.out.println("Priority: " + getPriority());
-	// System.out.println("Description: " + getDescription());
-	// System.out.println("Status: " + getStatus());
-	// System.out.println("Label: " + getLabel());
-	// System.out.println("StartDate: " + getStartDate());
-	// System.out.println("EndDate: " + getEndDate());
-	// System.out.println("");
-	// }
-	//
-	//
-	//
-	// @Override
-	// public int compare(Item item1, Item item2) {
-	// if (item2 == null) {
-	// return 1;
-	// }
-	// if (item1 == null) {
-	// return -1;
-	// }
-	// if (item1.getEndDate().compareTo(item2.getEndDate()) > 0) {
-	// return 1;
-	// }
-	// else if (item1.getEndDate().compareTo(item2.getEndDate()) < 0) {
-	// return -1;
-	// }
-	// else if (item1.getEndDate().compareTo(item2.getEndDate()) == 0) {
-	// return 0;
-	// }
-	// return 0;
-	// }
+	public void printInfo() {
+		System.out.println("");
+		System.out.println("Task ID: " + getId());
+		System.out.println("Type: " + getType());
+		System.out.println("Title: " + getTitle());
+		System.out.println("Priority: " + getPriority());
+		System.out.println("Description: " + getDescription());
+		System.out.println("Status: " + getStatus());
+		System.out.println("Label: " + getLabel());
+		System.out.println("StartDate: " + getStartDate());
+		System.out.println("EndDate: " + getEndDate());
+		System.out.println("");
+	}
+
 }

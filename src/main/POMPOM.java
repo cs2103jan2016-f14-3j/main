@@ -13,7 +13,7 @@ import storage.Storage;
 import utils.Item;
 
 /**
- * @@author wen hao
+ * @@author A0121528M
  *
  */
 public class POMPOM {
@@ -100,6 +100,7 @@ public class POMPOM {
 			} else {
 				
 				if (isNotCompleted(currentTask)) {
+					System.out.println(taskStartDate + "ASDAS");
 					if (currentDate.before(taskStartDate)) {
 						currentTask.setStatus(STATUS_PENDING);
 					} else if (currentDate.after(taskStartDate) && currentDate.before(taskEndDate)) {
@@ -115,7 +116,7 @@ public class POMPOM {
 
 	public String execute(String input) {
 		Parser parser = Parser.getInstance();
-		Command command = parser.executeCommand(input);
+		Command command = parser.parse(input);
 		String returnMsg = command.execute();
 		refreshStatus();
 		return returnMsg;
@@ -128,7 +129,7 @@ public class POMPOM {
 	}
 
 	private static boolean isNotCompleted(Item item) {
-
+		
 		return !item.getStatus().equalsIgnoreCase(STATUS_COMPLETED);
 
 	}

@@ -1,0 +1,25 @@
+{
+  "Username": "Not Set",
+  "IdCounter": 2,
+  "TaskList": [
+    {
+      "Id": 1,
+      "Type": "Event",
+      "Title": "Test 4",
+      "Label": "test",
+      "Status": "Completed",
+      "StartDate": "Mon Dec 28 03:32:33 SGT 2015",
+      "EndDate": "Thu Jan 28 03:32:33 SGT 2016",
+      "IsRecurring": true
+    },
+    {
+      "Id": 2,
+      "Type": "Event",
+      "Title": "asd",
+      "Status": "Ongoing",
+      "StartDate": "Mon Apr 11 03:34:42 SGT 2016",
+      "EndDate": "Tue Apr 12 03:34:42 SGT 2016",
+      "IsRecurring": true
+    }
+  ]
+}

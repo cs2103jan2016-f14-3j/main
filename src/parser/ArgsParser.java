@@ -7,22 +7,26 @@ import java.util.logging.LoggingPermission;
 import command.Command;
 
 /**
- *  @@author Josh
+ *  @@author A0121760R
  *
  */
 public class ArgsParser {
 	
 	protected static Logger logger = Logger.getLogger("Parser");
 	
-	protected boolean hasNoArguments=false;
+	protected boolean hasNoArguments = false; 
 	protected String commandArgumentsString;
 	
 	public ArgsParser(String commandArguments){
 		commandArgumentsString = commandArguments;
-		checkForAnyArguments();
+		checkForAnyArguments(); 
 	}
 
 	private void checkForAnyArguments() {
+		if(commandArgumentsString == null){
+			hasNoArguments=true;
+			return;
+		}
 		if (commandArgumentsString.equals("")){	
 			hasNoArguments=true;
 		}

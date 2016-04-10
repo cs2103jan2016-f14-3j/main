@@ -5,7 +5,7 @@ import command.DelCommand;
 import command.ExitCommand;
 import command.UndoCommand;
 /**
- *  @@author Josh
+ *  @@author A0121760R
  *
  */
 
@@ -13,7 +13,7 @@ public class UndoParser {
 
 
 	
-	public Command executeCommand(){
+	public Command parse(){
 		return new UndoCommand();
 		
 	}

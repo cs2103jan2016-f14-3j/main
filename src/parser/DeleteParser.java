@@ -6,12 +6,12 @@ import java.text.SimpleDateFormat;
 import java.util.logging.Level;
 
 /**
- *  @@author Josh
+ *  @@author A0121760R
  *
  */
 public class DeleteParser extends ArgsParser{
 	
-	private int itemID;
+	private Long itemID;
 	private Command outputCommand = null;
 	
 	public DeleteParser(String userCommand){
@@ -19,7 +19,7 @@ public class DeleteParser extends ArgsParser{
 		getItemId();
 	}
 	
-	public Command executeCommand(){
+	public Command parse(){
 		if (outputCommand == null){
 			return new DelCommand(itemID);
 		} else{
@@ -30,7 +30,7 @@ public class DeleteParser extends ArgsParser{
 	
 	public void getItemId(){
 		try{
-			itemID = Integer.parseInt(commandArgumentsString);
+			itemID = Long.parseLong(commandArgumentsString);
 		} catch (Exception e){
 			InvalidParser InvalidArgumentParser = new InvalidParser(commandArgumentsString);
 			outputCommand = InvalidArgumentParser.executeCommand();

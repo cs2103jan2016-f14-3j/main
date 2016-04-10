@@ -1,13 +1,14 @@
 package parser;
 
+import command.Command;
 import command.ExitCommand;
 /**
- *  @@author Josh
+ *  @@author A0121760R
  *
  */
 public class ExitParser {
-	public void executeCommand(){
-		new ExitCommand();
+	public Command executeCommand(){
+		return new ExitCommand();
 		
 	}
 }

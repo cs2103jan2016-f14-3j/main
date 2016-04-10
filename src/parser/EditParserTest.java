@@ -4,7 +4,7 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 /**
- *  @@author Josh
+ *  @@author A0121760R
  *
  */
 public class EditParserTest {
@@ -15,14 +15,5 @@ public class EditParserTest {
 		assertEquals(editParser.getField(),"title");
 	}
 	
-	/*
-	 * New data field has the name of the title inside.
-	 */
-	@Test
-	public void testGetNewData() {
-		EditParser editParser = new EditParser("1 title new title");
-		
-		assertEquals(editParser.getNewData(),"new title");
-	}
 
 }
