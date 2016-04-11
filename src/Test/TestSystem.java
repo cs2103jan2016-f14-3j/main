@@ -114,16 +114,11 @@ public class TestSystem {
 		} else if (itemA != null && itemB == null) {
 			return false;
 		} else {
-			// sameItem = testObjectEquivilence(itemA.getId(), itemB.getId());
-			// No description for now
-			// sameItem = itemA.getDescription().equals(itemB.getDescription());
 			if (!testStringEquivalence(itemA.getTitle(), itemB.getTitle())) {
 				return false;
 			}
 			if (!testStringEquivalence(itemA.getLabel(), itemB.getLabel())) {
-
 				return false;
-
 			}
 			if (!testStringEquivalence(itemA.getPriority(), itemB.getPriority())) {
 				return false;
@@ -162,7 +157,6 @@ public class TestSystem {
 	 */
 	@Test
 	public void testAddTitleOnly() {
-
 		// Make sure subsequent tests start from clean slate
 		taskList.clear();
 
@@ -183,7 +177,6 @@ public class TestSystem {
 	 */
 	@Test
 	public void testUndoAdd() {
-
 		// Make sure subsequent tests start from clean slate
 		taskList.clear();
 

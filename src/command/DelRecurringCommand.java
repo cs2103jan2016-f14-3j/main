@@ -92,7 +92,6 @@ public class DelRecurringCommand extends Command {
 			Long firstId = taskId;
 			Item firstTask = getTask(firstId); 
 			
-			
 			if(firstTask == null){
 				return String.format(MESSAGE_INVALID, firstId);
 			} 			

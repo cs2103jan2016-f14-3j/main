@@ -56,8 +56,7 @@ public class EditController implements Initializable {
 	Button editSave;
 	@FXML
 	Button editCancel;
-	@FXML
-	ComboBox<String> editType;
+	
 
 	private Stage dialogStage;
 	MainController mainControl;
@@ -114,8 +113,8 @@ public class EditController implements Initializable {
 		assert editSave != null : "fx:id=\"editSave\" was not injected: check your FXML file 'Edit.fxml'.";
 
 		editPriority.setItems(options);
-		editType.setItems(itemType);
-
+		
+		
 		editStartHour.setItems(hours);
 		editStartHour.setValue("00");
 		editStartMin.setItems(minutes);
@@ -143,7 +142,6 @@ public class EditController implements Initializable {
 		editTitle.setText(item.getTitle());
 		editLabel.setText(item.getLabel());
 		editPriority.setValue(item.getPriority());
-		editType.setValue(item.getType());
 		taskId = item.getId();
 		Date retrieveSDate = item.getStartDate();
 		Calendar cal = Calendar.getInstance();
@@ -188,7 +186,6 @@ public class EditController implements Initializable {
 		endMin = editEndMin.getValue();
 		label = editLabel.getText();
 		priority = editPriority.getValue();
-		type = editType.getValue();
 	}
 
 	/**
@@ -270,14 +267,12 @@ public class EditController implements Initializable {
 		EditCommand editTitle = new EditCommand(taskId, "title", title);
 		EditCommand editPriority = new EditCommand(taskId, "priority", priority);
 		EditCommand editLabel = new EditCommand(taskId, "label", label);
-		EditCommand editStatus = new EditCommand(taskId, "type", type);
 		EditCommand editStartDate = new EditCommand(taskId, "start date", sDate);
 		EditCommand editEndDate = new EditCommand(taskId, "end date", eDate);
 
 		POMPOM.executeCommand(editTitle);
 		POMPOM.executeCommand(editPriority);
 		POMPOM.executeCommand(editLabel);
-		POMPOM.executeCommand(editStatus);
 		POMPOM.executeCommand(editStartDate);
 		POMPOM.executeCommand(editEndDate);
 	}

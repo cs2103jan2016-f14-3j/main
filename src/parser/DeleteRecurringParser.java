@@ -14,7 +14,7 @@ public class DeleteRecurringParser extends ArgsParser{
 	
 	private static final String MESSAGE_ID_NOT_NUMBER_ERROR = "Please enter the task ID!";
 	private static final String MESSAGE_INVALID_ID_ERROR = "Please key in an id";
-	Command invalidCommand=null;
+	Command invalidCommand=null; 
 	Long recurringItemId;
 	private static final String LOG_CREATE_DELETE_RECURRING_PARSER = "DeleteRecuringParser Created for \"%s\"";
 
