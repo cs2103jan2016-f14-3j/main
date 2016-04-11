@@ -14,12 +14,8 @@ public class ViewParser extends ArgsParser{
 		super(commandArgument); 
 		view = commandArgument;
 	}
-	public Command parse(){
-		
-			return new ViewCommand(view);
-		
-		
-	}
 	
-
+	public Command parse(){
+			return new ViewCommand(view);
+	}
 }

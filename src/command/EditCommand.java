@@ -13,9 +13,9 @@ import utils.Item;
 public class EditCommand extends Command {
 
 	/** Messaging **/
-	private static final String MESSAGE_TASK_EDITED = "%s was successfully edited";
-	private static final String MESSAGE_TASK_ERROR = "%s is not a valid ID!";
-	private static final String MESSAGE_DATE_CHANGE_ERROR = "Start date must be earlier then end date";
+	public static final String MESSAGE_TASK_EDITED = "%s was successfully edited";
+	public static final String MESSAGE_TASK_ERROR = "%s is not a valid ID!";
+	public static final String MESSAGE_DATE_CHANGE_ERROR = "Start date must be earlier then end date";
 
 	/** Input Field Types **/
 	private static final String FIELD_TYPE = "type";

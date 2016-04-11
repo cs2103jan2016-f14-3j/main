@@ -9,15 +9,9 @@ import command.UndoCommand;
  *
  */
 
-public class UndoParser {
-
-
+public class UndoParser {	
 	
 	public Command parse(){
 		return new UndoCommand();
-		
 	}
-	
-
-	
 }

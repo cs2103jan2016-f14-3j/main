@@ -8,8 +8,8 @@ import command.HelpCommand;
  */
 public class HelpParser{
 	public HelpParser(){
-		 
 	}
+	
 	public Command parse(){
 		return new HelpCommand(); 
 	}

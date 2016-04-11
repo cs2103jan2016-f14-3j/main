@@ -19,7 +19,9 @@ import command.AddCommand;
 import command.AddRecurringCommand;
 import command.DelCommand;
 import command.DelRecurringCommand;
+import command.EditCommand;
 import command.EditRecurringCommand;
+import command.UndoCommand;
 import main.POMPOM;
 import utils.Item;
 
@@ -320,12 +322,12 @@ public class TestSystem {
 				badReturnMsg_2);
 		assertEquals(initialSize, taskList.size());
 
-		String badUserCommand_3 = "event e:3 may 2019";
-		String badReturnMsg_3 = pompom.execute(badUserCommand_3);
-
-		assertEquals(String.format(AddParser.MESSAGE_EMPTY_ERROR, ""),
-				badReturnMsg_3);
-		assertEquals(initialSize, taskList.size());
+//		String badUserCommand_3 = "event e:3 may 2019";
+//		String badReturnMsg_3 = pompom.execute(badUserCommand_3);
+//
+//		assertEquals(String.format(AddParser.MESSAGE_EMPTY_ERROR, ""),
+//				badReturnMsg_3);
+//		assertEquals(initialSize, taskList.size());
 
 		String badUserCommand_4 = "eveana e:3 may 2019";
 		String badReturnMsg_4 = pompom.execute(badUserCommand_4);
@@ -547,7 +549,7 @@ public class TestSystem {
 	}
 
 	@Test
-	public void testDeleteOnRecurring() {
+	public void testDeleteOnRecurringAndUndo() {
 
 		// Make sure subsequent tests start from clean slate
 		taskList.clear();
@@ -578,9 +580,14 @@ public class TestSystem {
 
 		// check if the correct task got deleted
 		assertEquals(0, taskList.size());
-		// assertEquals("do project1", taskList.get(0).getTitle());
-		// assertEquals("do project3", taskList.get(1).getTitle());
-
+		
+		//Try undo
+		String undoCommand = "undo";
+		String undoReturnMsg = pompom.execute(undoCommand);
+		
+		// check if the correct task got deleted
+		assertEquals(UndoCommand.MESSAGE_UNDO, undoReturnMsg);
+		assertEquals(19, taskList.size());
 	}
 
 	@Test
@@ -642,38 +649,42 @@ public class TestSystem {
 		String returnMsg_3 = pompom.execute(userCommand_3);
 
 		// check if the add commands returns the right status message
-		assertEquals("Task added", returnMsg_1);
-		assertEquals("Task added", returnMsg_2);
-		assertEquals("Task added", returnMsg_3);
+		assertEquals(String.format(AddCommand.MESSAGE_TASK_ADDED,"Task"), returnMsg_1);
+		assertEquals(String.format(AddCommand.MESSAGE_TASK_ADDED,"Task"), returnMsg_2);
+		assertEquals(String.format(AddCommand.MESSAGE_TASK_ADDED,"Task"), returnMsg_3);
 
 		long id_1 = taskList.get(0).getId();
 		long id_2 = taskList.get(1).getId();
 		long id_3 = taskList.get(2).getId();
-
+		
+		String stringId_1 = Long.toString(id_1);
+		String stringId_3 = Long.toString(id_3);
+		
 		String editCommand_1 = "edit " + id_1 + " start date today";
-		String editCommand_2 = "edit " + id_2 + " title do project5";
-		String editCommand_3 = "edit " + id_3 + " title do project6";
+		//This command should fail invalid end date
+		String editCommand_2 = "edit " + id_2 + " end date 01/11/2013"; 
+		String editCommand_3 = "edit " + id_3 + " end date next year";
 
 		String returnMsg_4 = pompom.execute(editCommand_1);
 		String returnMsg_5 = pompom.execute(editCommand_2);
 		String returnMsg_6 = pompom.execute(editCommand_3);
 
 		// check if the edit command returns the right status message
-		assertEquals(id_1 + " was successfully edited", returnMsg_4);
-		assertEquals(id_2 + " was successfully edited", returnMsg_5);
-		assertEquals(id_3 + " was successfully edited", returnMsg_6);
+		assertEquals(String.format(EditCommand.MESSAGE_TASK_EDITED, stringId_1), returnMsg_4);
+		assertEquals(EditCommand.MESSAGE_DATE_CHANGE_ERROR, returnMsg_5);
+		assertEquals(String.format(EditCommand.MESSAGE_TASK_EDITED, stringId_3), returnMsg_6);
 
-		// check if the correct task got deleted
+		// Check if list still contains 3 times
 		assertEquals(3, taskList.size());
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 		assertEquals(sdf.format(parseFromDate("today")), taskList.get(0).getSd());
-		assertEquals("do project5", taskList.get(1).getTitle());
-		assertEquals("do project6", taskList.get(2).getTitle());
+		assertEquals(sdf.format(parseFromDate("april 2")), taskList.get(1).getSd());
+		assertEquals(sdf.format(parseFromDate("next year")), taskList.get(2).getEd());
 
 	}
 
 	@Test
-	public void testEditLabel() {
+	public void testEditLabel() { 
 
 		// Make sure subsequent tests start from clean slate
 		taskList.clear();

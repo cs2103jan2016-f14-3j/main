@@ -10,8 +10,8 @@ import main.POMPOM;
 public class UndoCommand extends Command {
 
 	/** Messaging **/
-	private static final String MESSAGE_UNDO = "Previous action has been successfully undone";
-	private static final String MESSAGE_ERROR = "There is nothing to undo";
+	public static final String MESSAGE_UNDO = "Previous action has been successfully undone";
+	public static final String MESSAGE_ERROR = "There is nothing to undo";
 
 	/**
 	 * Executes all the actions needed when an UndoCommand is invoked

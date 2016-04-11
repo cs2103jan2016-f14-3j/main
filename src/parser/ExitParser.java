@@ -9,6 +9,5 @@ import command.ExitCommand;
 public class ExitParser {
 	public Command executeCommand(){
 		return new ExitCommand();
-		
 	}
 }

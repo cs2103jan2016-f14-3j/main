@@ -107,27 +107,23 @@ public class Parser {
 					Long.parseLong(commandArgument));
 
 		case CMD_ADD:
-			AddParser addTaskArgumentParser = new AddParser(commandArgument,
-					false);
+			AddParser addTaskArgumentParser = new AddParser(commandArgument,false);
 			return addTaskArgumentParser.parse();
 		case CMD_EVENT:
-			AddParser addEventArgumentParser = new AddParser(commandArgument,
-					true);
+			AddParser addEventArgumentParser = new AddParser(commandArgument,true);
 			return addEventArgumentParser.parse();
 			
 		case CMD_DELETE:
-			DeleteParser deleteArgumentParser = new DeleteParser(
-					commandArgument);
+		
+			DeleteParser deleteArgumentParser = new DeleteParser(commandArgument);
 			return deleteArgumentParser.parse();
 		case CMD_EDIT:
+		
 			EditParser EditArgumentParser = new EditParser(commandArgument);
 			return EditArgumentParser.parse();
 		case CMD_SEARCH:
 			SearchParser searchParser = new SearchParser(commandArgument);
 			return searchParser.parse();
-		case CMD_SHOW:
-			// return new ShowParser(commandArgument);
-			// Hard coded
 		case CMD_EXIT:
 			ExitParser exitParser = new ExitParser();
 			return exitParser.executeCommand();
@@ -146,14 +142,12 @@ public class Parser {
 			return viewParser.parse();
 		case CMD_DONE:
 			DoneParser DoneArgumentParser = new DoneParser(commandArgument);
-			return DoneArgumentParser.executeCommand();
+			return DoneArgumentParser.parse();
 		default:
 			String returnMsg = String.format(INVALID_CMD_MESSAGE, commandType);
 			InvalidCommand invalidCommand = new InvalidCommand(returnMsg);
 			return invalidCommand;
 		}
-		// InvalidParser InvalidArgumentParser = new InvalidParser(userCommand);
-		// return InvalidArgumentParser.executeCommand();
 
 	}
 

@@ -8,13 +8,10 @@ import command.UndoCommand;
  *
  */
 public class PathParser {
-	String path;
+	private String path;
 	public PathParser(String path){
 		this.path = path;
 	}
-//	public void boolean checkProperPath(){
-//		
-//	}
 	public Command parse(){
 		return new UndoCommand();
 		

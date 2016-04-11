@@ -211,18 +211,18 @@ public class Item {
 	}
 
 	// Debugging Method
-	public void printInfo() {
-		System.out.println("");
-		System.out.println("Task ID: " + getId());
-		System.out.println("Type: " + getType());
-		System.out.println("Title: " + getTitle());
-		System.out.println("Priority: " + getPriority());
-		System.out.println("Description: " + getDescription());
-		System.out.println("Status: " + getStatus());
-		System.out.println("Label: " + getLabel());
-		System.out.println("StartDate: " + getStartDate());
-		System.out.println("EndDate: " + getEndDate());
-		System.out.println("");
-	}
+//	public void printInfo() {
+//		System.out.println("");
+//		System.out.println("Task ID: " + getId());
+//		System.out.println("Type: " + getType());
+//		System.out.println("Title: " + getTitle());
+//		System.out.println("Priority: " + getPriority());
+//		System.out.println("Description: " + getDescription());
+//		System.out.println("Status: " + getStatus());
+//		System.out.println("Label: " + getLabel());
+//		System.out.println("StartDate: " + getStartDate());
+//		System.out.println("EndDate: " + getEndDate());
+//		System.out.println("");
+//	}
 
 }
