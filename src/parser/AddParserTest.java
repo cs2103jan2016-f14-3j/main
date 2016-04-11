@@ -18,7 +18,7 @@ import org.ocpsoft.prettytime.nlp.PrettyTimeParser;
 
 
 /**
- * @author A0121760R
+ * @@author A0121760R
  *
  */
 
