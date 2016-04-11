@@ -94,7 +94,7 @@ public class DelCommand extends Command {
 
 		Item currentTask = getTask(toDelete.getId());
 
-		Item prevTask = getTask(currentTask.getPrevId());
+		Item prevTask = getTask(currentTask.getPrevId()); 
 		prevTask.setNextId(currentTask.getNextId());
 
 		Item nextTask = getTask(currentTask.getNextId());

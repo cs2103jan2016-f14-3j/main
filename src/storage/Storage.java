@@ -40,9 +40,9 @@ import utils.UserItemList;
  */
 public class Storage {
 
-	private final String DEFAULT_FILE_DIRECTORY = "PomPom Storage & Settings";
-	private final String DEFAULT_FILE_NAME = "Storage.txt";
-	private final String DEFAULT_STORAGE_FILE_PATH = DEFAULT_FILE_DIRECTORY
+	private final static String DEFAULT_FILE_DIRECTORY = "PomPom Storage & Settings";
+	private final static String DEFAULT_FILE_NAME = "Storage.txt";
+	public final static String DEFAULT_STORAGE_FILE_PATH = DEFAULT_FILE_DIRECTORY
 			+ "/" + DEFAULT_FILE_NAME;
 
 	/** storageFile is not final as user can reset storage file path */

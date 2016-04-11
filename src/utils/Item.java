@@ -31,22 +31,6 @@ public class Item {
 	private String ed;
 	private Boolean checkBox;
 
-	public String getSd() {
-		return sd;
-	}
-
-	public void setSd(String sd) {
-		this.sd = sd;
-	}
-
-	public String getEd() {
-		return ed;
-	}
-
-	public void setEd(String ed) {
-		this.ed = ed;
-	}
-
 	private boolean isRecurring;
 	private Long prevId;
 	private Long nextId;
@@ -57,22 +41,21 @@ public class Item {
 		super();
 		this.id = id;
 		this.type = type;
-		this.title = title;
+		this.title = title; 
 		this.priority = priority;
 		this.description = description;
 		this.status = status;
 		this.label = label;
 		this.startDate = startDate;
 		this.endDate = endDate;
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+		SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy HH:mm");
 		if (this.startDate != null) {
 			setSd(sdf.format(startDate));
 		}
 		if (this.endDate != null) {
 			setEd(sdf.format(endDate));
 		}
-		
-		
+
 	}
 
 	public Item() {
@@ -122,7 +105,6 @@ public class Item {
 	}
 
 	public void setPriority(String priority) {
-
 		this.priority = WordUtils.capitalize(priority);
 	}
 
@@ -156,12 +138,29 @@ public class Item {
 
 	public void setStartDate(Date startDate) {
 		if (startDate == null) {
+			setSd(null);
 			this.startDate = startDate;
 			return;
 		}
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+		SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy HH:mm");
 		setSd(sdf.format(startDate));
 		this.startDate = startDate;
+	}
+
+	public String getSd() {
+		return sd;
+	}
+
+	public void setSd(String sd) {
+		this.sd = sd;
+	}
+
+	public String getEd() {
+		return ed;
+	}
+
+	public void setEd(String ed) {
+		this.ed = ed;
 	}
 
 	public Date getEndDate() {
@@ -170,10 +169,11 @@ public class Item {
 
 	public void setEndDate(Date endDate) {
 		if (endDate == null) {
-			this.startDate = startDate;
+			setEd(null);
+			this.endDate = endDate;
 			return;
 		}
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+		SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy HH:mm");
 		setEd(sdf.format(endDate));
 		this.endDate = endDate;
 	}
@@ -211,18 +211,18 @@ public class Item {
 	}
 
 	// Debugging Method
-//	public void printInfo() {
-//		System.out.println("");
-//		System.out.println("Task ID: " + getId());
-//		System.out.println("Type: " + getType());
-//		System.out.println("Title: " + getTitle());
-//		System.out.println("Priority: " + getPriority());
-//		System.out.println("Description: " + getDescription());
-//		System.out.println("Status: " + getStatus());
-//		System.out.println("Label: " + getLabel());
-//		System.out.println("StartDate: " + getStartDate());
-//		System.out.println("EndDate: " + getEndDate());
-//		System.out.println("");
-//	}
+	// public void printInfo() {
+	// System.out.println("");
+	// System.out.println("Task ID: " + getId());
+	// System.out.println("Type: " + getType());
+	// System.out.println("Title: " + getTitle());
+	// System.out.println("Priority: " + getPriority());
+	// System.out.println("Description: " + getDescription());
+	// System.out.println("Status: " + getStatus());
+	// System.out.println("Label: " + getLabel());
+	// System.out.println("StartDate: " + getStartDate());
+	// System.out.println("EndDate: " + getEndDate());
+	// System.out.println("");
+	// }
 
 }

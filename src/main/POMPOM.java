@@ -100,7 +100,6 @@ public class POMPOM {
 			} else {
 				
 				if (isNotCompleted(currentTask)) {
-					System.out.println(taskStartDate + "ASDAS");
 					if (currentDate.before(taskStartDate)) {
 						currentTask.setStatus(STATUS_PENDING);
 					} else if (currentDate.after(taskStartDate) && currentDate.before(taskEndDate)) {

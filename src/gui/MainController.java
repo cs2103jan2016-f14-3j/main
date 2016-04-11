@@ -57,7 +57,7 @@ import command.DelCommand;
  *
  */
 
-public class MainController implements Initializable {
+public class MainController implements Initializable { 
 	// Pane items in main display
 	@FXML
 	Pane mainContent;
@@ -305,6 +305,7 @@ public class MainController implements Initializable {
 		GUIModel.update();
 
 		// Initialize the GUI
+		checkBox.setSortable(false);
 		POMPOM.setCurrentTab(POMPOM.LABEL_TASK);
 		displayList = GUIModel.getTaskList();
 		configureButtons();
@@ -320,8 +321,7 @@ public class MainController implements Initializable {
 			}
 		});
 		setSettingsColours();
-		initialized = true;
-
+		initialized = true; 
 	}
 
 	/**
@@ -426,9 +426,7 @@ public class MainController implements Initializable {
 	 */
 	@FXML
 	public void changeToDashboard(ActionEvent event) throws IOException {
-
 		highLightLabel(dashboardLbl);
-
 		Node node = (Node) FXMLLoader.load(getClass()
 				.getResource("POMPOM.fxml"));
 		mainPane.getChildren().setAll(node);
@@ -705,6 +703,9 @@ public class MainController implements Initializable {
 		}
 		String command = input.substring(0, i);
 		String restOfAction = input.substring(i + 1);
+		if(table.getItems() == null){
+			return;
+		}
 		int rowNo = table.getItems().size();
 		if (command.equals("add") || command.equals("event")) {
 			table.getSelectionModel().select(rowNo - 1);

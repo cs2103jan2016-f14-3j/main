@@ -4,6 +4,7 @@ import command.Command;
 import command.DelCommand;
 import java.text.SimpleDateFormat;
 import java.util.logging.Level;
+import static org.junit.Assert.assertNotNull;
 
 /**
  *  @@author A0121760R
@@ -11,25 +12,29 @@ import java.util.logging.Level;
  */
 public class DeleteParser extends ArgsParser{
 	
-	private static final String MESSAGE_INVALID_ID = "The task ID is invalid!";
+	private static final String LOG_CREATE_DELETE_PARSER = "DeleteParser Created for \"%s\"";
+	static final String MESSAGE_INVALID_ID = "The task ID is invalid!";
 	
-	private long itemID;
+	private Long itemID;
 	private Command InvalidCommand = null;
 	
 	public DeleteParser(String userCommand){
-		
 		super(userCommand);
+		assertNotNull(commandArgumentsString);
 		setItemId();
+		logger.log(Level.INFO, String.format(LOG_CREATE_DELETE_PARSER ,
+												commandArgumentsString));
 	}
 	
 	/**
 	 * This method will return the appropriate Command to be processed
 	 * by the Command class.
 	 * 
-	 * @return DelCommand() if the ID is an integer. InvalidCommand if it is not.
+	 * @return DelCommand() if the ID is an long. InvalidCommand if it is not.
 	 */
 	public Command parse(){
 		if (isNullInvalidCommand()){
+			itemID = new Long(itemID);
 			return new DelCommand(itemID);
 		} else{
 			return InvalidCommand;
@@ -42,9 +47,8 @@ public class DeleteParser extends ArgsParser{
 	 */
 	public void setItemId(){
 		try{
-			//checks if itemID is an integer.
-			System.out.println(this.commandArgumentsString + "LOL");
-			itemID = Integer.parseInt(commandArgumentsString);
+			//checks if itemID is an long.
+			itemID = Long.parseLong(commandArgumentsString);
 			
 		} catch (Exception e){
 			//Set the invalidCommand object

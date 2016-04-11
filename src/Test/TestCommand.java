@@ -31,7 +31,7 @@ import static org.junit.Assert.assertEquals;
  */
 public class TestCommand {
 
-	/** Parameters **/
+	/** Parameters **/ 
 	POMPOM pompom;
 	ArrayList<Item> taskList;
 	Date currentDate;
@@ -382,11 +382,11 @@ public class TestCommand {
 	public void testAddRecurring() {
 
 		// add recurring tasks using POMPOM class to populating the tasks
-		String returnMsg = pompom.execute("add do project f:4 apr e:5 apr r:weekly until 26 apr");
-
+		String returnMsg = pompom.execute("add do project f:4 apr e:5 apr r:daily until 6 apr");
+ 
 		// check if the correct status message is returned
 		assertEquals("Recurring tasks has been added", returnMsg);
-
+ 
 		// check if the correct number of tasks has been added
 		assertEquals(3, taskList.size());
 
@@ -617,7 +617,7 @@ public class TestCommand {
 
 		// check if all recurring tasks have been removed by undo
 		assertEquals(0, taskList.size());
-
+     
 	}
 
 	@Test

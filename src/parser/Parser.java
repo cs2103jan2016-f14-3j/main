@@ -1,15 +1,11 @@
 package parser;
 
-import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.logging.LoggingPermission;
 
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter.DEFAULT;
 
 import command.Command;
 import command.InvalidCommand;
 import command.PathCommand;
-import main.POMPOM;
 
 /**
  * @@author A0121760R
@@ -29,6 +25,7 @@ public class Parser {
 	private static final String CMD_PATH = "setpath";
 	private static final String CMD_EVENT = "event";
 	private static final String CMD_HELP_1 = "help";
+	private static final String CMD_TITLE = "title";
 	private static final String CMD_HELP_2 = "?";
 	private static final String CMD_DELETE_RECUR_1 = "delete r";
 	private static final String CMD_EDIT_RECUR_1 = "edit r";
@@ -77,48 +74,23 @@ public class Parser {
 		switch (commandType) {
 		
 		case CMD_EDIT_RECUR_1:
-			EditRecurringParser EditRecurringArgumentParser = new EditRecurringParser(
-					commandArgument);
-			return EditRecurringArgumentParser.parse();
 		case CMD_EDIT_RECUR_2:
-			EditRecurringParser EditRecurringArgumentParser1 = new EditRecurringParser(
-					commandArgument);
-			return EditRecurringArgumentParser1.parse();
+			EditRecurringParser EditRecurringArgumentParser = new EditRecurringParser(commandArgument);
+			return EditRecurringArgumentParser.parse();
 		case CMD_DELETE_RECUR_1:
-			Long id  = Long.parseLong(commandArgument);
-			if(commandArgument == null ||id ==null){
-				return new InvalidCommand("Please key in an id");
-			}
-			
-			return new command.DelRecurringCommand(
-					Long.parseLong(commandArgument));
 		case CMD_DELETE_RECUR_2:
-			Long id2 = null;
-			try{
-				id2  = Long.parseLong(commandArgument);
-			}catch (Exception e){
-				
-			}
-			if(commandArgument == null || id2 ==null){
-				return new InvalidCommand("Please key in an id");
-			}
-			
-			return new command.DelRecurringCommand(
-					Long.parseLong(commandArgument));
-
+			DeleteRecurringParser DeleteRecurringParser = new DeleteRecurringParser(commandArgument);
+			return DeleteRecurringParser.parse();
 		case CMD_ADD:
 			AddParser addTaskArgumentParser = new AddParser(commandArgument,false);
 			return addTaskArgumentParser.parse();
 		case CMD_EVENT:
 			AddParser addEventArgumentParser = new AddParser(commandArgument,true);
 			return addEventArgumentParser.parse();
-			
 		case CMD_DELETE:
-		
 			DeleteParser deleteArgumentParser = new DeleteParser(commandArgument);
 			return deleteArgumentParser.parse();
 		case CMD_EDIT:
-		
 			EditParser EditArgumentParser = new EditParser(commandArgument);
 			return EditArgumentParser.parse();
 		case CMD_SEARCH:
@@ -126,7 +98,7 @@ public class Parser {
 			return searchParser.parse();
 		case CMD_EXIT:
 			ExitParser exitParser = new ExitParser();
-			return exitParser.executeCommand();
+			return exitParser.parse();
 		case CMD_UNDO:
 			UndoParser undoParser = new UndoParser();
 			return undoParser.parse();
@@ -136,13 +108,15 @@ public class Parser {
 			return helpParser.parse();
 		case CMD_PATH:
 			return new PathCommand(commandArgument); 
-
 		case CMD_VIEW:
 			ViewParser viewParser = new ViewParser(commandArgument);
 			return viewParser.parse();
 		case CMD_DONE:
 			DoneParser DoneArgumentParser = new DoneParser(commandArgument);
 			return DoneArgumentParser.parse();
+		case CMD_TITLE:
+			TitleParser titleParser = new TitleParser(commandArgument);
+			return titleParser.parse();
 		default:
 			String returnMsg = String.format(INVALID_CMD_MESSAGE, commandType);
 			InvalidCommand invalidCommand = new InvalidCommand(returnMsg);

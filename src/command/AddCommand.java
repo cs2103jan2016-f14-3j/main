@@ -19,7 +19,7 @@ public class AddCommand extends Command {
 	/** Command parameters **/
 	private Item task;
 	private boolean isUndo;
-
+	
 	/**
 	 * Constructor for a normal add command
 	 * 

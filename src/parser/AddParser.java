@@ -2,6 +2,7 @@ package parser;
 
 import java.util.List;
 import java.util.Scanner;
+import java.util.logging.Level;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -43,6 +44,7 @@ public class AddParser extends ArgsParser {
 	public static final String MESSAGE_START_DATE_SPECIFIED = "To add a recurring task, the start date must be specified!";
 	public static final String MESSAGE_DATES_SPECIFIED = "To add an event, both start and end dates must be specified!";
 	public static final String MESSAGE_UNKNOWN = "Unknown error occured!";
+private static final String LOG_CREATE_ADD_PARSER = "AddParser Created for \"%s\"";
 
 	private static final String STRING_EMPTY = "";
 	private static final String DATE_FROM = "from";
@@ -50,7 +52,7 @@ public class AddParser extends ArgsParser {
 	private static final String DATE_BOUND = "bound";
 	private static final String DATE_EXCLUDE = "exclude"; 	
 	private static final String DELIMITER_UNTIL = "\\s*until\\s*";
-	private static final String DELIMITER_TO = "\\s*to\\s*";
+	private static final String DELIMITER_TO = "\\s* to\\s*";
 	static final String PRIORITY_HIGH_CMD1 = "high";
 	static final String PRIORITY_HIGH_CMD2 = "hi";
 	static final String PRIORITY_HIGH_CMD3 = "h";
@@ -105,15 +107,14 @@ public class AddParser extends ArgsParser {
 	private boolean isExclusionDateSeqError;
 	private boolean hasExclusion;
 
-	public AddParser(String commandArgumentsString, boolean isEvent) {
-		super(commandArgumentsString);
-		if (commandArgumentsString==null){
-			this.commandArgumentsString="";
-		}
+	public AddParser(String commandArguments, boolean isEvent) {
+		super(commandArguments);
 		getDelimiterIndexes(this.commandArgumentsString);
-		System.out.println(this.commandArgumentsString);
 		initAttributes(isEvent);
 		extractDataFields();
+		
+		logger.log(Level.INFO, String.format(LOG_CREATE_ADD_PARSER ,
+												commandArgumentsString));
 	}
 
 	/**
@@ -124,19 +125,17 @@ public class AddParser extends ArgsParser {
 	 *            is the command string the user has entered.
 	 */
 	private void getDelimiterIndexes(String commandArgumentsString) {
-		this.delimiterIndexes = new int[6];
+		this.delimiterIndexes = new int[1000];
 		int currentIndex = 0;
-		if (commandArgumentsString==null){
-			commandArgumentsString="";
-		}
-		for (int i = 0; i < commandArgumentsString.length(); i++) {
-			if (isDelimiter(commandArgumentsString.charAt(i))) {
+		for (int i = 1; i < commandArgumentsString.length(); i++) {
+			char prefix = commandArgumentsString.charAt(i-1);
+			if (isDelimiter(commandArgumentsString.charAt(i), prefix)) {
 				delimiterIndexes[currentIndex] = i;
 				currentIndex++;
 			}
 		}
 	}
-
+	
 	/**
 	 * This method initializes all attributes in this parser object to its
 	 * default values. Also sets if this parser is supposed to parse for an
@@ -171,7 +170,6 @@ public class AddParser extends ArgsParser {
 	 *            is the command the user has passed into the parser.
 	 */
 	private void extractDataFields() {
-		System.out.println(this.commandArgumentsString);
 		assertNotNull(commandArgumentsString);
 		extractTitle(commandArgumentsString);
 		extractOtherFields(commandArgumentsString);
@@ -210,7 +208,7 @@ public class AddParser extends ArgsParser {
 					this.priority = extractField(commandArgumentsString, i);
 					break;
 				case (TAG_EXCEPTION):
-					setHasExclusion(true); // Flag to run ____ when set to true.
+					setHasExclusion(true); // Flag to run exclusion checking when set to true.
 					this.exclusion = extractField(commandArgumentsString, i);
 				}
 			}
@@ -232,7 +230,7 @@ public class AddParser extends ArgsParser {
 	private String extractField(String commandArgumentsString, int currentDelimiter) {
 		String fieldData=null;
 		int nextDelimiter = getNextDelimiter(currentDelimiter);
-		if (nextDelimiter < 5 && isNonZeroDelimiterIndex(nextDelimiter)) {
+		if (isValidDelimiter(nextDelimiter)) {
 		
 		fieldData = commandArgumentsString.substring(getIndexAfterDelimiter(currentDelimiter), 
 													getIndexBeforeDelimiter(delimiterIndexes[nextDelimiter])).trim();
@@ -243,7 +241,7 @@ public class AddParser extends ArgsParser {
 		}
 		return fieldData;
 	}
-
+	
 	/**
 	 * This method extracts the title in the command the user has passed in and
 	 * stores it in the title attribute of this parser.
@@ -252,16 +250,15 @@ public class AddParser extends ArgsParser {
 	 *            is the command the user has passed in.
 	 */
 	private void extractTitle(String commandArgumentsString) {
-		if (isEmptyArguments()) {
-			setIsEmptyTitle(true);
-		}else if (isNonZeroDelimiterIndex(0)) {
+		if (isNonZeroDelimiterIndex(0)) {
 			this.title = commandArgumentsString.substring(INDEX_BEGIN, 
 										getIndexBeforeDelimiter(delimiterIndexes[INDEX_FIRST_DELIMITER])).trim();
 		} else {
 			this.title = commandArgumentsString.trim();
 		}
-
-
+		if (hasNoArguments()) {
+			setIsEmptyTitle(true);
+		}
 	}
 	
 	/**
@@ -345,31 +342,6 @@ public class AddParser extends ArgsParser {
 		} else {
 			return null;
 		}
-	}
-
-	private boolean isNotEmptyPriority() {
-		return this.priority != null;
-	}
-
-	private boolean isValidHighPriorityCommand() {
-		//Appropriate commands are: "high", "hi", "h"
-		return this.priority.equalsIgnoreCase(PRIORITY_HIGH_CMD1) 
-				|| this.priority.equalsIgnoreCase(PRIORITY_HIGH_CMD2) 
-				|| this.priority.equalsIgnoreCase(PRIORITY_HIGH_CMD3);
-	}
-	
-	private boolean isValidMediumPriorityCommand() {
-		//Appropriate commands are: "medium", "med", "m"
-		return this.priority.equalsIgnoreCase(PRIORITY_MEDIUM_CMD1) 
-				|| this.priority.equalsIgnoreCase(PRIORITY_MEDIUM_CMD2) 
-				|| this.priority.equalsIgnoreCase(PRIORITY_MEDIUM_CMD3);
-	}
-	
-	private boolean isValidLowPriorityCommand() {
-		//Appropriate commands are: "low", "lo", "l"
-		return this.priority.equalsIgnoreCase(PRIORITY_LOW_CMD1) 
-				|| this.priority.equalsIgnoreCase(PRIORITY_LOW_CMD2) 
-				|| this.priority.equalsIgnoreCase(PRIORITY_LOW_CMD3);
 	}
 	
 	/**
@@ -473,7 +445,6 @@ public class AddParser extends ArgsParser {
 			
 				recurringDates.add(recurringStartDates);
 				recurringDates.add(recurringEndDates);
-				System.out.println(recurringStartDates.size());
 
 				return recurringDates;
 			} else {
@@ -685,11 +656,6 @@ public class AddParser extends ArgsParser {
 			return invalidCommand;
 		}
 	}
-	
-	private void setStartDateError(boolean b) {
-		// TODO Auto-generated method stub
-		
-	}
 
 	/**
 	 * This method checks if the item to be added is a valid task. If it is,
@@ -728,7 +694,6 @@ public class AddParser extends ArgsParser {
 		}
 	}
 
-
 	/**
 	 * This method checks if the item to be added is a valid event. If it is,
 	 * it checks if the event is recurring or not, then returns the appropriate
@@ -759,7 +724,7 @@ public class AddParser extends ArgsParser {
 
 		} else if (!isRecurring()) {
 			AddCommand add = new AddCommand(POMPOM.LABEL_EVENT, title, null, parsedPriority, 
-											POMPOM.STATUS_PENDING, label, startDate, endDate, true);
+											POMPOM.STATUS_PENDING, label, startDate, endDate);
 			return add;
 
 		} else {
@@ -845,10 +810,9 @@ public class AddParser extends ArgsParser {
 	 * `	error flags.
 	 */
 	private Command checkForGeneralErrors(Date startDate, Date endDate) {
-		System.out.println(isFromError() + " " + isEndError());
 		String errorMsg;
 		InvalidCommand invalidCommand;
-		if (isEmptyArguments()) {
+		if (isEmptyArguments() || isEmptyTitle) {
 			errorMsg = MESSAGE_EMPTY_ERROR;
 			invalidCommand = new InvalidCommand(errorMsg);
 			return invalidCommand;
@@ -939,8 +903,17 @@ public class AddParser extends ArgsParser {
 		return delimiterIndexes[selectDelimiter] != 0;
 	}
 
-	private boolean isDelimiter(char character) {
-		return character == DELIMITER;
+	private boolean isDelimiter(char character, char selectedPrefix) {
+		boolean isValidPrefix=false;
+		char[] prefixes = {TAG_FROM, TAG_END, TAG_RECURRING,
+							TAG_LABEL, TAG_PRIORITY, TAG_EXCEPTION};
+		
+		for (char currentPrefix: prefixes){
+			if (selectedPrefix == currentPrefix){
+				isValidPrefix=true;
+			}
+		}
+		return (character == DELIMITER && isValidPrefix);
 	}
 
 	private boolean isEmptyArguments() {
@@ -1114,5 +1087,36 @@ public class AddParser extends ArgsParser {
 		return hasExclusion() && isNotEmptyDate(startDate) && isNotEmptyDate(endDate);
 	}
 
+	private boolean isValidDelimiter(int nextDelimiter) {
+		return nextDelimiter < 6 && isNonZeroDelimiterIndex(nextDelimiter);
+	}
 
+	private boolean hasNoArguments() {
+		return isEmptyArguments() || this.title.trim().equals(STRING_EMPTY);
+	}
+	
+	private boolean isNotEmptyPriority() {
+		return this.priority != null;
+	}
+
+	private boolean isValidHighPriorityCommand() {
+		//Appropriate commands are: "high", "hi", "h"
+		return this.priority.equalsIgnoreCase(PRIORITY_HIGH_CMD1) 
+				|| this.priority.equalsIgnoreCase(PRIORITY_HIGH_CMD2) 
+				|| this.priority.equalsIgnoreCase(PRIORITY_HIGH_CMD3);
+	}
+	
+	private boolean isValidMediumPriorityCommand() {
+		//Appropriate commands are: "medium", "med", "m"
+		return this.priority.equalsIgnoreCase(PRIORITY_MEDIUM_CMD1) 
+				|| this.priority.equalsIgnoreCase(PRIORITY_MEDIUM_CMD2) 
+				|| this.priority.equalsIgnoreCase(PRIORITY_MEDIUM_CMD3);
+	}
+	
+	private boolean isValidLowPriorityCommand() {
+		//Appropriate commands are: "low", "lo", "l"
+		return this.priority.equalsIgnoreCase(PRIORITY_LOW_CMD1) 
+				|| this.priority.equalsIgnoreCase(PRIORITY_LOW_CMD2) 
+				|| this.priority.equalsIgnoreCase(PRIORITY_LOW_CMD3);
+	}
 }

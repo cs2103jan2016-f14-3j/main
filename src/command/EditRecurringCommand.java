@@ -14,6 +14,7 @@ public class EditRecurringCommand extends Command {
 
 	/** Messaging **/
 	public static final String MESSAGE_EDIT_RECURRING = "A series of recurring tasks has been edited";
+	public static final String MESSAGE_EDIT_RECUR_ERROR = "%s is not a reuccring task!";
 
 	/** Input Field Types **/
 	private static final String FIELD_TITLE = "title";
@@ -54,7 +55,8 @@ public class EditRecurringCommand extends Command {
 	 * @param field
 	 * @param oldData
 	 */
-	public EditRecurringCommand(Long taskId, String field, ArrayList<String> oldData) {
+	public EditRecurringCommand(Long taskId, String field,
+			ArrayList<String> oldData) {
 		this.taskId = taskId;
 		this.field = field;
 		this.oldData = oldData;
@@ -147,52 +149,58 @@ public class EditRecurringCommand extends Command {
 	 */
 	public String execute() {
 
-		if (!isUndo) {
+		this.firstId = taskId;
+		Item firstTask = getTask(firstId);
 
-			this.firstId = taskId;
-			while (taskId != null) {
-				Item currentTask = getTask(taskId);
+		if (firstTask.isRecurring()) {
+			if (!isUndo) {
 
-				Long nextId = currentTask.getNextId();
-				updateChanges(taskId);
-				taskId = nextId;
+				while (taskId != null) {
+					Item currentTask = getTask(taskId);
 
-				if (taskId.equals(firstId)) {
-					break;
+					Long nextId = currentTask.getNextId();
+					updateChanges(taskId);
+					taskId = nextId;
+
+					if (taskId.equals(firstId)) {
+						break;
+					}
 				}
+
+				updateUndoStack();
+				POMPOM.refreshStatus();
+				showCorrectTab(firstTask);
+
+				returnMsg = MESSAGE_EDIT_RECURRING;
+				return returnMsg;
+
+			} else {
+
+				Long firstId = taskId;
+				int counter = 0;
+
+				while (taskId != null) {
+					Long nextId = getTask(taskId).getNextId();
+					updateChanges(taskId, oldData.get(counter));
+					taskId = nextId;
+					counter++;
+
+					if (taskId.equals(firstId)) {
+						break;
+					}
+				}
+
+				POMPOM.refreshStatus();
+				showCorrectTab(firstTask);
+
+				returnMsg = MESSAGE_EDIT_RECURRING;
+				return returnMsg;
+
 			}
-
-			updateUndoStack();
-			POMPOM.refreshStatus();
-			Item firstTask = getTask(firstId);
-			showCorrectTab(firstTask);
-
-			returnMsg = MESSAGE_EDIT_RECURRING;
-			return returnMsg;
-
 		} else {
 
-			Long firstId = taskId;
-			int counter = 0;
-			
-			while (taskId != null) {
-				Long nextId = getTask(taskId).getNextId();
-				updateChanges(taskId, oldData.get(counter));
-				taskId = nextId;
-				counter++;
-
-				if (taskId.equals(firstId)) {
-					break;
-				}
-			}
-
-			POMPOM.refreshStatus();
-			Item firstTask = getTask(firstId);
-			showCorrectTab(firstTask);
-
-			returnMsg = MESSAGE_EDIT_RECURRING;
+			returnMsg = String.format(MESSAGE_EDIT_RECUR_ERROR, firstId);
 			return returnMsg;
-
 		}
 
 	}

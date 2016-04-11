@@ -1,24 +1,20 @@
 package parser;
 
-import java.util.ArrayList;
 import java.util.Date;
-
-import org.ocpsoft.prettytime.shade.edu.emory.mathcs.backport.java.util.Arrays;
+import java.util.logging.Level;
 
 import command.Command;
-import command.EditCommand;
 import command.EditRecurringCommand;
 import command.InvalidCommand;
 import main.POMPOM;
+import static org.junit.Assert.assertNotNull;
+
 /**
  *  @@author A0121760R
  *
  */
 public class EditRecurringParser extends ArgsParser{
-	
-	private final int INDEX_TASK_ID = 0;
-	private final int INDEX_FIELDS = 1;
-	private final int INDEX_NEW_DATAS = 2;  
+	 
 	
 	private static final String FIELD_PRIORITY = "priority";
 	private static final String FIELD_TITLE = "title";	
@@ -34,24 +30,24 @@ public class EditRecurringParser extends ArgsParser{
 	private String field;
 	private String newData;
 	private Date newDate = null;
-	private String taskTitle=null;
-	public static final String ID_ERROR_MESSAGE = "ID MUST BE NUMBER";
-	public static final String FIELD_ERROR_MESSAGE = "THERE IS NO SUCH FIELD";
+	public static final String ID_ERROR_MESSAGE = "Id must be a number!";
+	public static final String FIELD_ERROR_MESSAGE = "There is no such field!";
+	private static final String LOG_CREATE_EDIT_RECURRING_PARSER = "EditRecuringParser Created for \"%s\"";
 	
 	boolean correctId;
 	boolean correctField;
 	boolean correctData;
 	String dataErrorMsg;
 	
-	private ArrayList<String> argsArray;
-	
 	
 	public EditRecurringParser(String userCommand){
 		super(userCommand);
+		assertNotNull(commandArgumentsString);
 		commandArgumentsString = commandArgumentsString.trim();
 		correctId = extractTaskID();
 		correctField = extractFields();
 		correctData = extractNewData();
+		logger.log(Level.INFO, String.format(LOG_CREATE_EDIT_RECURRING_PARSER, commandArgumentsString));
 	}
 	
 	public Command parse(){
@@ -64,17 +60,14 @@ public class EditRecurringParser extends ArgsParser{
 		if(!correctData){
 			return new InvalidCommand(dataErrorMsg);
 		}
-//		if (isEditingDateField()){
-//			return new EditCommand(taskID, field, newDate); 
-//		}
 		else{
 			return new EditRecurringCommand(taskID, field, newData);
 		}
 	}
  
-	private boolean isEditingDateField() {
-		return (newDate!=null);
-	}
+//	private boolean isEditingDateField() {
+	//	return (newDate!=null);
+	//}
 	
 	public boolean extractTaskID(){
 		if(hasNoArguments){
@@ -146,7 +139,7 @@ public class EditRecurringParser extends ArgsParser{
 					return true;
 				} else {
 					dataErrorMsg = "Priority only can be set to high medium low!";
-					return false;
+					return false; 
 				}
 			} 
 			else {

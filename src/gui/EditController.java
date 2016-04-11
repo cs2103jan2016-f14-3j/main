@@ -206,7 +206,6 @@ public class EditController implements Initializable {
 		if (startDate != null) {
 
 			startDate.getYear();
-			System.out.println(startDate.getYear());
 			startCal.set(startDate.getYear(), startDate.getMonthValue() - 1, startDate.getDayOfMonth());
 			Date sd = startCal.getTime();
 			String sDateTime = sdf.format(sd) + " " + startHour + ":" + startMin;

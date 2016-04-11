@@ -13,6 +13,8 @@ public class DelRecurringCommand extends Command {
 
 	/** Messaging **/
 	public static final String MESSAGE_DELETE_RECURRING = "A series of recurring tasks has been deleted";
+	public static final String MESSAGE_DELETE_RECUR_ERROR = "%s is not a reuccring task!";
+	public static final String MESSAGE_INVALID = "%s is not a valid ID!";
 	
 	/** Command Parameters **/
 	private Long taskId;
@@ -88,14 +90,18 @@ public class DelRecurringCommand extends Command {
 		if (!isUndo) {
 			
 			Long firstId = taskId;
-			Item firstTask = getTask(firstId);
+			Item firstTask = getTask(firstId); 
+			
+			
 			if(firstTask == null){
-				return "Invalid ID";
-			} 
-			System.out.println(firstTask.isRecurring() + "TESTSafdasdad");
-			if(!firstTask.isRecurring()){
-				return "NON RECURRING TASK";
+				return String.format(MESSAGE_INVALID, firstId);
+			} 			
+			
+			if(!firstTask.isRecurring()|| firstTask.getId() == null){
+				returnMsg = String.format(MESSAGE_DELETE_RECUR_ERROR, firstId);
+				return returnMsg;
 			}
+			
 			while (true) {
 				
 				Item currentTask = getTask(taskId);
@@ -121,14 +127,14 @@ public class DelRecurringCommand extends Command {
 			
 		} else {
 			
-			Item toDelete = getTask(idList[0]);
+			Item firstTask = getTask(idList[0]);
 			for (int i = 0; i < idList.length; i++) {
 				Long currentId = idList[i];
 				removeTask(currentId);
 			}
 			
 			POMPOM.refreshStatus();
-			showCorrectTab(toDelete);
+			showCorrectTab(firstTask);
 			
 			returnMsg = MESSAGE_DELETE_RECURRING;
 			return returnMsg;

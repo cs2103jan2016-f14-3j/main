@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.Formatter;
 import java.util.List;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.ocpsoft.prettytime.nlp.PrettyTimeParser;
@@ -23,6 +24,7 @@ import command.EditCommand;
 import command.EditRecurringCommand;
 import command.UndoCommand;
 import main.POMPOM;
+import storage.Storage;
 import utils.Item;
 
 /**
@@ -57,6 +59,13 @@ public class TestSystem {
 	}
 
 	/********************************* Helper Methods ***************************************/
+	/**
+	 * Using the library we use in the pompom program to parse the date string.
+	 * returns a date *
+	 * 
+	 * @param date
+	 * @return Date
+	 */
 	private Date parseFromDate(String date) {
 		List<Date> startDate;
 		if (date != null) {
@@ -98,7 +107,6 @@ public class TestSystem {
 	}
 
 	public boolean testIsSameItem(Item itemA, Item itemB) {
-		boolean sameItem;
 		if (itemA == null && itemB == null) {
 			return true;
 		} else if (itemA == null && itemB != null) {
@@ -110,8 +118,6 @@ public class TestSystem {
 			// No description for now
 			// sameItem = itemA.getDescription().equals(itemB.getDescription());
 			if (!testStringEquivalence(itemA.getTitle(), itemB.getTitle())) {
-				System.out.println(itemA.getTitle() + ": Title : "
-						+ itemB.getTitle());
 				return false;
 			}
 			if (!testStringEquivalence(itemA.getLabel(), itemB.getLabel())) {
@@ -120,16 +126,12 @@ public class TestSystem {
 
 			}
 			if (!testStringEquivalence(itemA.getPriority(), itemB.getPriority())) {
-				System.out.println(itemA.getPriority() + ": getPriority : "
-						+ itemB.getPriority());
 				return false;
 			}
 			if (!testStringEquivalence(itemA.getSd(), itemB.getSd())) {
-				System.out.println("BEEN HERE 3");
 				return false;
 			}
 			if (!testStringEquivalence(itemA.getEd(), itemB.getEd())) {
-				System.out.println("BEEN HERE 4");
 				return false;
 			}
 			return true;
@@ -153,8 +155,10 @@ public class TestSystem {
 	/********************************* End of Helper Methods ***************************************/
 
 	/**
-	 * @@author A0121628L Try adding a basic task and test whether it returns
-	 *          the correct title a not
+	 * Try adding a basic task and test whether it returns the correct title a
+	 * not
+	 * 
+	 * @@author A0121628L
 	 */
 	@Test
 	public void testAddTitleOnly() {
@@ -175,9 +179,39 @@ public class TestSystem {
 	}
 
 	/**
+	 * Simple test to check whether add
+	 */
+	@Test
+	public void testUndoAdd() {
+
+		// Make sure subsequent tests start from clean slate
+		taskList.clear();
+
+		String userCommand = "add do project";
+		String returnMsg = pompom.execute(userCommand);
+
+		// check if the add command returns the right status message
+		assertEquals("Task added", returnMsg);
+
+		// check if the taskList contain the added task
+		Item addedTask = taskList.get(0);
+		assertEquals("do project", addedTask.getTitle());
+
+		String undoCommand = "undo";
+		returnMsg = pompom.execute(undoCommand);
+
+		// check if the add command returns the right status message
+		assertEquals(UndoCommand.MESSAGE_UNDO, returnMsg);
+		assertEquals(0, taskList.size());
+
+	}
+
+	/**
 	 *
-	 * @@author A0121628L Basic test for adding events and check storage whether
-	 *          desired event is added
+	 * Full test for adding events and check storage whether desired events are
+	 * added properly
+	 * 
+	 * @@author A0121628L
 	 */
 	@Test
 	public void testAddAndDeleteEvent() {
@@ -245,15 +279,27 @@ public class TestSystem {
 		Item addedTask_4 = taskList.get(3);
 		assertTrue(testIsSameItem(expectedAddedTask_4, addedTask_4));
 
-		// String id = taskList.get(0).getId().toString();
-		// String userCommand_5 = "delete " + id;
-		// System.out.println(userCommand_5 + "TEST");
-		// String returnMsg_5 = pompom.execute(userCommand_5);
+		// Test a simple delete on a event
+		String id = taskList.get(0).getId().toString();
+		String userCommand_5 = "delete " + id;
 
+		
+		String returnMsg_5 = pompom.execute(userCommand_5);
+
+		assertEquals(
+				String.format(String.format(DelCommand.MESSAGE_TASK_DELETED,
+						id, POMPOM.LABEL_EVENT), id), returnMsg_5);
+		assertEquals(3, taskList.size());
 	}
 
+	/**
+	 * Test recurring add the correct number of task a not. We are just going
+	 * check the number of task added here because add recurring uses the Add
+	 * command to add events one by one.
+	 */
 	@Test
-	public void testAddRecurring() {
+	public void testAddRecurringEvent() {
+		// Reset task list and add 21 events daily from 04/11 to 01/05
 		taskList.clear();
 		String userCommand_1 = "event asd f:04/11/2016 e:tomorrow p:h r:daily until 01 may 2016";
 		String returnMsg_1 = pompom.execute(userCommand_1);
@@ -262,6 +308,7 @@ public class TestSystem {
 				returnMsg_1);
 		assertEquals(21, taskList.size());
 
+		// Reset task list and add 8 events. Weekly from 04/11 to 01/05
 		taskList.clear();
 		String userCommand_2 = "event asd f:04/11/2016 e:tomorrow p:h r:weekly until 30 may 2016";
 		String returnMsg_2 = pompom.execute(userCommand_2);
@@ -270,6 +317,7 @@ public class TestSystem {
 				returnMsg_2);
 		assertEquals(8, taskList.size());
 
+		// Reset task list and add 4 events. biweekly from 04/11 to 01/05
 		taskList.clear();
 		String userCommand_3 = "event asd f:04/11/2016 e:tomorrow p:h r:biweekly until 30 may 2016";
 		String returnMsg_3 = pompom.execute(userCommand_3);
@@ -278,6 +326,7 @@ public class TestSystem {
 				returnMsg_3);
 		assertEquals(4, taskList.size());
 
+		// Reset task list and add 2 events. r:monthly from 04/11 to 05/06
 		taskList.clear();
 		String userCommand_4 = "event asd f:04/11/2016 e:tomorrow p:h r:monthly until 05 june 2016";
 		String returnMsg_4 = pompom.execute(userCommand_4);
@@ -286,6 +335,7 @@ public class TestSystem {
 				returnMsg_4);
 		assertEquals(2, taskList.size());
 
+		// Reset task list and add 2 events. r:monthly from 04/11 to 05/06
 		taskList.clear();
 		String userCommand_5 = "event asd f:04/11/2016 e:tomorrow p:h r:annually until 05 mar 2017";
 		String returnMsg_5 = pompom.execute(userCommand_5);
@@ -294,6 +344,9 @@ public class TestSystem {
 				returnMsg_5);
 		assertEquals(1, taskList.size());
 
+		// Reset task list and add 2 events. r:daily from 11 apr to 30 apr 20
+		// days exclude 6 DAYS
+		// 13 APR TO 18 apr. which totals up too 14 events
 		taskList.clear();
 		String userCommand_6 = "event asd f:04/11/2016 e:tomorrow p:h r:daily until 30 apr 2016 x:13 apr to 18 apr";
 		String returnMsg_6 = pompom.execute(userCommand_6);
@@ -303,6 +356,12 @@ public class TestSystem {
 		assertEquals(14, taskList.size());
 	}
 
+	/**
+	 * This method conducts test on the possible bad commands at least on test
+	 * heuristics methods are self explanatory
+	 * 
+	 * @throws IOException
+	 */
 	@Test
 	public void testAddEventBadCommands() throws IOException {
 		int initialSize = taskList.size();
@@ -321,13 +380,6 @@ public class TestSystem {
 		assertEquals(String.format(AddParser.MESSAGE_DATES_SPECIFIED, ""),
 				badReturnMsg_2);
 		assertEquals(initialSize, taskList.size());
-
-//		String badUserCommand_3 = "event e:3 may 2019";
-//		String badReturnMsg_3 = pompom.execute(badUserCommand_3);
-//
-//		assertEquals(String.format(AddParser.MESSAGE_EMPTY_ERROR, ""),
-//				badReturnMsg_3);
-//		assertEquals(initialSize, taskList.size());
 
 		String badUserCommand_4 = "eveana e:3 may 2019";
 		String badReturnMsg_4 = pompom.execute(badUserCommand_4);
@@ -384,7 +436,10 @@ public class TestSystem {
 
 	}
 
-	// Only title is require for task.
+	/**
+	 * Full test for adding task. Again using the at least once heuristic to
+	 * make sure that the fields are working
+	 */
 	@Test
 	public void testAddTask() {
 		// Make sure subsequent tests start from clean slate
@@ -454,12 +509,13 @@ public class TestSystem {
 
 	/**
 	 * Test all the bad commands of task and whether it returns the correct
-	 * error message or not
+	 * error message or not. This is the same type of test with event bad
+	 * commands but to be complete we got to do with the task method as well
 	 */
 	@Test
 	public void testAddTaskBadCommands() {
 		int initialSize = taskList.size();
-		String badUserCommand_1 = "add";
+		String badUserCommand_1 = "add";  
 		String badReturnMsg_1 = pompom.execute(badUserCommand_1);
 
 		assertEquals(String.format(AddParser.MESSAGE_EMPTY_ERROR, ""),
@@ -510,6 +566,10 @@ public class TestSystem {
 
 	}
 
+	/**
+	 * Test deleting a normal task and whether it handles invalid delete id
+	 * correctly or not
+	 */
 	@Test
 	public void testDeleteById() {
 
@@ -531,9 +591,7 @@ public class TestSystem {
 
 		long id = taskList.get(1).getId();
 		String delCommand = "delete " + id;
-		String returnMsg = pompom.execute(delCommand);
-
-		// check if the delete command returns the right status message
+		pompom.execute(delCommand);
 
 		// check if the correct task got deleted
 		assertEquals(2, taskList.size());
@@ -548,6 +606,10 @@ public class TestSystem {
 				delFailReturnMsg);
 	}
 
+	/**
+	 * Test undo a recurring add and deleterecur we test this by checking the
+	 * tasklist size as we assume task is added correctly.
+	 */
 	@Test
 	public void testDeleteOnRecurringAndUndo() {
 
@@ -558,6 +620,16 @@ public class TestSystem {
 		String returnMsg_1 = pompom.execute(userCommand_1);
 
 		// check if the add commands returns the right status message
+		assertEquals(AddRecurringCommand.MESSAGE_RECURRING, returnMsg_1);
+		assertEquals(20, taskList.size());
+		String undoCommnad_1 = "undo";
+		String undoReturnMsg_1 = pompom.execute(undoCommnad_1);
+
+		assertEquals(UndoCommand.MESSAGE_UNDO, undoReturnMsg_1);
+		assertEquals(0, taskList.size());
+
+		// Then add back the same things
+		returnMsg_1 = pompom.execute(userCommand_1);
 		assertEquals(AddRecurringCommand.MESSAGE_RECURRING, returnMsg_1);
 
 		// Delete a middle task first
@@ -580,16 +652,19 @@ public class TestSystem {
 
 		// check if the correct task got deleted
 		assertEquals(0, taskList.size());
-		
-		//Try undo
-		String undoCommand = "undo";
-		String undoReturnMsg = pompom.execute(undoCommand);
-		
+
+		// Try undo
+		String undoCommand_2 = "undo";
+		String undoReturnMsg_2 = pompom.execute(undoCommand_2);
+
 		// check if the correct task got deleted
-		assertEquals(UndoCommand.MESSAGE_UNDO, undoReturnMsg);
+		assertEquals(UndoCommand.MESSAGE_UNDO, undoReturnMsg_2);
 		assertEquals(19, taskList.size());
 	}
 
+	/**
+	 * Simple test for editing title
+	 */
 	@Test
 	public void testEditTitle() {
 
@@ -605,9 +680,12 @@ public class TestSystem {
 		String returnMsg_3 = pompom.execute(userCommand_3);
 
 		// check if the add commands returns the right status message
-		assertEquals("Task added", returnMsg_1);
-		assertEquals("Task added", returnMsg_2);
-		assertEquals("Task added", returnMsg_3);
+		assertEquals(String.format(AddCommand.MESSAGE_TASK_ADDED, "Task"),
+				returnMsg_1);
+		assertEquals(String.format(AddCommand.MESSAGE_TASK_ADDED, "Task"),
+				returnMsg_2);
+		assertEquals(String.format(AddCommand.MESSAGE_TASK_ADDED, "Task"),
+				returnMsg_3);
 
 		long id_1 = taskList.get(0).getId();
 		long id_2 = taskList.get(1).getId();
@@ -634,6 +712,9 @@ public class TestSystem {
 
 	}
 
+	/**
+	 * Simple test for editing date
+	 */
 	@Test
 	public void testEditDate() {
 
@@ -649,20 +730,23 @@ public class TestSystem {
 		String returnMsg_3 = pompom.execute(userCommand_3);
 
 		// check if the add commands returns the right status message
-		assertEquals(String.format(AddCommand.MESSAGE_TASK_ADDED,"Task"), returnMsg_1);
-		assertEquals(String.format(AddCommand.MESSAGE_TASK_ADDED,"Task"), returnMsg_2);
-		assertEquals(String.format(AddCommand.MESSAGE_TASK_ADDED,"Task"), returnMsg_3);
+		assertEquals(String.format(AddCommand.MESSAGE_TASK_ADDED, "Task"),
+				returnMsg_1);
+		assertEquals(String.format(AddCommand.MESSAGE_TASK_ADDED, "Task"),
+				returnMsg_2);
+		assertEquals(String.format(AddCommand.MESSAGE_TASK_ADDED, "Task"),
+				returnMsg_3);
 
 		long id_1 = taskList.get(0).getId();
 		long id_2 = taskList.get(1).getId();
 		long id_3 = taskList.get(2).getId();
-		
+
 		String stringId_1 = Long.toString(id_1);
 		String stringId_3 = Long.toString(id_3);
-		
+
 		String editCommand_1 = "edit " + id_1 + " start date today";
-		//This command should fail invalid end date
-		String editCommand_2 = "edit " + id_2 + " end date 01/11/2013"; 
+		// This command should fail invalid end date
+		String editCommand_2 = "edit " + id_2 + " end date 01/11/2013";
 		String editCommand_3 = "edit " + id_3 + " end date next year";
 
 		String returnMsg_4 = pompom.execute(editCommand_1);
@@ -670,21 +754,31 @@ public class TestSystem {
 		String returnMsg_6 = pompom.execute(editCommand_3);
 
 		// check if the edit command returns the right status message
-		assertEquals(String.format(EditCommand.MESSAGE_TASK_EDITED, stringId_1), returnMsg_4);
+		assertEquals(
+				String.format(EditCommand.MESSAGE_TASK_EDITED, stringId_1),
+				returnMsg_4);
 		assertEquals(EditCommand.MESSAGE_DATE_CHANGE_ERROR, returnMsg_5);
-		assertEquals(String.format(EditCommand.MESSAGE_TASK_EDITED, stringId_3), returnMsg_6);
+		assertEquals(
+				String.format(EditCommand.MESSAGE_TASK_EDITED, stringId_3),
+				returnMsg_6);
 
 		// Check if list still contains 3 times
 		assertEquals(3, taskList.size());
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-		assertEquals(sdf.format(parseFromDate("today")), taskList.get(0).getSd());
-		assertEquals(sdf.format(parseFromDate("april 2")), taskList.get(1).getSd());
-		assertEquals(sdf.format(parseFromDate("next year")), taskList.get(2).getEd());
+		SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy HH:mm");
+		assertEquals(sdf.format(parseFromDate("today")), taskList.get(0)
+				.getSd());
+		assertEquals(sdf.format(parseFromDate("april 2")), taskList.get(1)
+				.getSd());
+		assertEquals(sdf.format(parseFromDate("next year")), taskList.get(2)
+				.getEd());
 
 	}
 
+	/**
+	 * Simple test for editing label
+	 */
 	@Test
-	public void testEditLabel() { 
+	public void testEditLabel() {
 
 		// Make sure subsequent tests start from clean slate
 		taskList.clear();
@@ -698,9 +792,12 @@ public class TestSystem {
 		String returnMsg_3 = pompom.execute(userCommand_3);
 
 		// check if the add commands returns the right status message
-		assertEquals("Task added", returnMsg_1);
-		assertEquals("Task added", returnMsg_2);
-		assertEquals("Task added", returnMsg_3);
+		assertEquals(String.format(AddCommand.MESSAGE_TASK_ADDED, "Task"),
+				returnMsg_1);
+		assertEquals(String.format(AddCommand.MESSAGE_TASK_ADDED, "Task"),
+				returnMsg_2);
+		assertEquals(String.format(AddCommand.MESSAGE_TASK_ADDED, "Task"),
+				returnMsg_3);
 
 		long id_1 = taskList.get(0).getId();
 		long id_2 = taskList.get(1).getId();
@@ -715,18 +812,21 @@ public class TestSystem {
 		String returnMsg_6 = pompom.execute(editCommand_3);
 
 		// check if the edit command returns the right status message
-		// assertEquals(id_1 + ". was successfully edited", returnMsg_4);
-		// assertEquals(id_2 + ". was successfully edited", returnMsg_5);
-		// assertEquals(id_3 + ". was successfully edited", returnMsg_6);
-		//
-		// // check if the correct task got deleted
-		// assertEquals(3, taskList.size());
-		// assertEquals("do work", taskList.get(0).getLabel());
-		// assertEquals("more work", taskList.get(1).getLabel());
-		// assertEquals("even more work", taskList.get(2).getLabel());
+		assertEquals(id_1 + " was successfully edited", returnMsg_4);
+		assertEquals(id_2 + " was successfully edited", returnMsg_5);
+		assertEquals(id_3 + " was successfully edited", returnMsg_6);
+
+		// check if the correct task got deleted
+		assertEquals(3, taskList.size());
+		assertEquals("do work", taskList.get(0).getLabel());
+		assertEquals("more work", taskList.get(1).getLabel());
+		assertEquals("even more work", taskList.get(2).getLabel());
 
 	}
 
+	/**
+	 * Simple test on editing priority
+	 */
 	@Test
 	public void testEditPriority() {
 
@@ -742,9 +842,12 @@ public class TestSystem {
 		String returnMsg_3 = pompom.execute(userCommand_3);
 
 		// check if the add commands returns the right status message
-		assertEquals("Task added", returnMsg_1);
-		assertEquals("Task added", returnMsg_2);
-		assertEquals("Task added", returnMsg_3); 
+		assertEquals(String.format(AddCommand.MESSAGE_TASK_ADDED, "Task"),
+				returnMsg_1);
+		assertEquals(String.format(AddCommand.MESSAGE_TASK_ADDED, "Task"),
+				returnMsg_2);
+		assertEquals(String.format(AddCommand.MESSAGE_TASK_ADDED, "Task"),
+				returnMsg_3);
 
 		long id_1 = taskList.get(0).getId();
 		long id_2 = taskList.get(1).getId();
@@ -758,22 +861,26 @@ public class TestSystem {
 		String returnMsg_5 = pompom.execute(editCommand_2);
 		String returnMsg_6 = pompom.execute(editCommand_3);
 
-		 //check if the edit command returns the right status message
-		 assertEquals(id_1 + " was successfully edited", returnMsg_4);
-		 assertEquals(id_2 + " was successfully edited", returnMsg_5);
-		 assertEquals(id_3 + " was successfully edited", returnMsg_6);
-		
-		 // check if the correct task got deleted
-		 assertEquals(3, taskList.size());
-		 assertEquals("Low", taskList.get(0).getPriority());
-		 assertEquals("Medium", taskList.get(1).getPriority());
-		 assertEquals("High", taskList.get(2).getPriority());
+		// check if the edit command returns the right status message
+		assertEquals(id_1 + " was successfully edited", returnMsg_4);
+		assertEquals(id_2 + " was successfully edited", returnMsg_5);
+		assertEquals(id_3 + " was successfully edited", returnMsg_6);
+
+		// check if the correct task got deleted
+		assertEquals(3, taskList.size());
+		assertEquals("Low", taskList.get(0).getPriority());
+		assertEquals("Medium", taskList.get(1).getPriority());
+		assertEquals("High", taskList.get(2).getPriority());
 
 	}
+
+	/**
+	 * Simple test on edit recurring
+	 */
 	@Test
-	public void testEditRecurring(){
+	public void testEditRecurring() {
 		taskList.clear();
-		String userCommand_1 = "add test f:04/11/2016 e:tomorrow p:h r:daily until 30 apr 2016";
+		String userCommand_1 = "add test f:04/11/2016 e:tomorrow l:Sweet p:h r:daily until 30 apr 2016";
 		String returnMsg_1 = pompom.execute(userCommand_1);
 
 		// check if the add commands returns the right status message
@@ -782,26 +889,40 @@ public class TestSystem {
 		String userCommand_2 = "editrecur " + id + " title new testing";
 		String returnMsg_2 = pompom.execute(userCommand_2);
 		assertEquals(EditRecurringCommand.MESSAGE_EDIT_RECURRING, returnMsg_2);
-		
-		for(Item item:taskList){
+
+		for (Item item : taskList) {
 			assertEquals(item.getTitle(), "new testing");
 		}
-		
+
 		String userCommand_3 = "editrecur " + id + " priority high";
 		String returnMsg_3 = pompom.execute(userCommand_3);
 		assertEquals(EditRecurringCommand.MESSAGE_EDIT_RECURRING, returnMsg_3);
-		
-		for(Item item:taskList){
+
+		for (Item item : taskList) {
 			assertEquals(item.getPriority(), "High");
 		}
-//		String userCommand_4 = "editrecur " + id + " st high";
-//		String returnMsg_4 = pompom.execute(userCommand_3);
-//		assertEquals(EditRecurringCommand.MESSAGE_EDIT_RECURRING, returnMsg_3);
-//		
-//		for(Item item:taskList){
-//			assertEquals(item.getPriority(), "High");
-//		}
+
+		String userCommand_4 = "editrecur " + id + " label Test Label";
+		String returnMsg_4 = pompom.execute(userCommand_4);
+		assertEquals(EditRecurringCommand.MESSAGE_EDIT_RECURRING, returnMsg_4);
+
+		for (Item item : taskList) { 
+			assertEquals(item.getLabel(), "Test Label");
+		}
+		// Test does undo returns original Label a not
+		String undoCommand = "undo";
+		String undoReturnMsg = pompom.execute(undoCommand);
+
+		assertEquals(UndoCommand.MESSAGE_UNDO, undoReturnMsg);
+		for (Item item : taskList) {
+			assertEquals(item.getLabel(), "Sweet");
+		}
 	}
+
+	/**
+	 * Simple test on search. Search allows for error. For more information on
+	 * the search algorithm Please view search command class.
+	 */
 	@Test
 	public void testSearch() {
 
@@ -810,57 +931,46 @@ public class TestSystem {
 
 		String userCommand_1 = "add do project1 april 1 l:work";
 		String userCommand_2 = "add do project2 april 2 l:work";
-		String userCommand_3 = "add do project3 april 3 l:work";
+		String userCommand_3 = "add asdas april 3 l:work";
 
 		String returnMsg_1 = pompom.execute(userCommand_1);
 		String returnMsg_2 = pompom.execute(userCommand_2);
 		String returnMsg_3 = pompom.execute(userCommand_3);
 
 		// check if the add commands returns the right status message
-		assertEquals("Task added", returnMsg_1);
-		assertEquals("Task added", returnMsg_2);
-		assertEquals("Task added", returnMsg_3);
+		assertEquals(String.format(AddCommand.MESSAGE_TASK_ADDED, "Task"),
+				returnMsg_1);
+		assertEquals(String.format(AddCommand.MESSAGE_TASK_ADDED, "Task"),
+				returnMsg_2);
+		assertEquals(String.format(AddCommand.MESSAGE_TASK_ADDED, "Task"),
+				returnMsg_3);
 
 		String searchCommand_1 = "search do";
 		String searchCommand_2 = "search project";
-		String searchCommand_3 = "search project1";
+		String searchCommand_3 = "search asdas";
 
 		String returnMsg_4 = pompom.execute(searchCommand_1);
-		assertEquals("Search resulted in 3 result(s).", returnMsg_4);
-		assertEquals(3, POMPOM.getSearchList().size());
+		assertEquals("Search resulted in 2 result(s).", returnMsg_4);
+		assertEquals(2, POMPOM.getSearchList().size());
 
 		String returnMsg_5 = pompom.execute(searchCommand_2);
-		assertEquals("Search resulted in 3 result(s).", returnMsg_5);
-		assertEquals(3, POMPOM.getSearchList().size());
+		assertEquals("Search resulted in 2 result(s).", returnMsg_5);
+		assertEquals(2, POMPOM.getSearchList().size());
 
 		String returnMsg_6 = pompom.execute(searchCommand_3);
-		assertEquals("Search resulted in 3 result(s).", returnMsg_6);
-		assertEquals(3, POMPOM.getSearchList().size());
+		assertEquals("Search resulted in 1 result(s).", returnMsg_6);
+		assertEquals(1, POMPOM.getSearchList().size());
 
 	}
 
-	@Test
-	public void testUndoAdd() {
-
-		// Make sure subsequent tests start from clean slate
-		taskList.clear();
-
-		String userCommand = "add do project";
-		String returnMsg = pompom.execute(userCommand);
-
-		// check if the add command returns the right status message
-		assertEquals("Task added", returnMsg);
-
-		// check if the taskList contain the added task
-		Item addedTask = taskList.get(0);
-		assertEquals("do project", addedTask.getTitle());
-
-		String undoCommand = "undo";
-		returnMsg = pompom.execute(undoCommand);
-
-		// check if the add command returns the right status message
-		assertEquals(0, taskList.size());
-
+	/**
+	 * Reset to the state before test was conducted
+	 * 
+	 * @throws IOException
+	 */
+	@After
+	public void resetToOriginal() throws IOException {
+		POMPOM.saveSettings(Storage.DEFAULT_STORAGE_FILE_PATH);
 	}
 
 }

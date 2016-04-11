@@ -1,10 +1,13 @@
 package parser;
 
 import java.util.Date;
+import java.util.logging.Level;
+
 import command.Command;
 import command.EditCommand;
 import command.InvalidCommand;
 import main.POMPOM;
+import static org.junit.Assert.assertNotNull;
 
 /**
  *  @@author A0121760R
@@ -18,6 +21,9 @@ public class EditParser extends ArgsParser{
 	private static final String MESSAGE_PROPER_PRIORITY = "Priority only can be set to high/hi/h, medium/med/m or low/lo/l!";
 	private static final String MESSAGE_INVALID_DATE_ERROR = "Please enter a vaild date";
 	private static final String MESSAGE_INVALID_ARGUMENT_ERROR = "Please enter a vaild argument";
+	public static final String MESSAGE_ID_ERROR = "Id must be a number";
+	public static final String MESSAGE_TITLE_EMPTY_ERROR = "Title cannot be empty!";
+	public static final String MESSAGE_FIELD_ERROR = "There is no such field!";
 	private static final String STRING_EMPTY = "";
 	private static final int VALID_NUMBER_OF_ARGUMENTS = 2;
 	private static final String STRING_SPACE = " ";
@@ -27,8 +33,7 @@ public class EditParser extends ArgsParser{
 	private static final String FIELD_START_DATE = "start date";
 	private static final String FIELD_END_DATE = "end date";
 	
-	public static final String ID_ERROR_MESSAGE = "ID MUST BE NUMBER";
-	public static final String FIELD_ERROR_MESSAGE = "THERE IS NO SUCH FIELD";
+	private static final String LOG_CREATE_EDIT_PARSER = "EditParser Created for \"%s\"";
 
 	private static final String[] FIELD_ARRAY = {FIELD_PRIORITY, FIELD_TITLE, 
 												 FIELD_LABEL, 
@@ -45,9 +50,13 @@ public class EditParser extends ArgsParser{
 	
 	public EditParser(String userCommand){
 		super(userCommand);
+		assertNotNull(commandArgumentsString);
 		correctId = extractTaskID();
 		correctField = extractFields();
 		correctData = extractNewData();
+		
+		logger.log(Level.INFO, String.format(LOG_CREATE_EDIT_PARSER ,
+												commandArgumentsString));
 	}
 	
 	public Command parse(){
@@ -102,7 +111,7 @@ public class EditParser extends ArgsParser{
 			//match currFied (the one inside the field array with the first available field.
 			if (isFirstField(currField)){
 				field=currField;
-				commandArgumentsString = commandArgumentsString.replace(field, STRING_EMPTY).trim();
+				commandArgumentsString = commandArgumentsString.substring(field.length()).trim();
 				return true;
 			}
 		}
@@ -118,18 +127,23 @@ public class EditParser extends ArgsParser{
 	 */
 	public boolean extractNewData(){
 		newData = commandArgumentsString;
-		if(field == null){
+		if (isNullField()){
 			dataErrorMsg = MESSAGE_INVALID_ARGUMENT_ERROR;
 			return false;
 		}
 		
-		//Process Data
+		if (isEmptyTitleField()){
+			dataErrorMsg = MESSAGE_TITLE_EMPTY_ERROR;
+			return false;
+		}
+		
+		//Process Date
 		if (isValidDateField() ){
 			return processDateField();
 		}
 		
 		//Process Priority
-		if(field == FIELD_PRIORITY){
+		if(isProcessingPriorityField()){
 			if (field != null) {
 				return processPriorityField();
 			} 
@@ -143,6 +157,18 @@ public class EditParser extends ArgsParser{
 			return false;
 		}
 		return true;
+	}
+
+	private boolean isProcessingPriorityField() {
+		return field == FIELD_PRIORITY;
+	}
+
+	private boolean isEmptyTitleField() {
+		return field.equals("title") && newData.equals("");
+	}
+
+	private boolean isNullField() {
+		return field == null;
 	}
 	/**
 	 * This method checks if the data is a valid priority data, then returns
@@ -185,7 +211,7 @@ public class EditParser extends ArgsParser{
 	}
 	
 	/**
-	 * This method attempts to see if the ID is a valid integer or not. If it is,
+	 * This method attempts to see if the ID is a valid long or not. If it is,
 	 * the TaskID field is set. Else, the invalidCommand field will be set.
 	 * 
 	 * @return 
@@ -193,7 +219,7 @@ public class EditParser extends ArgsParser{
 	 */
 	private boolean canSetTaskID(String taskIDString) {
 		try{
-			taskID = Integer.parseInt(taskIDString);
+			taskID = Long.parseLong(taskIDString);
 		} catch (Exception e){
 			return false;
 		}
@@ -208,9 +234,9 @@ public class EditParser extends ArgsParser{
 	 */
 	private Command validateFields() {
 		if(!correctId){
-			return new InvalidCommand(ID_ERROR_MESSAGE);
+			return new InvalidCommand(MESSAGE_ID_ERROR);
 		} else if(!correctField){
-			return new InvalidCommand(String.format(FIELD_ERROR_MESSAGE));
+			return new InvalidCommand(String.format(MESSAGE_FIELD_ERROR));
 		} else if(!correctData){
 			return new InvalidCommand(dataErrorMsg);
 		} else{

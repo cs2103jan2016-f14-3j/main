@@ -4,8 +4,8 @@ import command.Command;
 import command.EditCommand;
 import main.POMPOM;
 
-import java.security.PublicKey;
 import java.util.logging.Level;
+import static org.junit.Assert.assertNotNull;
 /**
  *  @@author A0121760R
  *
@@ -14,12 +14,17 @@ import java.util.logging.Level;
 public class DoneParser extends ArgsParser{
 	
 	public static final String INVALID_DONE_ARGUMENT_RETURN_MESSAGE = "%s: Is not a valid ID Number";
+	private static final String LOG_CREATE_DONE_PARSER = "DoneParser Created for \"%s\"";
+
 	private long itemID;
 	private Command invalidCommand = null; 
 	
 	public DoneParser(String userCommand){
-		super(userCommand); 
+		super(userCommand);
+		assertNotNull(commandArgumentsString);
 		getItemId();
+		logger.log(Level.INFO, String.format(LOG_CREATE_DONE_PARSER ,
+											commandArgumentsString));
 	}
 	
 	/**
@@ -43,7 +48,7 @@ public class DoneParser extends ArgsParser{
 	 */
 	public void getItemId(){
 		try{
-			itemID = Integer.parseInt(commandArgumentsString);
+			itemID = Long.parseLong(commandArgumentsString);
 		} catch (Exception e){
 			String returnMsg = String.format(INVALID_DONE_ARGUMENT_RETURN_MESSAGE, commandArgumentsString);
 			InvalidParser InvalidArgumentParser = new InvalidParser(returnMsg);

@@ -18,7 +18,7 @@ public abstract class Command {
 
 	public Command() {
 
-	}
+	} 
 
 	/**
 	 * Method to get the item with the specified taskId. 

@@ -1,8 +1,8 @@
 package parser;
 import command.InvalidCommand;
-import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.logging.LoggingPermission;
+
+
 
 import command.Command;
 
@@ -19,17 +19,13 @@ public class ArgsParser {
 	
 	public ArgsParser(String commandArguments){
 		commandArgumentsString = commandArguments;
-		checkForAnyArguments(); 
+		if (isNullArgument()){
+			commandArgumentsString = "";
+		}
 	}
 
-	private void checkForAnyArguments() {
-		if(commandArgumentsString == null){
-			hasNoArguments=true;
-			return;
-		}
-		if (commandArgumentsString.equals("")){	
-			hasNoArguments=true;
-		}
+	private boolean isNullArgument() {
+		return commandArgumentsString == null;
 	}
 	
 	public Command invalidArgs(){

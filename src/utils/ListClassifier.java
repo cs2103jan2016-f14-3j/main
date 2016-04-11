@@ -208,10 +208,8 @@ public class ListClassifier {
 	 */
 	public static ObservableList<Item> getSpecifiedPrirorirty(ObservableList<Item> lst,
 			String priority) {
-		System.out.println("SIZE: "+lst.size());
 		for (int i = 0; i < lst.size(); i++) {
 			Item currentTask = lst.get(i);
-			System.out.println("TASK NUMBER: " + i + "\n Priority: " + currentTask.getTitle());
 			
 			if (currentTask.getPriority() == null) {
 				i--;
