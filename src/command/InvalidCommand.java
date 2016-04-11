@@ -1,21 +1,28 @@
 package command;
+
 /**
- * @@author wen hao
- *
+ * @@author A0121528M
  */
-public class InvalidCommand extends Command{
+public class InvalidCommand extends Command {
 
-	private String MESSAGE_ERROR = "%s is not a valid command.";
-	
+	/** Command Parameter **/
+	private String error;
+
+	/**
+	 * Constructor for InvalidCommand object
+	 * 
+	 * @param error
+	 */
 	public InvalidCommand(String error) {
-		this.MESSAGE_ERROR = error;
-	}
-	
-	public String execute() {
-		String returnMsg = MESSAGE_ERROR;
-		return returnMsg;
+		this.error = error;
 	}
 
-	
-	
+	/**
+	 * Does nothing and only return the error. 
+	 * Error message should already be formatted before reaching this point.
+	 */
+	public String execute() {
+		return error;
+	}
+
 }

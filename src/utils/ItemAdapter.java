@@ -10,16 +10,24 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 
 /**
+ * This class helps write UserItemList into json string and read Json string to
+ * create UserItemList object
+ * 
  * @@author A0121628L
- *
  */
 
 public class ItemAdapter extends TypeAdapter<UserItemList> {
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.google.gson.TypeAdapter#read(com.google.gson.stream.JsonReader)
+	 */
 	@Override
 	public UserItemList read(JsonReader in) throws IOException {
 		final UserItemList userTaskList = new UserItemList();
-		SimpleDateFormat formatter = new SimpleDateFormat("EEE MMM d HH:mm:ss z yyyy");
+		SimpleDateFormat formatter = new SimpleDateFormat(
+				"EEE MMM d HH:mm:ss z yyyy");
 		in.beginObject();
 		while (in.hasNext()) {
 			switch (in.nextName()) {
@@ -58,9 +66,20 @@ public class ItemAdapter extends TypeAdapter<UserItemList> {
 						case "Status":
 							task.setStatus(in.nextString());
 							break;
+						case "IsRecurring":
+							task.setRecurring(in.nextBoolean());
+							break;
+						case "PrevId":
+							task.setPrevId(in.nextLong());
+							break;
+						case "NextId":
+							task.setNextId(in.nextLong());
+							break;
+
 						case "StartDate":
 							try {
-								task.setStartDate(formatter.parse(in.nextString()));
+								task.setStartDate(formatter.parse(in
+										.nextString()));
 							} catch (ParseException e) {
 								e.printStackTrace();
 							}
@@ -71,7 +90,9 @@ public class ItemAdapter extends TypeAdapter<UserItemList> {
 							} catch (ParseException e) {
 								e.printStackTrace();
 							}
+
 							break;
+
 						}
 					}
 					taskArrayList.add(task);
@@ -87,8 +108,15 @@ public class ItemAdapter extends TypeAdapter<UserItemList> {
 		return userTaskList;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.google.gson.TypeAdapter#write(com.google.gson.stream.JsonWriter,
+	 * java.lang.Object)
+	 */
 	@Override
-	public void write(JsonWriter out, UserItemList userTaskList) throws IOException {
+	public void write(JsonWriter out, UserItemList userTaskList)
+			throws IOException {
 		out.beginObject();
 		out.name("Username").value(userTaskList.getUserName());
 		out.name("IdCounter").value(userTaskList.getIdCounter());
@@ -106,12 +134,16 @@ public class ItemAdapter extends TypeAdapter<UserItemList> {
 				out.name("Description").value(task.getDescription());
 				out.name("Label").value(task.getLabel());
 				out.name("Status").value(task.getStatus());
+
 				if (task.getStartDate() != null) {
 					out.name("StartDate").value(task.getStartDate().toString());
 				}
 				if (task.getEndDate() != null) {
 					out.name("EndDate").value(task.getEndDate().toString());
 				}
+				out.name("IsRecurring").value(task.isRecurring());
+				out.name("PrevId").value(task.getPrevId());
+				out.name("NextId").value(task.getNextId());
 				out.endObject();
 
 			}

@@ -1,22 +1,39 @@
 package command;
-import java.util.logging.Level;
 
-/**
- * @@author wen hao
- *
- */
+import java.util.Stack;
+import java.util.logging.Level;
 import main.POMPOM;
 
-public class UndoCommand extends Command{
-	
-	private static final String MESSAGE_UNDO = "Previous action was successfully undid";
-	
+/**
+ * @@author A0121528M
+ */
+public class UndoCommand extends Command {
+
+	/** Messaging **/
+	public static final String MESSAGE_UNDO = "Previous action has been successfully undone";
+	public static final String MESSAGE_ERROR = "There is nothing to undo";
+
+	/**
+	 * Executes all the actions needed when an UndoCommand is invoked
+	 * 
+	 * @return the appropriate feedback message
+	 */
 	public String execute() {
-		Command undo = (Command) POMPOM.getUndoStack().pop();
-		undo.execute();
-		logger.log(Level.INFO, "UndoCommand has be executed");
-		returnMsg = MESSAGE_UNDO;
-		return returnMsg;
+
+		Stack<Command> undoStack = POMPOM.getUndoStack();
+
+		// checks if stack is empty as popping an empty stack will cause
+		// exceptions
+		if (undoStack.isEmpty()) {
+			returnMsg = MESSAGE_ERROR;
+			return returnMsg;
+		} else {
+			Command undo = undoStack.pop();
+			undo.execute();
+			logger.log(Level.INFO, "UndoCommand has be executed");
+			returnMsg = MESSAGE_UNDO;
+			return returnMsg;
+		}
 	}
 
 }

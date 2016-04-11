@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<!-- @@author A0126375A -->
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -67,5 +69,6 @@
          </font>
       </Text>
       <Text layoutX="14.0" layoutY="435.0" strokeType="OUTSIDE" strokeWidth="0.0" text="exit" />
+      <Button cancelButton="true" layoutX="345.0" layoutY="418.0" mnemonicParsing="false" opacity="0.0" />
    </children>
 </Pane>
